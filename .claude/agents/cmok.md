@@ -1,0 +1,1 @@
+../../agentic-kit/agents/cmok.md
