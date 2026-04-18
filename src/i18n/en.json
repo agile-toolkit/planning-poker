@@ -1,0 +1,74 @@
+{
+  "app": { "title": "Planning Poker" },
+  "home": {
+    "headline": "Planning Poker",
+    "subheadline": "Simultaneous voting, instant reveal. No anchoring bias.",
+    "start_practice": "Practice Solo",
+    "start_team": "Team Session",
+    "team_note": "Team mode requires Firebase. Configure secrets to enable.",
+    "why_title": "Why Planning Poker?",
+    "why_body": "Planning Poker prevents anchoring bias — the tendency for the first number mentioned to dominate discussion. By voting simultaneously and revealing all at once, everyone's independent estimate is surfaced, leading to richer discussion and better estimates.",
+    "cards_title": "Card Values"
+  },
+  "setup": {
+    "title": "Session Setup",
+    "story_title_label": "First Story",
+    "story_placeholder": "What are we estimating?",
+    "participants_label": "Participants (one per line)",
+    "participants_placeholder": "Alice\nBob\nCarol",
+    "start": "Start Session",
+    "back": "Back"
+  },
+  "voting": {
+    "title": "Vote",
+    "current_story": "Estimating:",
+    "pick_card": "Pick your card",
+    "voted": "Voted ✓",
+    "reveal": "Reveal Votes",
+    "waiting": "Waiting for votes..."
+  },
+  "revealed": {
+    "title": "Results",
+    "average": "Average",
+    "median": "Median",
+    "consensus": "Consensus",
+    "spread": "Spread",
+    "final_estimate": "Final Estimate",
+    "next_story": "Next Story",
+    "end_session": "End Session",
+    "story_title": "Next story title",
+    "story_placeholder": "What's the next story?"
+  },
+  "history": {
+    "title": "Session History",
+    "no_stories": "No completed stories yet.",
+    "new_session": "New Session"
+  },
+  "learn": {
+    "title": "About Planning Poker",
+    "fibonacci_title": "Why Fibonacci Numbers?",
+    "fibonacci_body": "Fibonacci numbers (1, 2, 3, 5, 8, 13...) reflect the increasing uncertainty of larger estimates. The gaps between large numbers force the team to acknowledge uncertainty rather than pretending 14 and 15 are meaningfully different.",
+    "wideband_title": "Wideband Delphi",
+    "wideband_body": "Planning Poker is based on the Wideband Delphi method: gather independent estimates, reveal simultaneously, discuss divergence, re-estimate. The discussion between high and low voters surfaces hidden assumptions and risks.",
+    "tips_title": "Facilitation Tips",
+    "tip1": "If votes are close (e.g., 5 and 8), just pick the majority and move on.",
+    "tip2": "If votes diverge widely, ask the lowest voter and highest voter to explain first.",
+    "tip3": "? means 'I don't understand the story enough to estimate' — clarify before re-voting.",
+    "tip4": "☕ means 'I need a break' — honor it.",
+    "tip5": "Velocity is what matters, not the absolute size of story points."
+  },
+  "cards": {
+    "half": "½ — trivial, minutes",
+    "1": "1 — tiny, under an hour",
+    "2": "2 — small, a few hours",
+    "3": "3 — small-medium, half a day",
+    "5": "5 — medium, about a day",
+    "8": "8 — large, 2–3 days",
+    "13": "13 — very large, nearly a sprint",
+    "20": "20 — too large, split it",
+    "40": "40 — way too large",
+    "100": "100 — epic, split immediately",
+    "?": "? — need clarification",
+    "coffee": "☕ — need a break"
+  }
+}
