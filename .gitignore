@@ -26,3 +26,4 @@ npm-debug.log*
 
 # Temp
 commit_msg.txt
+.artefacts/
