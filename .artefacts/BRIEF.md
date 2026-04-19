@@ -1,38 +1,28 @@
-# BRIEF
+# Planning Poker — Brief
 
-Derived per [`agent-state.NO-BRIEF.md`](https://github.com/agile-toolkit/.github/blob/main/agent-state.NO-BRIEF.md). There was **no prior** `BRIEF.md`. Sources: `README.md`, `src/i18n/en.json` / `ru.json`, `src/`. Generated **2026-04-19**.
+## Overview
 
-## Product scope (from `README.md`)
+Planning Poker for Scrum teams: practice setup, multi-participant session, reveal, statistics, history. React 18, Vite, Tailwind, Firebase-capable per README, react-i18next. Deploy: GitHub Pages.
 
-- **Planning Poker** for Scrum teams: simultaneous voting, instant reveal, estimation education.
-- Stack includes **Firebase** (README); team mode implied.
-- Deploy: GitHub Pages via Actions on `main`.
+## Features
 
-## Build
+- [x] Home + learn content, solo/practice setup flow (`App.tsx`, `HomeScreen.tsx`)
+- [x] Session runner — `session.*` / `setup.*` wired in `SessionView.tsx`
+- [x] EN + RU
+- [ ] Team session entry — `home.start_team`, `home.cards_title` unused; only `home.start_practice` + `home.team_note`
+- [ ] Card value tooltips — `cards.*` descriptions unused; buttons show raw `CARD_VALUES` labels
+- [ ] Dead locale trees — `voting.*`, `revealed.*` superseded by `session.*` (remove or repurpose)
+- [ ] Language toggle — raw `EN`/`RU` in `App.tsx` header
 
-- `npm run build` — **passes** (verified **2026-04-19**).
+## Backlog
 
-## TODO / FIXME in `src/`
+## Tech notes
 
-- None.
+- Wire Firebase team mode when implementing `home.start_team` CTA.
 
-## i18n — unused subtrees vs current UI
+## Agent Log
 
-The live session UI uses the **`session.*`** and **`setup.*`** trees (`SessionView.tsx`, `App.tsx`). These **`en.json` sections appear unused** (no literal `t('…')` in `src/`):
+### 2026-04-19 — docs: BRIEF template (AGENT_AUTONOMOUS)
 
-- **`voting.*`** — duplicate labels of voting phase (superseded by `session.*`).
-- **`revealed.*`** — post-reveal copy (superseded by `session.*` statistics block).
-- **`cards.*`** — long descriptions for each card value; **vote buttons render raw numeric `v`** (`SessionView.tsx`, `CARD_VALUES`) instead of `t(\`cards.${key}\`)`.
-
-**Home / README gap**
-
-- Keys **`home.start_team`**, **`home.cards_title`** exist but **no control** uses them: home only shows **`home.start_practice`** (`App.tsx` ~lines 119–127). README promises team / Firebase path — **feature not surfaced in UI** beyond `home.team_note`.
-
-## Hardcoded user-visible strings
-
-- Language toggle shows raw **`EN` / `RU`** (`App.tsx` ~71) instead of `lang.*` keys present in `en.json`.
-
-## Classification (NO-BRIEF)
-
-- **Status:** `in-progress` — build passes; README/i18n promise team session + rich card copy not fully wired.
-- **First next task:** Either remove dead **`voting.*`**, **`revealed.*`**, **`cards.*`** blocks from `src/i18n/en.json` + `ru.json`, **or** wire `cards.*` as `title` / tooltip on each vote button in `SessionView.tsx` and use `home.start_team` for a second CTA that enters Firebase team flow (if implemented).
+- Done: Template migration; documented locale vs UI drift.
+- Next task: Remove `voting.*`/`revealed.*`/`cards.*` from `en.json`+`ru.json` OR wire `cards.*` tooltips in `SessionView.tsx` + `home.start_team` CTA in `App.tsx`; i18n for lang toggle.
