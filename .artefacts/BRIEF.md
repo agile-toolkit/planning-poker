@@ -1,46 +1,38 @@
-# BRIEF — Planning Poker
+# BRIEF
 
-## What this app does
-A real-time Planning Poker (Scrum Poker) tool for distributed and co-located teams to estimate user stories using the Fibonacci sequence. Team members vote simultaneously, votes are revealed together, and facilitators guide discussion toward consensus.
+Derived per [`agent-state.NO-BRIEF.md`](https://github.com/agile-toolkit/.github/blob/main/agent-state.NO-BRIEF.md). There was **no prior** `BRIEF.md`. Sources: `README.md`, `src/i18n/en.json` / `ru.json`, `src/`. Generated **2026-04-19**.
 
-## Target users
-Scrum teams (developers, Scrum Masters, Product Owners) doing Sprint Planning or backlog refinement. Works for remote and in-person sessions with 2–15 participants.
+## Product scope (from `README.md`)
 
-## Core features (MVP)
-- Session host creates a room with a shareable link
-- Participants join by name (no account required)
-- Story input: host enters story title/description
-- Voting: each participant picks a card (½, 1, 2, 3, 5, 8, 13, 20, 40, 100, ?, ☕)
-- Reveal: all votes shown simultaneously after everyone votes
-- Statistics: average, median, consensus indicator, spread visualization
-- Next story: host advances to the next item
-- Session history: list of estimated stories with final estimates
-- Offline mode: single-device practice mode
+- **Planning Poker** for Scrum teams: simultaneous voting, instant reveal, estimation education.
+- Stack includes **Firebase** (README); team mode implied.
+- Deploy: GitHub Pages via Actions on `main`.
 
-## Educational layer
-- "Why Planning Poker?" intro panel (Wideband Delphi, anchoring bias prevention)
-- Card value explainer: why Fibonacci, what each number means in story points
-- Consensus guide: how to facilitate discussion when votes diverge
-- Reference to Scrum Meetings Guideline and ICAgile Workbook
+## Build
 
-## Tech stack
-React 18 + TypeScript + Vite + Tailwind CSS. Firebase Realtime Database for live multi-user sessions. GitHub Pages deployment.
+- `npm run build` — **passes** (verified **2026-04-19**).
 
-## Source materials in `.artefacts/`
-- `Scrum Meetings Guideline.pdf` — ceremony facilitation including estimation
-- `Workbook (ICAgile - Fundamentals of Agile)_22_11_2013.pdf` — estimation theory
-- `scrum_xp-from-the-trenches-rus-final.pdf` — practical estimation guidance
-- `PPCards (1).jpg` — Planning Poker card set reference image
-- `PP_Master_1100x780_de.jpg` — Planning Poker master card layout reference
+## TODO / FIXME in `src/`
 
-## i18n
-English + Russian (react-i18next).
+- None.
 
-## Agentic pipeline roles
-- `/vadavik` — spec & requirements validation
-- `/lojma` — UX/UI design (card table, vote reveal animation, session lobby)
-- `/laznik` — architecture (Firebase room model, real-time vote sync, session state machine)
-- `@cmok` — implementation
-- `@bahnik` — QA (multi-user sync, reveal timing, disconnect/reconnect handling)
-- `@piarun` — documentation
-- `@zlydni` — git commits & GitHub Pages deploy
+## i18n — unused subtrees vs current UI
+
+The live session UI uses the **`session.*`** and **`setup.*`** trees (`SessionView.tsx`, `App.tsx`). These **`en.json` sections appear unused** (no literal `t('…')` in `src/`):
+
+- **`voting.*`** — duplicate labels of voting phase (superseded by `session.*`).
+- **`revealed.*`** — post-reveal copy (superseded by `session.*` statistics block).
+- **`cards.*`** — long descriptions for each card value; **vote buttons render raw numeric `v`** (`SessionView.tsx`, `CARD_VALUES`) instead of `t(\`cards.${key}\`)`.
+
+**Home / README gap**
+
+- Keys **`home.start_team`**, **`home.cards_title`** exist but **no control** uses them: home only shows **`home.start_practice`** (`App.tsx` ~lines 119–127). README promises team / Firebase path — **feature not surfaced in UI** beyond `home.team_note`.
+
+## Hardcoded user-visible strings
+
+- Language toggle shows raw **`EN` / `RU`** (`App.tsx` ~71) instead of `lang.*` keys present in `en.json`.
+
+## Classification (NO-BRIEF)
+
+- **Status:** `in-progress` — build passes; README/i18n promise team session + rich card copy not fully wired.
+- **First next task:** Either remove dead **`voting.*`**, **`revealed.*`**, **`cards.*`** blocks from `src/i18n/en.json` + `ru.json`, **or** wire `cards.*` as `title` / tooltip on each vote button in `SessionView.tsx` and use `home.start_team` for a second CTA that enters Firebase team flow (if implemented).
