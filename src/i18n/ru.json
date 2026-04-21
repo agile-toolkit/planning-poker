@@ -1,6 +1,6 @@
 {
   "common": { "add": "Добавить" },
-  "app": { "title": "Planning Poker" },
+  "app": { "title": "Planning Poker", "switch_lang": "EN" },
   "session": {
     "default_name": "Сессия Planning Poker",
     "back": "Главная",
@@ -45,26 +45,6 @@
     "participants_placeholder": "Алиса\nБоб\nКарол",
     "start": "Начать сессию",
     "back": "Назад"
-  },
-  "voting": {
-    "title": "Голосование",
-    "current_story": "Оцениваем:",
-    "pick_card": "Выберите карту",
-    "voted": "Проголосовал ✓",
-    "reveal": "Показать голоса",
-    "waiting": "Ожидание голосов..."
-  },
-  "revealed": {
-    "title": "Результаты",
-    "average": "Среднее",
-    "median": "Медиана",
-    "consensus": "Консенсус",
-    "spread": "Разброс",
-    "final_estimate": "Итоговая оценка",
-    "next_story": "Следующая история",
-    "end_session": "Завершить сессию",
-    "story_title": "Следующая история",
-    "story_placeholder": "Что следующее?"
   },
   "history": {
     "title": "История сессии",
