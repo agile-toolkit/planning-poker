@@ -1,6 +1,6 @@
 {
   "common": { "add": "Add" },
-  "app": { "title": "Planning Poker" },
+  "app": { "title": "Planning Poker", "switch_lang": "RU" },
   "session": {
     "default_name": "Planning session",
     "back": "Home",
@@ -45,26 +45,6 @@
     "participants_placeholder": "Alice\nBob\nCarol",
     "start": "Start Session",
     "back": "Back"
-  },
-  "voting": {
-    "title": "Vote",
-    "current_story": "Estimating:",
-    "pick_card": "Pick your card",
-    "voted": "Voted ✓",
-    "reveal": "Reveal Votes",
-    "waiting": "Waiting for votes..."
-  },
-  "revealed": {
-    "title": "Results",
-    "average": "Average",
-    "median": "Median",
-    "consensus": "Consensus",
-    "spread": "Spread",
-    "final_estimate": "Final Estimate",
-    "next_story": "Next Story",
-    "end_session": "End Session",
-    "story_title": "Next story title",
-    "story_placeholder": "What's the next story?"
   },
   "history": {
     "title": "Session History",

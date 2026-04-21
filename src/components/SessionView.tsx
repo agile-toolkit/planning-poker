@@ -3,6 +3,12 @@ import { useTranslation } from 'react-i18next'
 import type { PokerSession, CardValue } from '../types'
 import { CARD_VALUES } from '../types'
 
+function cardKey(v: CardValue): string {
+  if (v === '½') return 'half'
+  if (v === '☕') return 'coffee'
+  return v
+}
+
 interface Props {
   session: PokerSession
   onChange: (s: PokerSession) => void
@@ -289,6 +295,7 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                         type="button"
                         onClick={() => castVote(participant.id, v)}
                         disabled={session.revealed}
+                        title={t(`cards.${cardKey(v)}`)}
                         className={`w-10 h-14 border-2 rounded-lg font-bold text-sm transition-all ${
                           currentStory.votes[participant.id] === v
                             ? 'border-brand-400 bg-brand-900/40 text-brand-200 scale-105 shadow'
@@ -356,6 +363,7 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                           key={v}
                           type="button"
                           onClick={() => setFinalEstimate(v)}
+                          title={t(`cards.${cardKey(v)}`)}
                           className={`w-10 h-14 border-2 rounded-lg font-bold text-sm transition-all ${
                             currentStory.finalEstimate === v
                               ? 'border-green-400 bg-green-900/30 text-green-200 scale-105 shadow'

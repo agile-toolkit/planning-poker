@@ -1,7 +1,14 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { GamePhase, Story, PokerSession } from './types'
+import type { CardValue, GamePhase, Story, PokerSession } from './types'
+import { CARD_VALUES } from './types'
 import SessionView from './components/SessionView'
+
+function cardKey(v: CardValue): string {
+  if (v === '½') return 'half'
+  if (v === '☕') return 'coffee'
+  return v
+}
 
 function pokerSessionToStories(p: PokerSession): Story[] {
   return p.stories
@@ -103,7 +110,7 @@ export default function App() {
               onClick={() => i18n.changeLanguage(i18n.language.startsWith('ru') ? 'en' : 'ru')}
               className="ml-2 text-sm text-gray-400 hover:text-white px-2 py-1 rounded hover:bg-gray-700"
             >
-              {i18n.language.startsWith('ru') ? 'EN' : 'RU'}
+              {t('app.switch_lang')}
             </button>
           </div>
         </div>
@@ -124,12 +131,33 @@ export default function App() {
                 >
                   {t('home.start_practice')}
                 </button>
+                <button
+                  type="button"
+                  disabled
+                  title={t('home.team_note')}
+                  className="btn-secondary text-base px-8 py-3 opacity-40 cursor-not-allowed"
+                >
+                  {t('home.start_team')}
+                </button>
               </div>
               <p className="text-xs text-gray-600 mt-3">{t('home.team_note')}</p>
             </div>
             <div className="card mb-4">
               <h2 className="font-semibold text-white mb-2">{t('home.why_title')}</h2>
               <p className="text-gray-400 text-sm leading-relaxed">{t('home.why_body')}</p>
+            </div>
+            <div className="card mb-4">
+              <h2 className="font-semibold text-white mb-3">{t('home.cards_title')}</h2>
+              <div className="space-y-1">
+                {CARD_VALUES.map(v => (
+                  <div key={v} className="flex items-center gap-3 text-sm">
+                    <span className="w-8 h-11 border border-gray-600 rounded-md flex items-center justify-center font-bold text-gray-200 shrink-0 text-xs">
+                      {v}
+                    </span>
+                    <span className="text-gray-400">{t(`cards.${cardKey(v)}`)}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
