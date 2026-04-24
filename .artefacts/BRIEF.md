@@ -17,11 +17,21 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 
 ## Backlog
 
+- [ ] [#3] Feature: Add ES and BE locales to match suite standard
+- [ ] [#4] Integration: Export session results to Sprint Metrics
+- [ ] [#5] Research: Per-round voting timer to prevent vote anchoring delay
+
 ## Tech notes
 
 - Wire Firebase team mode when implementing `home.start_team` CTA fully.
 
 ## Agent Log
+
+### 2026-04-24 — research: locales, sprint-metrics integration, voting timer
+
+- Done: created issue #3 (ES + BE locales — all other 9 suite apps have 4 locales), #4 (export session results to Sprint Metrics via clipboard/deep-link), #5 (per-round countdown timer with auto-reveal, seen in Scrum Poker Online and PlanITPoker)
+- Waiting for human review on all three
+- Next task: check needs-review issues for human feedback (#3 ES/BE locales, #4 Sprint Metrics integration, #5 voting timer)
 
 ### 2026-04-21 — feat: i18n cleanup, card tooltips, team CTA, cards legend
 
