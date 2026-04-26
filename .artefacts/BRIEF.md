@@ -20,12 +20,21 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [ ] [#3] Feature: Add ES and BE locales to match suite standard
 - [ ] [#4] Integration: Export session results to Sprint Metrics
 - [ ] [#5] Research: Per-round voting timer to prevent vote anchoring delay
+- [ ] [#6] Feature: Custom card deck selection (Fibonacci, T-shirt, powers-of-2, custom)
+- [ ] [#7] UX: Keyboard accessibility — full keyboard navigation for card voting and story flow
+- [ ] [#8] Integration: Change Planner → Planning Poker deep-link for effort estimation
 
 ## Tech notes
 
 - Wire Firebase team mode when implementing `home.start_team` CTA fully.
 
 ## Agent Log
+
+### 2026-04-26 — research: custom decks, keyboard accessibility, Change Planner integration
+
+- Done: created issue #6 (custom card deck selection — Fibonacci/T-shirt/powers-of-2/custom), #7 (keyboard accessibility audit — aria-pressed, focus management, keyboard shortcuts), #8 (Change Planner → Planning Poker deep-link via `?stories=` URL param)
+- Issues #3–#5 still awaiting human review (no label changes)
+- Next task: check needs-review issues for human feedback (#3 ES/BE locales, #4 Sprint Metrics integration, #5 voting timer, #6 custom decks, #7 keyboard accessibility, #8 Change Planner integration)
 
 ### 2026-04-24 — research: locales, sprint-metrics integration, voting timer
 
