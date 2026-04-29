@@ -43,6 +43,10 @@
     "story_placeholder": "Что оцениваем?",
     "participants_label": "Участники (по одному в строке)",
     "participants_placeholder": "Алиса\nБоб\nКарол",
+    "deck_label": "Колода карт",
+    "deck_fibonacci": "Фибоначчи",
+    "deck_tshirt": "Размеры",
+    "deck_powers2": "Степени 2",
     "start": "Начать сессию",
     "back": "Назад"
   },

@@ -18,9 +18,9 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 ## Backlog
 
 - [x] [#3] Feature: Add ES and BE locales to match suite standard — implemented
-- [ ] [#4] Integration: Export session results to Sprint Metrics
+- [x] [#4] Integration: Export session results to Sprint Metrics — implemented
 - [ ] [#5] Research: Per-round voting timer to prevent vote anchoring delay
-- [ ] [#6] Feature: Custom card deck selection (Fibonacci, T-shirt, powers-of-2, custom)
+- [x] [#6] Feature: Custom card deck selection (Fibonacci, T-shirt, powers-of-2) — implemented
 - [ ] [#7] UX: Keyboard accessibility — full keyboard navigation for card voting and story flow
 - [ ] [#8] Integration: Change Planner → Planning Poker deep-link for effort estimation
 
@@ -29,6 +29,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - Wire Firebase team mode when implementing `home.start_team` CTA fully.
 
 ## Agent Log
+
+### 2026-04-29 — feat: Sprint Metrics export + custom deck selection
+- Done: #4 — on session back, completed stories (title + finalEstimate) are written to `localStorage.sprintMetrics_planningPoker` as a JSON array for Sprint Metrics to consume; #6 — DeckType enum (fibonacci/tshirt/powers2) added to types.ts; setup screen shows a 3-button deck picker with preview of card values; SessionView uses `DECKS[session.deckType]` so voting and final-estimate cards match the chosen deck; i18n keys `setup.deck_label/fibonacci/tshirt/powers2` added to all 4 locales
+- Remaining backlog: #5 (voting timer), #7 (keyboard accessibility), #8 (Change Planner deep-link)
+- Next task: check needs-review issues for human feedback (#5 voting timer, #7 keyboard accessibility, #8 Change Planner deep-link); then set status stable
 
 ### 2026-04-29 — feat: ES and BE locales + 4-button language selector
 - Done: created `src/i18n/es.json` (Spanish) and `src/i18n/be.json` (Belarusian) with full translations of all ~80 keys; registered both in `src/i18n/index.ts`; replaced two-state EN/RU toggle in App.tsx with 4-button EN/ES/BE/RU selector matching improvement-board pattern; resolved issue #3

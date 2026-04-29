@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { PokerSession, CardValue } from '../types'
-import { CARD_VALUES } from '../types'
+import { DECKS } from '../types'
 
 function cardKey(v: CardValue): string {
   if (v === '½') return 'half'
@@ -27,6 +27,9 @@ function numericVotes(votes: string[]): number[] {
 
 export default function SessionView({ session, onChange, onBack }: Props) {
   const { t } = useTranslation()
+  const deckValues = DECKS[session.deckType] ?? DECKS.fibonacci
+  const isFibonacci = session.deckType === 'fibonacci'
+  const cardTitle = (v: CardValue) => isFibonacci ? t(`cards.${cardKey(v)}`) : v
   const [participantInput, setParticipantInput] = useState('')
   const [storyInput, setStoryInput] = useState('')
   const [storyDesc, setStoryDesc] = useState('')
@@ -289,13 +292,13 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                     )}
                   </div>
                   <div className="flex flex-wrap gap-1.5">
-                    {CARD_VALUES.map(v => (
+                    {deckValues.map(v => (
                       <button
                         key={v}
                         type="button"
                         onClick={() => castVote(participant.id, v)}
                         disabled={session.revealed}
-                        title={t(`cards.${cardKey(v)}`)}
+                        title={cardTitle(v)}
                         className={`w-10 h-14 border-2 rounded-lg font-bold text-sm transition-all ${
                           currentStory.votes[participant.id] === v
                             ? 'border-brand-400 bg-brand-900/40 text-brand-200 scale-105 shadow'
@@ -358,12 +361,12 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                   <div>
                     <p className="text-xs text-gray-400 mb-2">{t('session.finalEstimate')}</p>
                     <div className="flex flex-wrap gap-1.5">
-                      {CARD_VALUES.map(v => (
+                      {deckValues.map(v => (
                         <button
                           key={v}
                           type="button"
                           onClick={() => setFinalEstimate(v)}
-                          title={t(`cards.${cardKey(v)}`)}
+                          title={cardTitle(v)}
                           className={`w-10 h-14 border-2 rounded-lg font-bold text-sm transition-all ${
                             currentStory.finalEstimate === v
                               ? 'border-green-400 bg-green-900/30 text-green-200 scale-105 shadow'

@@ -43,6 +43,10 @@
     "story_placeholder": "¿Qué estamos estimando?",
     "participants_label": "Participantes (uno por línea)",
     "participants_placeholder": "Alicia\nBob\nCarol",
+    "deck_label": "Mazo de Cartas",
+    "deck_fibonacci": "Fibonacci",
+    "deck_tshirt": "Tallas",
+    "deck_powers2": "Potencias de 2",
     "start": "Iniciar Sesión",
     "back": "Volver"
   },
