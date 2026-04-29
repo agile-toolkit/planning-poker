@@ -1,4 +1,6 @@
-export type CardValue = '½' | '1' | '2' | '3' | '5' | '8' | '13' | '20' | '40' | '100' | '?' | '☕'
+export type CardValue = string
+
+export type DeckType = 'fibonacci' | 'tshirt' | 'powers2'
 
 export type GamePhase = 'home' | 'setup' | 'session' | 'history' | 'learn'
 
@@ -43,19 +45,13 @@ export interface PokerSession {
   stories: SessionStory[]
   currentStoryId: string | null
   revealed: boolean
+  deckType: DeckType
 }
 
-export const CARD_VALUES: CardValue[] = [
-  '½',
-  '1',
-  '2',
-  '3',
-  '5',
-  '8',
-  '13',
-  '20',
-  '40',
-  '100',
-  '?',
-  '☕',
-]
+export const DECKS: Record<DeckType, CardValue[]> = {
+  fibonacci: ['½', '1', '2', '3', '5', '8', '13', '20', '40', '100', '?', '☕'],
+  tshirt:    ['XS', 'S', 'M', 'L', 'XL', 'XXL', '?', '☕'],
+  powers2:   ['1', '2', '4', '8', '16', '32', '64', '?', '☕'],
+}
+
+export const CARD_VALUES: CardValue[] = DECKS.fibonacci

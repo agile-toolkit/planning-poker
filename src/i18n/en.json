@@ -43,6 +43,10 @@
     "story_placeholder": "What are we estimating?",
     "participants_label": "Participants (one per line)",
     "participants_placeholder": "Alice\nBob\nCarol",
+    "deck_label": "Card Deck",
+    "deck_fibonacci": "Fibonacci",
+    "deck_tshirt": "T-Shirt",
+    "deck_powers2": "Powers of 2",
     "start": "Start Session",
     "back": "Back"
   },
