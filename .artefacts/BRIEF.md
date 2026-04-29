@@ -8,7 +8,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 
 - [x] Home + learn content, solo/practice setup flow (`App.tsx`, `HomeScreen.tsx`)
 - [x] Session runner — `session.*` / `setup.*` wired in `SessionView.tsx`
-- [x] EN + RU
+- [x] EN + RU + ES + BE — all four suite locales; 4-button language selector in header
 - [x] Team session entry — `home.start_team` disabled CTA on home screen with Firebase tooltip
 - [x] Card value legend on home screen — `home.cards_title` + `cards.*` descriptions
 - [x] Card value tooltips — `cards.*` wired as `title` on all card buttons in `SessionView.tsx`
@@ -17,7 +17,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 
 ## Backlog
 
-- [ ] [#3] Feature: Add ES and BE locales to match suite standard
+- [x] [#3] Feature: Add ES and BE locales to match suite standard — implemented
 - [ ] [#4] Integration: Export session results to Sprint Metrics
 - [ ] [#5] Research: Per-round voting timer to prevent vote anchoring delay
 - [ ] [#6] Feature: Custom card deck selection (Fibonacci, T-shirt, powers-of-2, custom)
@@ -29,6 +29,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - Wire Firebase team mode when implementing `home.start_team` CTA fully.
 
 ## Agent Log
+
+### 2026-04-29 — feat: ES and BE locales + 4-button language selector
+- Done: created `src/i18n/es.json` (Spanish) and `src/i18n/be.json` (Belarusian) with full translations of all ~80 keys; registered both in `src/i18n/index.ts`; replaced two-state EN/RU toggle in App.tsx with 4-button EN/ES/BE/RU selector matching improvement-board pattern; resolved issue #3
+- Approved issues still pending: #4 (Sprint Metrics integration), #6 (custom deck selection), #8 (Change Planner deep-link)
+- Next task: implement issue #4 — export session results to Sprint Metrics via localStorage key `sprintMetrics_planningPoker` (stories array with title + finalEstimate)
 
 ### 2026-04-26 — research: custom decks, keyboard accessibility, Change Planner integration
 

@@ -1,0 +1,81 @@
+{
+  "common": { "add": "Agregar" },
+  "app": { "title": "Planning Poker", "switch_lang": "BE" },
+  "session": {
+    "default_name": "Sesión de Planning Poker",
+    "back": "Inicio",
+    "addParticipant": "Participantes",
+    "participantName": "Nombre",
+    "noParticipants": "Agrega al menos un participante.",
+    "removeParticipant": "Eliminar",
+    "addStory": "Backlog",
+    "storyTitlePlaceholder": "Título de la historia",
+    "storyDesc": "Descripción (opcional)",
+    "noCurrentStory": "Agrega o selecciona una historia para estimar.",
+    "voted": "Votó",
+    "waiting": "…",
+    "reveal": "Revelar",
+    "nextStory": "Siguiente historia",
+    "resetVotes": "Reiniciar votos",
+    "statistics": "Estadísticas",
+    "average": "Promedio",
+    "median": "Mediana",
+    "consensus": "Consenso",
+    "yes": "Sí",
+    "no": "No",
+    "spread": "Dispersión",
+    "finalEstimate": "Registrar estimación final",
+    "history": "Estimaciones completadas"
+  },
+  "home": {
+    "headline": "Planning Poker",
+    "subheadline": "Votación simultánea, revelación instantánea. Sin sesgo de anclaje.",
+    "start_practice": "Practicar Solo",
+    "start_team": "Sesión de Equipo",
+    "team_note": "El modo equipo requiere Firebase. Configura los secretos para habilitarlo.",
+    "why_title": "¿Por qué Planning Poker?",
+    "why_body": "Planning Poker previene el sesgo de anclaje — la tendencia del primer número mencionado a dominar la discusión. Al votar simultáneamente y revelar todo a la vez, se muestran las estimaciones independientes de cada persona, lo que lleva a discusiones más ricas y mejores estimaciones.",
+    "cards_title": "Valores de las Cartas"
+  },
+  "setup": {
+    "title": "Configuración de Sesión",
+    "story_title_label": "Primera Historia",
+    "story_placeholder": "¿Qué estamos estimando?",
+    "participants_label": "Participantes (uno por línea)",
+    "participants_placeholder": "Alicia\nBob\nCarol",
+    "start": "Iniciar Sesión",
+    "back": "Volver"
+  },
+  "history": {
+    "title": "Historial de Sesión",
+    "no_stories": "Aún no hay historias completadas.",
+    "new_session": "Nueva Sesión"
+  },
+  "learn": {
+    "title": "Acerca de Planning Poker",
+    "fibonacci_title": "¿Por qué los Números de Fibonacci?",
+    "fibonacci_body": "Los números de Fibonacci (1, 2, 3, 5, 8, 13...) reflejan la incertidumbre creciente de estimaciones más grandes. Las brechas entre números grandes obligan al equipo a reconocer la incertidumbre en lugar de pretender que 14 y 15 son significativamente diferentes.",
+    "wideband_title": "Delphi de Banda Ancha",
+    "wideband_body": "Planning Poker se basa en el método Wideband Delphi: recopilar estimaciones independientes, revelar simultáneamente, discutir la divergencia, reestimar. La discusión entre los votantes altos y bajos saca a la luz suposiciones y riesgos ocultos.",
+    "tips_title": "Consejos de Facilitación",
+    "tip1": "Si los votos son cercanos (p. ej., 5 y 8), simplemente elige la mayoría y sigue adelante.",
+    "tip2": "Si los votos divergen ampliamente, pide primero al votante más bajo y al más alto que expliquen.",
+    "tip3": "? significa 'No entiendo la historia lo suficiente para estimarla' — aclara antes de volver a votar.",
+    "tip4": "☕ significa 'Necesito un descanso' — respétalo.",
+    "tip5": "La velocidad es lo que importa, no el tamaño absoluto de los puntos de historia."
+  },
+  "cards": {
+    "half": "½ — trivial, minutos",
+    "1": "1 — tiny, menos de una hora",
+    "2": "2 — pequeña, pocas horas",
+    "3": "3 — pequeña-mediana, medio día",
+    "5": "5 — mediana, alrededor de un día",
+    "8": "8 — grande, 2–3 días",
+    "13": "13 — muy grande, casi un sprint",
+    "20": "20 — demasiado grande, divídela",
+    "40": "40 — demasiado grande",
+    "100": "100 — épica, divídela de inmediato",
+    "?": "? — necesita aclaración",
+    "coffee": "☕ — necesito un descanso"
+  }
+}
