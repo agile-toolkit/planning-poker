@@ -1,6 +1,6 @@
 {
   "common": { "add": "Add" },
-  "app": { "title": "Planning Poker", "switch_lang": "RU" },
+  "app": { "title": "Planning Poker", "switch_lang": "ES" },
   "session": {
     "default_name": "Planning session",
     "back": "Home",
