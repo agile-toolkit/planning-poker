@@ -48,7 +48,10 @@
     "deck_tshirt": "Размеры",
     "deck_powers2": "Степени 2",
     "start": "Начать сессию",
-    "back": "Назад"
+    "back": "Назад",
+    "deeplink_banner": "{{count}} историй импортировано из Change Planner",
+    "stories_label": "Истории для оценки",
+    "remove_story": "Удалить"
   },
   "history": {
     "title": "История сессии",

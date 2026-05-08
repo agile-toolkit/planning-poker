@@ -4,6 +4,29 @@ import type { CardValue, DeckType, GamePhase, Story, PokerSession } from './type
 import { DECKS } from './types'
 import SessionView from './components/SessionView'
 
+interface DeeplinkStory {
+  title: string
+  description?: string
+}
+
+function parseDeeplinkStories(): DeeplinkStory[] {
+  try {
+    const raw = new URLSearchParams(window.location.search).get('stories')
+    if (!raw) return []
+    const parsed: unknown = JSON.parse(decodeURIComponent(raw))
+    if (!Array.isArray(parsed)) return []
+    return (parsed as unknown[])
+      .slice(0, 50)
+      .filter((s): s is { title: string; description?: string } =>
+        typeof s === 'object' && s !== null && typeof (s as { title?: unknown }).title === 'string'
+      )
+      .map(s => ({ title: s.title.trim(), description: s.description?.trim() || undefined }))
+      .filter(s => s.title.length > 0)
+  } catch {
+    return []
+  }
+}
+
 function cardKey(v: CardValue): string {
   if (v === '½') return 'half'
   if (v === '☕') return 'coffee'
@@ -28,30 +51,39 @@ function pokerSessionToStories(p: PokerSession): Story[] {
 
 export default function App() {
   const { t, i18n } = useTranslation()
-  const [phase, setPhase] = useState<GamePhase>('home')
+  const [deeplinkedStories, setDeeplinkedStories] = useState<DeeplinkStory[]>(parseDeeplinkStories)
+  const [phase, setPhase] = useState<GamePhase>(() =>
+    parseDeeplinkStories().length > 0 ? 'setup' : 'home'
+  )
   const [currentStory, setCurrentStory] = useState('')
   const [participantsText, setParticipantsText] = useState('Alice\nBob\nCarol')
   const [selectedDeck, setSelectedDeck] = useState<DeckType>('fibonacci')
   const [stories, setStories] = useState<Story[]>([])
   const [pokerSession, setPokerSession] = useState<PokerSession | null>(null)
 
+  const removeDeeplinkStory = (index: number) => {
+    setDeeplinkedStories(prev => prev.filter((_, i) => i !== index))
+  }
+
   const startSession = () => {
     const names = participantsText.split('\n').map(n => n.trim()).filter(Boolean)
-    if (!names.length || !currentStory.trim()) return
-    const storyId = crypto.randomUUID()
+    if (!names.length) return
+    const storiesToUse: DeeplinkStory[] =
+      deeplinkedStories.length > 0 ? deeplinkedStories : currentStory.trim() ? [{ title: currentStory.trim() }] : []
+    if (!storiesToUse.length) return
+    const sessionStories = storiesToUse.map(s => ({
+      id: crypto.randomUUID(),
+      title: s.title,
+      description: s.description,
+      finalEstimate: null as CardValue | null,
+      votes: {} as Record<string, CardValue>,
+    }))
     setPokerSession({
       id: crypto.randomUUID(),
       name: t('session.default_name'),
       participants: names.map(name => ({ id: crypto.randomUUID(), name, vote: null })),
-      stories: [
-        {
-          id: storyId,
-          title: currentStory.trim(),
-          finalEstimate: null,
-          votes: {},
-        },
-      ],
-      currentStoryId: storyId,
+      stories: sessionStories,
+      currentStoryId: sessionStories[0].id,
       revealed: false,
       deckType: selectedDeck,
     })
@@ -190,16 +222,52 @@ export default function App() {
           <div className="max-w-md mx-auto card">
             <h1 className="font-semibold text-white text-xl mb-5">{t('setup.title')}</h1>
             <div className="space-y-4">
-              <div>
-                <label className="label">{t('setup.story_title_label')}</label>
-                <input
-                  autoFocus
-                  className="input"
-                  placeholder={t('setup.story_placeholder')}
-                  value={currentStory}
-                  onChange={e => setCurrentStory(e.target.value)}
-                />
-              </div>
+              {deeplinkedStories.length > 0 ? (
+                <div>
+                  <div className="mb-3 flex items-center gap-2 text-sm bg-brand-900/30 border border-brand-700/50 rounded-lg px-3 py-2">
+                    <span className="text-brand-400">🔗</span>
+                    <span className="text-brand-300">
+                      {t('setup.deeplink_banner', { count: deeplinkedStories.length })}
+                    </span>
+                  </div>
+                  <label className="label">{t('setup.stories_label')}</label>
+                  <ul className="space-y-1.5">
+                    {deeplinkedStories.map((s, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-2 bg-gray-700/40 rounded-lg px-3 py-2"
+                      >
+                        <span className="text-gray-400 text-xs mt-0.5 shrink-0">{i + 1}.</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-gray-200 font-medium">{s.title}</p>
+                          {s.description && (
+                            <p className="text-xs text-gray-400 mt-0.5">{s.description}</p>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeDeeplinkStory(i)}
+                          title={t('setup.remove_story')}
+                          className="text-gray-500 hover:text-red-400 text-xs shrink-0 mt-0.5"
+                        >
+                          ✕
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <div>
+                  <label className="label">{t('setup.story_title_label')}</label>
+                  <input
+                    autoFocus
+                    className="input"
+                    placeholder={t('setup.story_placeholder')}
+                    value={currentStory}
+                    onChange={e => setCurrentStory(e.target.value)}
+                  />
+                </div>
+              )}
               <div>
                 <label className="label">{t('setup.participants_label')}</label>
                 <textarea
@@ -239,7 +307,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={startSession}
-                  disabled={!currentStory.trim()}
+                  disabled={deeplinkedStories.length === 0 && !currentStory.trim()}
                   className="btn-primary flex-1"
                 >
                   {t('setup.start')}
