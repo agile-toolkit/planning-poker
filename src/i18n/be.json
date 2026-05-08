@@ -48,7 +48,10 @@
     "deck_tshirt": "Памеры",
     "deck_powers2": "Ступені 2",
     "start": "Пачаць Сесію",
-    "back": "Назад"
+    "back": "Назад",
+    "deeplink_banner": "{{count}} гісторый імпартавана з Change Planner",
+    "stories_label": "Гісторыі для ацэнкі",
+    "remove_story": "Выдаліць"
   },
   "history": {
     "title": "Гісторыя Сесіі",

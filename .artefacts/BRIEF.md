@@ -22,13 +22,18 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [ ] [#5] Research: Per-round voting timer to prevent vote anchoring delay
 - [x] [#6] Feature: Custom card deck selection (Fibonacci, T-shirt, powers-of-2) — implemented
 - [ ] [#7] UX: Keyboard accessibility — full keyboard navigation for card voting and story flow
-- [ ] [#8] Integration: Change Planner → Planning Poker deep-link for effort estimation
+- [x] [#8] Integration: Change Planner → Planning Poker deep-link for effort estimation — implemented
 
 ## Tech notes
 
 - Wire Firebase team mode when implementing `home.start_team` CTA fully.
 
 ## Agent Log
+
+### 2026-05-08 — feat: Change Planner deep-link (#8)
+- Done: `parseDeeplinkStories()` reads `?stories=<URL-encoded JSON>` from query param on load; accepts up to 50 stories with `{title, description?}`; if stories present, app initialises directly on setup phase; setup screen shows branded banner + removable story list; `startSession` creates a multi-story PokerSession when deep-linked; added i18n keys `setup.deeplink_banner`, `setup.stories_label`, `setup.remove_story` to all 4 locales; issue #8 set to In Review
+- Remaining backlog: #5 (voting timer), #7 (keyboard accessibility)
+- Next task: check issues for human feedback (#5 voting timer, #7 keyboard accessibility)
 
 ### 2026-04-29 — feat: Sprint Metrics export + custom deck selection
 - Done: #4 — on session back, completed stories (title + finalEstimate) are written to `localStorage.sprintMetrics_planningPoker` as a JSON array for Sprint Metrics to consume; #6 — DeckType enum (fibonacci/tshirt/powers2) added to types.ts; setup screen shows a 3-button deck picker with preview of card values; SessionView uses `DECKS[session.deckType]` so voting and final-estimate cards match the chosen deck; i18n keys `setup.deck_label/fibonacci/tshirt/powers2` added to all 4 locales

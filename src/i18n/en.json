@@ -48,7 +48,10 @@
     "deck_tshirt": "T-Shirt",
     "deck_powers2": "Powers of 2",
     "start": "Start Session",
-    "back": "Back"
+    "back": "Back",
+    "deeplink_banner": "{{count}} stories imported from Change Planner",
+    "stories_label": "Stories to estimate",
+    "remove_story": "Remove"
   },
   "history": {
     "title": "Session History",

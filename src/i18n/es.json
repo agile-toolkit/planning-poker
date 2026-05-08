@@ -48,7 +48,10 @@
     "deck_tshirt": "Tallas",
     "deck_powers2": "Potencias de 2",
     "start": "Iniciar Sesión",
-    "back": "Volver"
+    "back": "Volver",
+    "deeplink_banner": "{{count}} historias importadas de Change Planner",
+    "stories_label": "Historias para estimar",
+    "remove_story": "Eliminar"
   },
   "history": {
     "title": "Historial de Sesión",
