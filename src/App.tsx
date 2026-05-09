@@ -127,24 +127,24 @@ export default function App() {
         <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <a
-                          href="https://agile-toolkit.github.io/"
-                          title="Agile Toolkit"
-                          className="text-gray-400 hover:text-gray-200 transition-colors flex-shrink-0"
-                        >
-                          <svg className="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
-                            <rect x="1" y="1" width="6" height="6" rx="1"/>
-                            <rect x="9" y="1" width="6" height="6" rx="1"/>
-                            <rect x="1" y="9" width="6" height="6" rx="1"/>
-                            <rect x="9" y="9" width="6" height="6" rx="1"/>
-                          </svg>
-                        </a>
-          <button
-            type="button"
-            onClick={() => setPhase('home')}
-            className="font-semibold text-brand-400 hover:text-brand-300"
-          >
-            {t('app.title')}
-          </button>
+              href="https://agile-toolkit.github.io/"
+              title="Agile Toolkit"
+              className="text-gray-400 hover:text-gray-200 transition-colors flex-shrink-0"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
+                <rect x="1" y="1" width="6" height="6" rx="1"/>
+                <rect x="9" y="1" width="6" height="6" rx="1"/>
+                <rect x="1" y="9" width="6" height="6" rx="1"/>
+                <rect x="9" y="9" width="6" height="6" rx="1"/>
+              </svg>
+            </a>
+            <button
+              type="button"
+              onClick={() => setPhase('home')}
+              className="font-semibold text-brand-400 hover:text-brand-300"
+            >
+              {t('app.title')}
+            </button>
           </div>
           <div className="flex items-center gap-1">
             {navItems.map(item => (
