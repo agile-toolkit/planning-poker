@@ -23,12 +23,26 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [x] [#6] Feature: Custom card deck selection (Fibonacci, T-shirt, powers-of-2) — implemented
 - [ ] [#7] UX: Keyboard accessibility — full keyboard navigation for card voting and story flow
 - [x] [#8] Integration: Change Planner → Planning Poker deep-link for effort estimation — implemented
+- [ ] [#12] Integration: Write planning-poker:lastSession to localStorage for Dashboard card
+- [ ] [#13] Feature: Session history persistence in localStorage
+- [ ] [#14] UX: Reveal animation and consensus celebration
+
+## localStorage keys
+
+- `sprintMetrics_planningPoker` — JSON array of `{ title, finalEstimate }` objects; written when session ends; read by Sprint Metrics and the Dashboard reader.
+- `planning-poker:lastSession` — *(proposed #12)* session-level summary for the Dashboard card: `{ sessionName, deckType, storyCount, estimatedCount, avgPoints, date }`.
+- `planning-poker:history` — *(proposed #13)* array of up to 10 past session objects for the History screen.
 
 ## Tech notes
 
 - Wire Firebase team mode when implementing `home.start_team` CTA fully.
 
 ## Agent Log
+
+### 2026-05-11 — research: Dashboard integration, session history, reveal animation
+- Done: set issues #3, #4, #6, #8 (approved + implemented) to In Review in project board; created issue #12 (planning-poker:lastSession localStorage key for Dashboard), #13 (session history persistence — 10-session rolling log), #14 (CSS card-flip reveal animation + consensus celebration with prefers-reduced-motion support); all set to Backlog
+- Waiting for human review on #12, #13, #14; existing needs-review: #5 (voting timer), #7 (keyboard accessibility)
+- Next task: check issues for human feedback; implement first approved item among #12, #13, #14, #5, #7
 
 ### 2026-05-08 — feat: Change Planner deep-link (#8)
 - Done: `parseDeeplinkStories()` reads `?stories=<URL-encoded JSON>` from query param on load; accepts up to 50 stories with `{title, description?}`; if stories present, app initialises directly on setup phase; setup screen shows branded banner + removable story list; `startSession` creates a multi-story PokerSession when deep-linked; added i18n keys `setup.deeplink_banner`, `setup.stories_label`, `setup.remove_story` to all 4 locales; issue #8 set to In Review
