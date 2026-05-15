@@ -26,6 +26,9 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [ ] [#12] Integration: Write planning-poker:lastSession to localStorage for Dashboard card
 - [ ] [#13] Feature: Session history persistence in localStorage
 - [ ] [#14] UX: Reveal animation and consensus celebration
+- [ ] [#15] Integration: Team Identity → Planning Poker participant auto-import
+- [ ] [#16] Integration: Scrum Facilitator → Planning Poker sprint planning deep-link
+- [ ] [#17] Feature: Session results export — share image and copy summary text
 
 ## localStorage keys
 
@@ -38,6 +41,14 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - Wire Firebase team mode when implementing `home.start_team` CTA fully.
 
 ## Agent Log
+
+### 2026-05-15 — research: Team Identity integration, Scrum Facilitator deep-link, results export
+- Done: checked open issues — #3, #4, #6, #8 all approved + In Review (already implemented); no approved items in In Progress; #5, #7, #12, #13, #14 all needs-review with no human feedback
+- Created issue #15 (Team Identity → Planning Poker participant auto-import: read `team-identity-charter` localStorage, pre-populate setup participant list; zero backend)
+- Created issue #16 (Scrum Facilitator → Planning Poker sprint planning deep-link: Scrum Facilitator sprint-planning phase passes backlog via existing `?stories=` param; PP side already ready)
+- Created issue #17 (Session results export: copy-to-clipboard plain-text table + html2canvas PNG download; reuses `sprintMetrics_planningPoker` data; `results.copyResults` + `results.saveImage` i18n keys)
+- All three set to Backlog in project #6
+- Next task: check issues for human feedback; implement first approved item among #15, #16, #17, #12, #13, #14, #5, #7
 
 ### 2026-05-11 — research: Dashboard integration, session history, reveal animation
 - Done: set issues #3, #4, #6, #8 (approved + implemented) to In Review in project board; created issue #12 (planning-poker:lastSession localStorage key for Dashboard), #13 (session history persistence — 10-session rolling log), #14 (CSS card-flip reveal animation + consensus celebration with prefers-reduced-motion support); all set to Backlog
