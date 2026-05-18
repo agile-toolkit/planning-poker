@@ -51,7 +51,9 @@
     "back": "Назад",
     "deeplink_banner": "{{count}} историй импортировано из Change Planner",
     "stories_label": "Истории для оценки",
-    "remove_story": "Удалить"
+    "remove_story": "Удалить",
+    "import_team": "Импортировать из Team Identity",
+    "import_team_empty": "Команда не найдена. Сначала сохраните чартер в Team Identity."
   },
   "history": {
     "title": "История сессии",
