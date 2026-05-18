@@ -51,7 +51,9 @@
     "back": "Назад",
     "deeplink_banner": "{{count}} гісторый імпартавана з Change Planner",
     "stories_label": "Гісторыі для ацэнкі",
-    "remove_story": "Выдаліць"
+    "remove_story": "Выдаліць",
+    "import_team": "Імпартаваць з Team Identity",
+    "import_team_empty": "Каманда не знойдзена. Спачатку захавайце чартар у Team Identity."
   },
   "history": {
     "title": "Гісторыя Сесіі",

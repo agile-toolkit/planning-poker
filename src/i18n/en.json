@@ -51,7 +51,9 @@
     "back": "Back",
     "deeplink_banner": "{{count}} stories imported from Change Planner",
     "stories_label": "Stories to estimate",
-    "remove_story": "Remove"
+    "remove_story": "Remove",
+    "import_team": "Import from Team Identity",
+    "import_team_empty": "No team found. Save a charter in Team Identity first."
   },
   "history": {
     "title": "Session History",

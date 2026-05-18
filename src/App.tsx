@@ -60,6 +60,28 @@ export default function App() {
   const [selectedDeck, setSelectedDeck] = useState<DeckType>('fibonacci')
   const [stories, setStories] = useState<Story[]>([])
   const [pokerSession, setPokerSession] = useState<PokerSession | null>(null)
+  const [importTooltip, setImportTooltip] = useState('')
+
+  const importFromTeamIdentity = () => {
+    try {
+      const raw = localStorage.getItem('team-identity-charter')
+      if (!raw) { setImportTooltip(t('setup.import_team_empty')); return }
+      const charter = JSON.parse(raw) as Record<string, unknown>
+      const members = charter.members
+      if (!Array.isArray(members) || members.length === 0) {
+        setImportTooltip(t('setup.import_team_empty'))
+        return
+      }
+      const names = (members as Array<Record<string, unknown>>)
+        .map(m => (typeof m.name === 'string' ? m.name.trim() : ''))
+        .filter(Boolean)
+      if (names.length === 0) { setImportTooltip(t('setup.import_team_empty')); return }
+      setParticipantsText(names.join('\n'))
+      setImportTooltip('')
+    } catch {
+      setImportTooltip(t('setup.import_team_empty'))
+    }
+  }
 
   const removeDeeplinkStory = (index: number) => {
     setDeeplinkedStories(prev => prev.filter((_, i) => i !== index))
@@ -283,7 +305,30 @@ export default function App() {
                 </div>
               )}
               <div>
-                <label className="label">{t('setup.participants_label')}</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="label mb-0">{t('setup.participants_label')}</label>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={importFromTeamIdentity}
+                      className="text-xs text-brand-400 hover:text-brand-300 transition-colors"
+                    >
+                      {t('setup.import_team')}
+                    </button>
+                    {importTooltip && (
+                      <div className="absolute right-0 top-6 z-10 w-64 rounded-lg bg-gray-700 border border-gray-600 px-3 py-2 text-xs text-gray-300 shadow-lg">
+                        {importTooltip}
+                        <button
+                          type="button"
+                          onClick={() => setImportTooltip('')}
+                          className="ml-2 text-gray-500 hover:text-white"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <textarea
                   className="input resize-none"
                   rows={4}

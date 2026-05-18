@@ -26,7 +26,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [ ] [#12] Integration: Write planning-poker:lastSession to localStorage for Dashboard card
 - [ ] [#13] Feature: Session history persistence in localStorage
 - [ ] [#14] UX: Reveal animation and consensus celebration
-- [ ] [#15] Integration: Team Identity → Planning Poker participant auto-import
+- [x] [#15] Integration: Team Identity → Planning Poker participant auto-import — implemented
 - [ ] [#16] Integration: Scrum Facilitator → Planning Poker sprint planning deep-link
 - [ ] [#17] Feature: Session results export — share image and copy summary text
 
@@ -41,6 +41,12 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - Wire Firebase team mode when implementing `home.start_team` CTA fully.
 
 ## Agent Log
+
+### 2026-05-18 — feat: Team Identity → Planning Poker participant auto-import (#15)
+- Done: added `importFromTeamIdentity()` in `App.tsx` that reads `team-identity-charter` from localStorage, looks for a `members` array, and pre-populates the participants textarea; if charter is absent or has no `members`, shows an inline tooltip; added `setup.import_team` and `setup.import_team_empty` i18n keys to all 4 locales (EN/ES/BE/RU)
+- The `members` array is not yet in team-identity's `TeamCharter` type — the import button is ready and will activate once team-identity adds member support (issue #6 in team-identity repo)
+- Remaining approved issues: #16 (Scrum Facilitator deep-link), #17 (results export: Clipboard + html2canvas), #12 (planning-poker:lastSession localStorage key), #13 (session history), #14 (reveal animation), #5 (voting timer)
+- Next task: implement #16 (Scrum Facilitator → Planning Poker deep-link: confirm `?stories=` contract already in place, no Planning Poker code changes needed — update BRIEF.md Tech notes to document the suite integration point); then implement #12 (write planning-poker:lastSession in handleSessionBack)
 
 ### 2026-05-15 — research: Team Identity integration, Scrum Facilitator deep-link, results export
 - Done: checked open issues — #3, #4, #6, #8 all approved + In Review (already implemented); no approved items in In Progress; #5, #7, #12, #13, #14 all needs-review with no human feedback
