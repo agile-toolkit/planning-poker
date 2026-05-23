@@ -23,11 +23,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [x] [#6] Feature: Custom card deck selection (Fibonacci, T-shirt, powers-of-2) — implemented
 - [ ] [#7] UX: Keyboard accessibility — full keyboard navigation for card voting and story flow
 - [x] [#8] Integration: Change Planner → Planning Poker deep-link for effort estimation — implemented
-- [ ] [#12] Integration: Write planning-poker:lastSession to localStorage for Dashboard card
+- [x] [#12] Integration: Write planning-poker:lastSession to localStorage for Dashboard card — implemented
 - [ ] [#13] Feature: Session history persistence in localStorage
 - [ ] [#14] UX: Reveal animation and consensus celebration
 - [x] [#15] Integration: Team Identity → Planning Poker participant auto-import — implemented
-- [ ] [#16] Integration: Scrum Facilitator → Planning Poker sprint planning deep-link
+- [x] [#16] Integration: Scrum Facilitator → Planning Poker sprint planning deep-link — documented (PP side already implemented via `?stories=`; Scrum Facilitator side tracked in scrum-facilitator repo)
 - [ ] [#17] Feature: Session results export — share image and copy summary text
 
 ## localStorage keys
@@ -39,8 +39,15 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 ## Tech notes
 
 - Wire Firebase team mode when implementing `home.start_team` CTA fully.
+- **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-05-23 — feat: planning-poker:lastSession localStorage key (#12) + ?stories= contract docs (#16)
+- Done #12: `handleSessionBack` in App.tsx now writes `planning-poker:lastSession` JSON (`sessionName`, `deckType`, `storyCount`, `estimatedCount`, `avgPoints`, `date`) after each completed session; `avgPoints` is null for non-numeric decks (T-shirt sizing)
+- Done #16: Confirmed `?stories=` deep-link already implemented; documented suite integration contract in BRIEF.md Tech notes; Scrum Facilitator side tracked in scrum-facilitator repo
+- Remaining approved issues: #19 (header unification), #20 (dark mode), #17 (results export), #21 (Firebase team sessions), #13 (session history), #14 (reveal animation), #5 (voting timer), #7 (keyboard accessibility)
+- Next task: implement #19 (header unification: copy AppHeader.tsx + LanguagePicker.tsx from design-system into src/components/, replace dark header block ~lines 148-209 in App.tsx)
 
 ### 2026-05-18 — feat: Team Identity → Planning Poker participant auto-import (#15)
 - Done: added `importFromTeamIdentity()` in `App.tsx` that reads `team-identity-charter` from localStorage, looks for a `members` array, and pre-populates the participants textarea; if charter is absent or has no `members`, shows an inline tooltip; added `setup.import_team` and `setup.import_team_empty` i18n keys to all 4 locales (EN/ES/BE/RU)
