@@ -124,12 +124,30 @@ export default function App() {
         return merged
       })
 
-      const smData = pokerSession.stories
-        .filter(s => s.finalEstimate !== null)
-        .map(s => ({ title: s.title, finalEstimate: s.finalEstimate }))
+      const estimatedStories = pokerSession.stories.filter(s => s.finalEstimate !== null)
+      const smData = estimatedStories.map(s => ({ title: s.title, finalEstimate: s.finalEstimate }))
       if (smData.length > 0) {
         localStorage.setItem('sprintMetrics_planningPoker', JSON.stringify(smData))
       }
+
+      const numericEstimates = estimatedStories
+        .map(s => (s.finalEstimate === '½' ? 0.5 : parseFloat(s.finalEstimate ?? '')))
+        .filter(n => !isNaN(n))
+      const avgPoints =
+        numericEstimates.length > 0
+          ? Math.round((numericEstimates.reduce((a, b) => a + b, 0) / numericEstimates.length) * 10) / 10
+          : null
+      localStorage.setItem(
+        'planning-poker:lastSession',
+        JSON.stringify({
+          sessionName: pokerSession.name,
+          deckType: pokerSession.deckType,
+          storyCount: pokerSession.stories.length,
+          estimatedCount: estimatedStories.length,
+          avgPoints,
+          date: new Date().toISOString().slice(0, 10),
+        })
+      )
     }
     setPokerSession(null)
     setPhase('home')
