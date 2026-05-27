@@ -8,7 +8,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 
 - [x] Home + learn content, solo/practice setup flow (`App.tsx`, `HomeScreen.tsx`)
 - [x] Session runner — `session.*` / `setup.*` wired in `SessionView.tsx`
-- [x] EN + RU + ES + BE — all four suite locales; 4-button language selector in header
+- [x] EN + RU + ES + BE — all four suite locales; dropdown LanguagePicker in header
 - [x] Team session entry — `home.start_team` disabled CTA on home screen with Firebase tooltip
 - [x] Card value legend on home screen — `home.cards_title` + `cards.*` descriptions
 - [x] Card value tooltips — `cards.*` wired as `title` on all card buttons in `SessionView.tsx`
@@ -28,6 +28,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [ ] [#14] UX: Reveal animation and consensus celebration
 - [x] [#15] Integration: Team Identity → Planning Poker participant auto-import — implemented
 - [x] [#16] Integration: Scrum Facilitator → Planning Poker sprint planning deep-link — documented (PP side already implemented via `?stories=`; Scrum Facilitator side tracked in scrum-facilitator repo)
+- [x] [#19] UX: Header unification — AppHeader + LanguagePicker (white, sticky, h-14)
 - [ ] [#17] Feature: Session results export — share image and copy summary text
 
 ## localStorage keys
@@ -42,6 +43,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-05-27 — feat: header unification — AppHeader + LanguagePicker (#19)
+- Done #19: copied `AppHeader.tsx` + `LanguagePicker.tsx` from design-system into `src/components/`; replaced dark `bg-gray-800` header block in `App.tsx` with `<AppHeader title={t('app.title')} onTitleClick={() => setPhase('home')} navItems={[learn, history(conditional)]} />`; removed inline 4-button language switcher; header is now white, sticky, h-14, consistent with suite
+- Remaining approved issues: #20 (dark mode), #17 (results export), #21 (Firebase team sessions), #13 (session history), #14 (reveal animation), #5 (voting timer), #7 (keyboard accessibility)
+- Next task: check issues for human feedback; implement next approved item
 
 ### 2026-05-23 — feat: planning-poker:lastSession localStorage key (#12) + ?stories= contract docs (#16)
 - Done #12: `handleSessionBack` in App.tsx now writes `planning-poker:lastSession` JSON (`sessionName`, `deckType`, `storyCount`, `estimatedCount`, `avgPoints`, `date`) after each completed session; `avgPoints` is null for non-numeric decks (T-shirt sizing)

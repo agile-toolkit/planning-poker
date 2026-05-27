@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { CardValue, DeckType, GamePhase, Story, PokerSession } from './types'
 import { DECKS } from './types'
 import SessionView from './components/SessionView'
+import AppHeader from './components/AppHeader'
 
 interface DeeplinkStory {
   title: string
@@ -50,7 +51,7 @@ function pokerSessionToStories(p: PokerSession): Story[] {
 }
 
 export default function App() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const [deeplinkedStories, setDeeplinkedStories] = useState<DeeplinkStory[]>(parseDeeplinkStories)
   const [phase, setPhase] = useState<GamePhase>(() =>
     parseDeeplinkStories().length > 0 ? 'setup' : 'home'
@@ -159,72 +160,18 @@ export default function App() {
     { value: 'powers2',   labelKey: 'setup.deck_powers2' },
   ]
 
-  const navItems: { key: GamePhase; label: string }[] = [{ key: 'learn', label: t('learn.title') }]
-
   return (
     <div className="min-h-screen flex flex-col bg-gray-900">
-      <header className="bg-gray-800 border-b border-gray-700 sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <a
-              href="https://agile-toolkit.github.io/"
-              title="Agile Toolkit"
-              className="text-gray-400 hover:text-gray-200 transition-colors flex-shrink-0"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
-                <rect x="1" y="1" width="6" height="6" rx="1"/>
-                <rect x="9" y="1" width="6" height="6" rx="1"/>
-                <rect x="1" y="9" width="6" height="6" rx="1"/>
-                <rect x="9" y="9" width="6" height="6" rx="1"/>
-              </svg>
-            </a>
-            <button
-              type="button"
-              onClick={() => setPhase('home')}
-              className="font-semibold text-brand-400 hover:text-brand-300"
-            >
-              {t('app.title')}
-            </button>
-          </div>
-          <div className="flex items-center gap-1">
-            {navItems.map(item => (
-              <button
-                key={item.key}
-                type="button"
-                onClick={() => setPhase(item.key)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  phase === item.key
-                    ? 'bg-brand-900 text-brand-300'
-                    : 'text-gray-400 hover:bg-gray-700 hover:text-white'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-            {stories.length > 0 && (
-              <button type="button" onClick={() => setPhase('history')} className="btn-ghost">
-                {t('history.title')}
-              </button>
-            )}
-            <div className="ml-2 flex items-center gap-0.5">
-              {(['en', 'es', 'be', 'ru'] as const).map(lang => (
-                <button
-                  key={lang}
-                  type="button"
-                  onClick={() => i18n.changeLanguage(lang)}
-                  className={`text-xs px-1.5 py-1 rounded transition-colors ${
-                    i18n.language.startsWith(lang)
-                      ? 'bg-gray-600 text-white font-semibold'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-700'
-                  }`}
-                >
-                  {lang.toUpperCase()}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </header>
+      <AppHeader
+        title={t('app.title')}
+        onTitleClick={() => setPhase('home')}
+        navItems={[
+          { key: 'learn', label: t('learn.title'), active: phase === 'learn', onClick: () => setPhase('learn') },
+          ...(stories.length > 0
+            ? [{ key: 'history', label: t('history.title'), active: phase === 'history', onClick: () => setPhase('history') }]
+            : []),
+        ]}
+      />
 
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-8">
         {phase === 'home' && (
