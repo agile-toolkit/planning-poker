@@ -4,6 +4,7 @@ import type { CardValue, DeckType, GamePhase, Story, PokerSession } from './type
 import { DECKS } from './types'
 import SessionView from './components/SessionView'
 import AppHeader from './components/AppHeader'
+import ThemeToggle from './components/ThemeToggle'
 
 interface DeeplinkStory {
   title: string
@@ -161,7 +162,7 @@ export default function App() {
   ]
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
       <AppHeader
         title={t('app.title')}
         onTitleClick={() => setPhase('home')}
@@ -171,15 +172,17 @@ export default function App() {
             ? [{ key: 'history', label: t('history.title'), active: phase === 'history', onClick: () => setPhase('history') }]
             : []),
         ]}
-      />
+      >
+        <ThemeToggle />
+      </AppHeader>
 
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-8">
         {phase === 'home' && (
           <div className="max-w-lg mx-auto">
             <div className="text-center mb-10">
               <div className="text-6xl mb-4">🃏</div>
-              <h1 className="text-4xl font-bold text-white mb-3">{t('home.headline')}</h1>
-              <p className="text-gray-400 mb-8">{t('home.subheadline')}</p>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">{t('home.headline')}</h1>
+              <p className="text-gray-600 dark:text-gray-400 mb-8">{t('home.subheadline')}</p>
               <div className="flex gap-3 justify-center">
                 <button
                   type="button"
@@ -197,21 +200,21 @@ export default function App() {
                   {t('home.start_team')}
                 </button>
               </div>
-              <p className="text-xs text-gray-600 mt-3">{t('home.team_note')}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-600 mt-3">{t('home.team_note')}</p>
             </div>
             <div className="card mb-4">
-              <h2 className="font-semibold text-white mb-2">{t('home.why_title')}</h2>
-              <p className="text-gray-400 text-sm leading-relaxed">{t('home.why_body')}</p>
+              <h2 className="font-semibold text-gray-900 dark:text-white mb-2">{t('home.why_title')}</h2>
+              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{t('home.why_body')}</p>
             </div>
             <div className="card mb-4">
-              <h2 className="font-semibold text-white mb-3">{t('home.cards_title')}</h2>
+              <h2 className="font-semibold text-gray-900 dark:text-white mb-3">{t('home.cards_title')}</h2>
               <div className="space-y-1">
                 {DECKS.fibonacci.map(v => (
                   <div key={v} className="flex items-center gap-3 text-sm">
-                    <span className="w-8 h-11 border border-gray-600 rounded-md flex items-center justify-center font-bold text-gray-200 shrink-0 text-xs">
+                    <span className="w-8 h-11 border border-gray-300 dark:border-gray-600 rounded-md flex items-center justify-center font-bold text-gray-700 dark:text-gray-200 shrink-0 text-xs">
                       {v}
                     </span>
-                    <span className="text-gray-400">{t(`cards.${cardKey(v)}`)}</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t(`cards.${cardKey(v)}`)}</span>
                   </div>
                 ))}
               </div>
@@ -221,13 +224,13 @@ export default function App() {
 
         {phase === 'setup' && (
           <div className="max-w-md mx-auto card">
-            <h1 className="font-semibold text-white text-xl mb-5">{t('setup.title')}</h1>
+            <h1 className="font-semibold text-gray-900 dark:text-white text-xl mb-5">{t('setup.title')}</h1>
             <div className="space-y-4">
               {deeplinkedStories.length > 0 ? (
                 <div>
-                  <div className="mb-3 flex items-center gap-2 text-sm bg-brand-900/30 border border-brand-700/50 rounded-lg px-3 py-2">
-                    <span className="text-brand-400">🔗</span>
-                    <span className="text-brand-300">
+                  <div className="mb-3 flex items-center gap-2 text-sm bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-700/50 rounded-lg px-3 py-2">
+                    <span className="text-brand-600 dark:text-brand-400">🔗</span>
+                    <span className="text-brand-700 dark:text-brand-300">
                       {t('setup.deeplink_banner', { count: deeplinkedStories.length })}
                     </span>
                   </div>
@@ -236,20 +239,20 @@ export default function App() {
                     {deeplinkedStories.map((s, i) => (
                       <li
                         key={i}
-                        className="flex items-start gap-2 bg-gray-700/40 rounded-lg px-3 py-2"
+                        className="flex items-start gap-2 bg-gray-100 dark:bg-gray-700/40 rounded-lg px-3 py-2"
                       >
-                        <span className="text-gray-400 text-xs mt-0.5 shrink-0">{i + 1}.</span>
+                        <span className="text-gray-400 dark:text-gray-500 text-xs mt-0.5 shrink-0">{i + 1}.</span>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm text-gray-200 font-medium">{s.title}</p>
+                          <p className="text-sm text-gray-800 dark:text-gray-200 font-medium">{s.title}</p>
                           {s.description && (
-                            <p className="text-xs text-gray-400 mt-0.5">{s.description}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{s.description}</p>
                           )}
                         </div>
                         <button
                           type="button"
                           onClick={() => removeDeeplinkStory(i)}
                           title={t('setup.remove_story')}
-                          className="text-gray-500 hover:text-red-400 text-xs shrink-0 mt-0.5"
+                          className="text-gray-400 dark:text-gray-500 hover:text-red-400 text-xs shrink-0 mt-0.5"
                         >
                           ✕
                         </button>
@@ -276,17 +279,17 @@ export default function App() {
                     <button
                       type="button"
                       onClick={importFromTeamIdentity}
-                      className="text-xs text-brand-400 hover:text-brand-300 transition-colors"
+                      className="text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors"
                     >
                       {t('setup.import_team')}
                     </button>
                     {importTooltip && (
-                      <div className="absolute right-0 top-6 z-10 w-64 rounded-lg bg-gray-700 border border-gray-600 px-3 py-2 text-xs text-gray-300 shadow-lg">
+                      <div className="absolute right-0 top-6 z-10 w-64 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 px-3 py-2 text-xs text-gray-700 dark:text-gray-300 shadow-lg">
                         {importTooltip}
                         <button
                           type="button"
                           onClick={() => setImportTooltip('')}
-                          className="ml-2 text-gray-500 hover:text-white"
+                          className="ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white"
                         >
                           ✕
                         </button>
@@ -312,8 +315,8 @@ export default function App() {
                       onClick={() => setSelectedDeck(opt.value)}
                       className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-colors ${
                         selectedDeck === opt.value
-                          ? 'border-brand-400 bg-brand-900/40 text-brand-200'
-                          : 'border-gray-600 text-gray-400 hover:border-gray-500 hover:text-gray-200'
+                          ? 'border-brand-400 bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200'
+                          : 'border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-200'
                       }`}
                     >
                       {t(opt.labelKey)}
@@ -352,7 +355,7 @@ export default function App() {
         {phase === 'history' && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold text-white">{t('history.title')}</h1>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('history.title')}</h1>
               <button
                 type="button"
                 onClick={() => {
@@ -371,17 +374,17 @@ export default function App() {
                 {stories.map(story => (
                   <div key={story.id} className="card flex items-center justify-between gap-4">
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-white">{story.title}</p>
+                      <p className="font-medium text-gray-900 dark:text-white">{story.title}</p>
                       <div className="flex gap-2 mt-1 flex-wrap">
                         {Object.entries(story.votes).map(([name, vote]) => (
-                          <span key={name} className="text-xs text-gray-400">
-                            {name}: <strong className="text-white">{vote}</strong>
+                          <span key={name} className="text-xs text-gray-500 dark:text-gray-400">
+                            {name}: <strong className="text-gray-900 dark:text-white">{vote}</strong>
                           </span>
                         ))}
                       </div>
                     </div>
                     {story.finalEstimate && (
-                      <div className="w-12 h-16 rounded-xl border-2 border-brand-400 bg-brand-900 flex items-center justify-center text-lg font-bold text-brand-300 shrink-0">
+                      <div className="w-12 h-16 rounded-xl border-2 border-brand-400 bg-brand-100 dark:bg-brand-900 flex items-center justify-center text-lg font-bold text-brand-700 dark:text-brand-300 shrink-0">
                         {story.finalEstimate}
                       </div>
                     )}
@@ -394,22 +397,22 @@ export default function App() {
 
         {phase === 'learn' && (
           <div className="max-w-2xl mx-auto space-y-4">
-            <h1 className="text-2xl font-bold text-white">{t('learn.title')}</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('learn.title')}</h1>
             {[
               { title: t('learn.fibonacci_title'), body: t('learn.fibonacci_body') },
               { title: t('learn.wideband_title'), body: t('learn.wideband_body') },
             ].map(s => (
               <div key={s.title} className="card">
-                <h2 className="font-semibold text-white mb-2">{s.title}</h2>
-                <p className="text-gray-400 text-sm leading-relaxed">{s.body}</p>
+                <h2 className="font-semibold text-gray-900 dark:text-white mb-2">{s.title}</h2>
+                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{s.body}</p>
               </div>
             ))}
             <div className="card">
-              <h2 className="font-semibold text-white mb-3">{t('learn.tips_title')}</h2>
+              <h2 className="font-semibold text-gray-900 dark:text-white mb-3">{t('learn.tips_title')}</h2>
               <ul className="space-y-2">
                 {['tip1', 'tip2', 'tip3', 'tip4', 'tip5'].map(tip => (
-                  <li key={tip} className="flex gap-2 text-sm text-gray-400">
-                    <span className="text-brand-400">→</span>
+                  <li key={tip} className="flex gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <span className="text-brand-500 dark:text-brand-400">→</span>
                     {t(`learn.${tip}`)}
                   </li>
                 ))}

@@ -29,6 +29,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [x] [#15] Integration: Team Identity → Planning Poker participant auto-import — implemented
 - [x] [#16] Integration: Scrum Facilitator → Planning Poker sprint planning deep-link — documented (PP side already implemented via `?stories=`; Scrum Facilitator side tracked in scrum-facilitator repo)
 - [x] [#19] UX: Header unification — AppHeader + LanguagePicker (white, sticky, h-14)
+- [x] [#20] Feature: light/dark theme support — ThemeToggle + `darkMode: 'class'` + dark: Tailwind variants across all screens
 - [ ] [#17] Feature: Session results export — share image and copy summary text
 
 ## localStorage keys
@@ -43,6 +44,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-05-30 — feat: light/dark theme support (#20)
+- Done #20: added `darkMode: 'class'` to `tailwind.config.js`; anti-flash inline script in `index.html`; copied `ThemeToggle.tsx` from design-system into `src/components/`; added `<ThemeToggle />` in `<AppHeader>` children slot; updated all Tailwind color classes in `App.tsx`, `SessionView.tsx`, `AppHeader.tsx`, `LanguagePicker.tsx`, and `index.css` with `dark:` variants — light theme is now the default, dark mode toggled via localStorage `theme` key and system preference on first load
+- Remaining approved issues: #17 (results export), #21 (Firebase team sessions), #13 (session history), #14 (reveal animation), #5 (voting timer), #7 (keyboard accessibility)
+- Next task: implement #17 (session results export: "Copy Results" button writes plain-text table to clipboard via Clipboard API; "Save as PNG" button captures results card via html2canvas and triggers download; i18n keys `results.copyResults` and `results.saveImage` in EN/ES/BE/RU)
 
 ### 2026-05-27 — feat: header unification — AppHeader + LanguagePicker (#19)
 - Done #19: copied `AppHeader.tsx` + `LanguagePicker.tsx` from design-system into `src/components/`; replaced dark `bg-gray-800` header block in `App.tsx` with `<AppHeader title={t('app.title')} onTitleClick={() => setPhase('home')} navItems={[learn, history(conditional)]} />`; removed inline 4-button language switcher; header is now white, sticky, h-14, consistent with suite

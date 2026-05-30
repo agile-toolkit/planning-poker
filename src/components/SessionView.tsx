@@ -142,18 +142,18 @@ export default function SessionView({ session, onChange, onBack }: Props) {
         <button type="button" onClick={onBack} className="btn-ghost text-sm">
           ← {t('session.back')}
         </button>
-        <h1 className="text-xl font-bold text-white flex-1 truncate">{session.name}</h1>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white flex-1 truncate">{session.name}</h1>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="space-y-4">
           <div className="card">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="font-semibold text-white text-sm">{t('session.addParticipant')}</h2>
+              <h2 className="font-semibold text-gray-900 dark:text-white text-sm">{t('session.addParticipant')}</h2>
               <button
                 type="button"
                 onClick={() => setAddingParticipant(v => !v)}
-                className="text-xs bg-brand-900/50 text-brand-300 hover:bg-brand-900 px-2 py-1 rounded font-medium"
+                className="text-xs bg-brand-50 dark:bg-brand-900/50 text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900 px-2 py-1 rounded font-medium"
               >
                 +
               </button>
@@ -180,14 +180,14 @@ export default function SessionView({ session, onChange, onBack }: Props) {
               <ul className="space-y-1">
                 {session.participants.map(p => (
                   <li key={p.id} className="flex items-center justify-between text-sm">
-                    <span className="text-gray-200">{p.name}</span>
+                    <span className="text-gray-800 dark:text-gray-200">{p.name}</span>
                     <div className="flex items-center gap-2">
                       {currentStory && (
                         <span
                           className={`text-xs px-1.5 py-0.5 rounded ${
                             currentStory.votes[p.id]
-                              ? 'bg-green-900/50 text-green-300'
-                              : 'bg-gray-700 text-gray-500'
+                              ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300'
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-500'
                           }`}
                         >
                           {currentStory.votes[p.id]
@@ -201,7 +201,7 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                         type="button"
                         onClick={() => removeParticipant(p.id)}
                         title={t('session.removeParticipant')}
-                        className="text-gray-500 hover:text-red-400 text-xs"
+                        className="text-gray-400 dark:text-gray-500 hover:text-red-400 text-xs"
                       >
                         ✕
                       </button>
@@ -214,11 +214,11 @@ export default function SessionView({ session, onChange, onBack }: Props) {
 
           <div className="card">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="font-semibold text-white text-sm">{t('session.addStory')}</h2>
+              <h2 className="font-semibold text-gray-900 dark:text-white text-sm">{t('session.addStory')}</h2>
               <button
                 type="button"
                 onClick={() => setAddingStory(v => !v)}
-                className="text-xs bg-brand-900/50 text-brand-300 hover:bg-brand-900 px-2 py-1 rounded font-medium"
+                className="text-xs bg-brand-50 dark:bg-brand-900/50 text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900 px-2 py-1 rounded font-medium"
               >
                 +
               </button>
@@ -254,8 +254,8 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                     onClick={() => selectStory(s.id)}
                     className={`w-full text-left text-sm px-2 py-1.5 rounded transition-colors ${
                       s.id === session.currentStoryId
-                        ? 'bg-brand-900/40 text-brand-200 font-medium'
-                        : 'text-gray-300 hover:bg-gray-700/50'
+                        ? 'bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200 font-medium'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
                     }`}
                   >
                     {s.title}
@@ -275,18 +275,18 @@ export default function SessionView({ session, onChange, onBack }: Props) {
           ) : (
             <>
               <div className="card">
-                <h2 className="font-bold text-white">{currentStory.title}</h2>
+                <h2 className="font-bold text-gray-900 dark:text-white">{currentStory.title}</h2>
                 {currentStory.description && (
-                  <p className="text-sm text-gray-400 mt-1">{currentStory.description}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{currentStory.description}</p>
                 )}
               </div>
 
               {session.participants.map(participant => (
                 <div key={participant.id} className="card">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="font-medium text-gray-200 text-sm">{participant.name}</span>
+                    <span className="font-medium text-gray-800 dark:text-gray-200 text-sm">{participant.name}</span>
                     {currentStory.votes[participant.id] && !session.revealed && (
-                      <span className="text-xs bg-green-900/50 text-green-300 px-2 py-0.5 rounded-full">
+                      <span className="text-xs bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 px-2 py-0.5 rounded-full">
                         {t('session.voted')}
                       </span>
                     )}
@@ -301,10 +301,10 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                         title={cardTitle(v)}
                         className={`w-10 h-14 border-2 rounded-lg font-bold text-sm transition-all ${
                           currentStory.votes[participant.id] === v
-                            ? 'border-brand-400 bg-brand-900/40 text-brand-200 scale-105 shadow'
+                            ? 'border-brand-400 bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200 scale-105 shadow'
                             : session.revealed
-                              ? 'border-gray-600 text-gray-500 cursor-default'
-                              : 'border-gray-600 text-gray-200 hover:border-brand-500 hover:bg-gray-700/50'
+                              ? 'border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500 cursor-default'
+                              : 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-brand-300 dark:hover:border-brand-500 hover:bg-gray-50 dark:hover:bg-gray-700/50'
                         }`}
                       >
                         {v}
@@ -336,30 +336,30 @@ export default function SessionView({ session, onChange, onBack }: Props) {
 
               {session.revealed && voteValues.length > 0 && (
                 <div className="card">
-                  <h3 className="font-semibold text-white mb-3 text-sm">{t('session.statistics')}</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-3 text-sm">{t('session.statistics')}</h3>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
-                    <div className="bg-gray-700/50 rounded-lg p-3 text-center">
-                      <div className="text-xs text-gray-400 mb-1">{t('session.average')}</div>
-                      <div className="font-bold text-white">{avg !== null ? avg.toFixed(1) : '—'}</div>
+                    <div className="bg-gray-100 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('session.average')}</div>
+                      <div className="font-bold text-gray-900 dark:text-white">{avg !== null ? avg.toFixed(1) : '—'}</div>
                     </div>
-                    <div className="bg-gray-700/50 rounded-lg p-3 text-center">
-                      <div className="text-xs text-gray-400 mb-1">{t('session.median')}</div>
-                      <div className="font-bold text-white">{med !== null ? String(med) : '—'}</div>
+                    <div className="bg-gray-100 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('session.median')}</div>
+                      <div className="font-bold text-gray-900 dark:text-white">{med !== null ? String(med) : '—'}</div>
                     </div>
-                    <div className="bg-gray-700/50 rounded-lg p-3 text-center">
-                      <div className="text-xs text-gray-400 mb-1">{t('session.consensus')}</div>
-                      <div className={`font-bold ${consensus ? 'text-green-400' : 'text-red-400'}`}>
+                    <div className="bg-gray-100 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('session.consensus')}</div>
+                      <div className={`font-bold ${consensus ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                         {consensus ? t('session.yes') : t('session.no')}
                       </div>
                     </div>
-                    <div className="bg-gray-700/50 rounded-lg p-3 text-center">
-                      <div className="text-xs text-gray-400 mb-1">{t('session.spread')}</div>
-                      <div className="font-bold text-white">{spread !== null ? String(spread) : '—'}</div>
+                    <div className="bg-gray-100 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('session.spread')}</div>
+                      <div className="font-bold text-gray-900 dark:text-white">{spread !== null ? String(spread) : '—'}</div>
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-xs text-gray-400 mb-2">{t('session.finalEstimate')}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('session.finalEstimate')}</p>
                     <div className="flex flex-wrap gap-1.5">
                       {deckValues.map(v => (
                         <button
@@ -369,8 +369,8 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                           title={cardTitle(v)}
                           className={`w-10 h-14 border-2 rounded-lg font-bold text-sm transition-all ${
                             currentStory.finalEstimate === v
-                              ? 'border-green-400 bg-green-900/30 text-green-200 scale-105 shadow'
-                              : 'border-gray-600 text-gray-200 hover:border-green-500 hover:bg-green-900/20'
+                              ? 'border-green-500 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-200 scale-105 shadow'
+                              : 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-green-400 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20'
                           }`}
                         >
                           {v}
@@ -385,14 +385,14 @@ export default function SessionView({ session, onChange, onBack }: Props) {
 
           {estimatedStories.length > 0 && (
             <div className="card">
-              <h3 className="font-semibold text-white mb-3 text-sm">{t('session.history')}</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-3 text-sm">{t('session.history')}</h3>
               <table className="w-full text-sm">
-                <tbody className="divide-y divide-gray-700">
+                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                   {estimatedStories.map(s => (
                     <tr key={s.id}>
-                      <td className="py-2 text-gray-200">{s.title}</td>
+                      <td className="py-2 text-gray-800 dark:text-gray-200">{s.title}</td>
                       <td className="py-2 text-right">
-                        <span className="bg-brand-900/50 text-brand-200 font-bold px-2 py-0.5 rounded">
+                        <span className="bg-brand-50 dark:bg-brand-900/50 text-brand-700 dark:text-brand-200 font-bold px-2 py-0.5 rounded">
                           {s.finalEstimate}
                         </span>
                       </td>
