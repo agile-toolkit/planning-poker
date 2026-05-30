@@ -55,6 +55,11 @@
     "import_team": "Імпартаваць з Team Identity",
     "import_team_empty": "Каманда не знойдзена. Спачатку захавайце чартар у Team Identity."
   },
+  "results": {
+    "copyResults": "Скапіяваць вынікі",
+    "saveImage": "Захаваць як PNG",
+    "copied": "Скапіявана!"
+  },
   "history": {
     "title": "Гісторыя Сесіі",
     "no_stories": "Завершаных гісторый пакуль няма.",

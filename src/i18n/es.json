@@ -55,6 +55,11 @@
     "import_team": "Importar desde Team Identity",
     "import_team_empty": "No se encontró equipo. Guarda un charter en Team Identity primero."
   },
+  "results": {
+    "copyResults": "Copiar resultados",
+    "saveImage": "Guardar como PNG",
+    "copied": "¡Copiado!"
+  },
   "history": {
     "title": "Historial de Sesión",
     "no_stories": "Aún no hay historias completadas.",

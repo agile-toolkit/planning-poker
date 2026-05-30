@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import html2canvas from 'html2canvas'
 import type { PokerSession, CardValue } from '../types'
 import { DECKS } from '../types'
 
@@ -35,6 +36,8 @@ export default function SessionView({ session, onChange, onBack }: Props) {
   const [storyDesc, setStoryDesc] = useState('')
   const [addingParticipant, setAddingParticipant] = useState(false)
   const [addingStory, setAddingStory] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const resultsCardRef = useRef<HTMLDivElement>(null)
 
   const currentStory = session.stories.find(s => s.id === session.currentStoryId) ?? null
   const estimatedStories = session.stories.filter(s => s.finalEstimate !== null)
@@ -127,6 +130,31 @@ export default function SessionView({ session, onChange, onBack }: Props) {
       revealed: false,
       participants: updatedParticipants,
     })
+  }
+
+  function copyResults() {
+    const date = new Date().toISOString().slice(0, 10)
+    const deckLabel = session.deckType === 'fibonacci' ? 'Fibonacci' : session.deckType === 'tshirt' ? 'T-Shirt' : 'Powers of 2'
+    const header = `${session.name} — ${deckLabel} — ${date}`
+    const separator = `${'—'.repeat(32)}|${'—'.repeat(8)}`
+    const rows = estimatedStories.map(s => {
+      const title = s.title.length > 32 ? s.title.slice(0, 29) + '...' : s.title.padEnd(32)
+      return `${title}| ${s.finalEstimate}`
+    })
+    const text = [header, `${'Story'.padEnd(32)}| Estimate`, separator, ...rows].join('\n')
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  async function saveImage() {
+    if (!resultsCardRef.current) return
+    const canvas = await html2canvas(resultsCardRef.current, { backgroundColor: null, scale: 2 })
+    const link = document.createElement('a')
+    link.download = `${session.name.replace(/\s+/g, '-')}-results.png`
+    link.href = canvas.toDataURL('image/png')
+    link.click()
   }
 
   const voteValues = currentStory ? Object.values(currentStory.votes) : []
@@ -384,8 +412,26 @@ export default function SessionView({ session, onChange, onBack }: Props) {
           )}
 
           {estimatedStories.length > 0 && (
-            <div className="card">
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-3 text-sm">{t('session.history')}</h3>
+            <div className="card" ref={resultsCardRef}>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-gray-900 dark:text-white text-sm">{t('session.history')}</h3>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={copyResults}
+                    className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 px-2.5 py-1 rounded font-medium transition-colors"
+                  >
+                    {copied ? t('results.copied') : t('results.copyResults')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={saveImage}
+                    className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 px-2.5 py-1 rounded font-medium transition-colors"
+                  >
+                    {t('results.saveImage')}
+                  </button>
+                </div>
+              </div>
               <table className="w-full text-sm">
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                   {estimatedStories.map(s => (
