@@ -55,6 +55,11 @@
     "import_team": "Import from Team Identity",
     "import_team_empty": "No team found. Save a charter in Team Identity first."
   },
+  "results": {
+    "copyResults": "Copy Results",
+    "saveImage": "Save as PNG",
+    "copied": "Copied!"
+  },
   "history": {
     "title": "Session History",
     "no_stories": "No completed stories yet.",

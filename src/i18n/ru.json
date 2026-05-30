@@ -55,6 +55,11 @@
     "import_team": "Импортировать из Team Identity",
     "import_team_empty": "Команда не найдена. Сначала сохраните чартер в Team Identity."
   },
+  "results": {
+    "copyResults": "Скопировать результаты",
+    "saveImage": "Сохранить как PNG",
+    "copied": "Скопировано!"
+  },
   "history": {
     "title": "История сессии",
     "no_stories": "Завершённых историй пока нет.",

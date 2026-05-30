@@ -30,7 +30,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [x] [#16] Integration: Scrum Facilitator → Planning Poker sprint planning deep-link — documented (PP side already implemented via `?stories=`; Scrum Facilitator side tracked in scrum-facilitator repo)
 - [x] [#19] UX: Header unification — AppHeader + LanguagePicker (white, sticky, h-14)
 - [x] [#20] Feature: light/dark theme support — ThemeToggle + `darkMode: 'class'` + dark: Tailwind variants across all screens
-- [ ] [#17] Feature: Session results export — share image and copy summary text
+- [x] [#17] Feature: Session results export — share image and copy summary text
 
 ## localStorage keys
 
@@ -44,6 +44,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-05-30 — feat: session results export (#17)
+- Done #17: added `results.copyResults`, `results.saveImage`, `results.copied` i18n keys to EN/ES/BE/RU; in `SessionView.tsx` added `copyResults()` (Clipboard API plain-text table: session name, deck type, date header + story/estimate rows) and `saveImage()` (html2canvas @2x capture of results card triggered as PNG download); buttons appear in the "Completed estimates" card header; installed `html2canvas ^1.4.1`
+- Remaining approved issues: #21 (Firebase team sessions), #13 (session history), #14 (reveal animation), #5 (voting timer), #7 (keyboard accessibility)
+- Next task: check issues for human feedback; implement next approved item
 
 ### 2026-05-30 — feat: light/dark theme support (#20)
 - Done #20: added `darkMode: 'class'` to `tailwind.config.js`; anti-flash inline script in `index.html`; copied `ThemeToggle.tsx` from design-system into `src/components/`; added `<ThemeToggle />` in `<AppHeader>` children slot; updated all Tailwind color classes in `App.tsx`, `SessionView.tsx`, `AppHeader.tsx`, `LanguagePicker.tsx`, and `index.css` with `dark:` variants — light theme is now the default, dark mode toggled via localStorage `theme` key and system preference on first load
