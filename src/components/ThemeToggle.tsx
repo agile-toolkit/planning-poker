@@ -1,0 +1,75 @@
+import { useEffect, useState } from 'react'
+
+/**
+ * Copy this file into src/components/ when adopting in an app.
+ * No additional dependencies required.
+ *
+ * Setup required in each app:
+ *   1. Add `darkMode: 'class'` to tailwind.config.js
+ *   2. Add dark: variants to components (see design-system/tokens.css for the full map)
+ *   3. Place <ThemeToggle /> inside <AppHeader> children or wherever in the header
+ *
+ * Usage:
+ *   <AppHeader title={t('app.title')} onTitleClick={reset}>
+ *     <ThemeToggle />
+ *   </AppHeader>
+ */
+
+const STORAGE_KEY = 'theme'
+
+function getInitialTheme(): 'light' | 'dark' {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored === 'dark' || stored === 'light') return stored
+  } catch { /* ignore */ }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+function applyTheme(theme: 'light' | 'dark') {
+  document.documentElement.classList.toggle('dark', theme === 'dark')
+  try { localStorage.setItem(STORAGE_KEY, theme) } catch { /* ignore */ }
+}
+
+export default function ThemeToggle() {
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => getInitialTheme())
+
+  useEffect(() => { applyTheme(theme) }, [theme])
+
+  const toggle = () => setTheme(t => (t === 'light' ? 'dark' : 'light'))
+
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+      title={theme === 'light' ? 'Dark mode' : 'Light mode'}
+      className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
+    >
+      {theme === 'light' ? (
+        /* Moon icon */
+        <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+        </svg>
+      ) : (
+        /* Sun icon */
+        <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+        </svg>
+      )}
+    </button>
+  )
+}
+
+/**
+ * Inline script to paste into index.html <head> to prevent flash of wrong theme.
+ * Must run before React mounts.
+ *
+ * <script>
+ *   (function(){
+ *     var t = localStorage.getItem('theme');
+ *     if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+ *       document.documentElement.classList.add('dark');
+ *     }
+ *   })();
+ * </script>
+ */
