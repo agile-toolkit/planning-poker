@@ -1,0 +1,431 @@
+/* ============================================================================
+   AGILE TOOLKIT — DESIGN TOKENS
+   colors_and_type.css
+
+   A single source of truth for color, type, spacing, radius, elevation and
+   motion across the Agile Toolkit suite (Planning Poker, Retro Board,
+   Delegation Board, Kudo Cards, Niko-niko, Health Check, etc.).
+
+   Structure
+     1. Fonts (Google Fonts CDN — see README for self-hosting note)
+     2. Primitive palette (raw, theme-agnostic)
+     3. Semantic tokens (light)  ............ :root
+     4. Semantic tokens (dark)   ............ [data-theme="dark"]
+     5. Family accent hues + per-app accent presets ([data-accent="…"])
+     6. Type scale + semantic text styles
+     7. Spacing, radius, elevation, motion
+     8. Responsive type clamps + breakpoint helpers
+   ============================================================================ */
+
+
+/* ----------------------------------------------------------------------------
+   1. FONT FAMILY TOKENS
+   - Display: Bricolage Grotesque — characterful, optical-sized, humanist.
+              Used for headings, hero copy, big numbers-as-words, the wordmark.
+   - Text/UI: Hanken Grotesk  — clean, warm, highly legible at small sizes.
+   - Mono:    JetBrains Mono  — tabular figures for points, metrics, timers.
+   ---------------------------------------------------------------------------- */
+:root {
+  --font-display: 'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif;
+  --font-sans:    'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+/* ----------------------------------------------------------------------------
+   2. PRIMITIVE PALETTE  (raw values — do not reference directly in components;
+      go through the semantic tokens below so theming works)
+   ---------------------------------------------------------------------------- */
+:root {
+  /* Cool neutral "slate & navy" ramp — matches the live apps: a deep navy-black
+     dark canvas and a cool off-white light canvas (not warm paper). Names are
+     kept (--ink-*) so every component that referenced them re-tints for free. */
+  --ink-950: #0B1119;   /* deep navy-black — dark app canvas */
+  --ink-900: #111826;
+  --ink-800: #1A2434;
+  --ink-700: #283246;
+  --ink-600: #3B475C;
+  --ink-500: #586577;
+  --ink-400: #7C8898;
+  --ink-300: #A3AEBD;
+  --ink-200: #C9D1DC;
+  --ink-150: #DCE2EA;
+  --ink-100: #E9EDF2;
+  --ink-50:  #F3F5F8;
+  --paper:   #F7F8FA;   /* cool off-white app background */
+  --white:   #FFFFFF;
+
+  /* Brand — Cobalt (primary interactive) */
+  --cobalt-50:  #EBF0FF;
+  --cobalt-100: #D6E0FF;
+  --cobalt-200: #ADC2FF;
+  --cobalt-300: #7E9CFF;
+  --cobalt-400: #5478FF;
+  --cobalt-500: #2D5BFF;   /* PRIMARY */
+  --cobalt-600: #1F46DB;
+  --cobalt-700: #1736AE;
+  --cobalt-800: #142C86;
+  --cobalt-900: #122356;
+
+  /* Brand — Marigold (energy / highlight / focus warmth) */
+  --marigold-50:  #FFF6E5;
+  --marigold-100: #FFEBC2;
+  --marigold-200: #FFD98A;
+  --marigold-300: #FFCB66;
+  --marigold-400: #FFC04D;
+  --marigold-500: #FFB22E;   /* ACCENT */
+  --marigold-600: #F59A0B;
+  --marigold-700: #C9790A;
+
+  /* Pink — used by tools that brand pink (e.g. Planning Poker) */
+  --pink-50:  #FCE7F1;
+  --pink-400: #F472B6;
+  --pink-500: #EC4899;
+  --pink-600: #DB2777;
+
+  /* Family accent hues (also used as data categories) */
+  --violet-400: #9A7CFF;
+  --violet-500: #7C5CFC;   /* Facilitation */
+  --violet-600: #6442E0;
+  --teal-400:   #2BD3C0;
+  --teal-500:   #12B5A5;   /* Metrics */
+  --teal-600:   #0C9183;
+  --coral-400:  #FF8B7E;
+  --coral-500:  #FF6B5B;   /* Health */
+  --coral-600:  #E84B3C;
+
+  /* Semantic status */
+  --green-500:  #1FA463;
+  --green-600:  #178052;
+  --amber-500:  #F59E0B;
+  --red-500:    #E5484D;
+  --red-600:    #C93B40;
+  --blue-info:  #2D7FF9;
+}
+
+/* ----------------------------------------------------------------------------
+   3. SEMANTIC TOKENS — LIGHT (default)
+   Reference these everywhere: --bg, --fg, --surface, --border, --primary…
+   ---------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* Backgrounds & surfaces */
+  --bg:            var(--paper);       /* app canvas */
+  --bg-subtle:     var(--ink-50);      /* striped rows, wells */
+  --surface:       var(--white);       /* cards, sheets */
+  --surface-2:     var(--ink-50);      /* nested surface */
+  --surface-inset: var(--ink-100);     /* inputs, tracks */
+  --scrim:         rgba(12, 17, 25, 0.45);
+  --glass:         rgba(247, 248, 250, 0.78);
+
+  /* Foreground / text */
+  --fg:        var(--ink-900);   /* primary text */
+  --fg-2:      var(--ink-600);   /* secondary text */
+  --fg-3:      var(--ink-500);   /* tertiary / captions */
+  --fg-muted:  var(--ink-400);   /* placeholder / disabled */
+  --fg-on-accent: var(--white);  /* text on cobalt/coral/etc */
+  --fg-on-marigold: var(--ink-900); /* dark text on yellow */
+
+  /* Borders & dividers */
+  --border:        var(--ink-150);
+  --border-strong: var(--ink-200);
+  --border-faint:  var(--ink-100);
+
+  /* Brand roles */
+  --primary:        var(--cobalt-500);
+  --primary-hover:  var(--cobalt-600);
+  --primary-press:  var(--cobalt-700);
+  --primary-soft:   var(--cobalt-50);
+  --primary-ring:   color-mix(in srgb, var(--cobalt-500) 40%, transparent);
+  --accent:         var(--marigold-500);
+  --accent-soft:    var(--marigold-50);
+
+  /* ---- PER-APP ACCENT (the contract) -------------------------------------
+     Each tool sets its own brand color by overriding these four tokens —
+     on the app root or via a `data-accent="…"` preset (defined at the bottom
+     of section 5). Defaults to cobalt so anything unstyled still looks right.
+     The shared App Header, active nav pill, primary buttons and links all
+     read --app-accent, so re-skinning a whole tool is a one-line change. */
+  --app-accent:        var(--cobalt-500);   /* the tool's brand color        */
+  --app-accent-strong: var(--cobalt-600);   /* hover / pressed               */
+  --app-accent-soft:   var(--cobalt-50);    /* active-nav pill, tints, wells */
+  --app-accent-fg:     var(--white);        /* text/icon on an accent fill   */
+
+  /* Family hues — solid + soft tints for chips/wells */
+  --plan:        var(--cobalt-500);   --plan-soft: var(--cobalt-50);
+  --facilitate:  var(--violet-500);   --facilitate-soft: #F1EDFF;
+  --metrics:     var(--teal-500);     --metrics-soft: #E1FAF6;
+  --health:      var(--coral-500);    --health-soft: #FFEDEA;
+
+  /* Status (text-safe on light) */
+  --success: var(--green-600);  --success-soft: #E6F5EC;
+  --warning: var(--marigold-700); --warning-soft: var(--marigold-50);
+  --danger:  var(--red-600);    --danger-soft: #FCEBEC;
+  --info:    var(--blue-info);  --info-soft: var(--cobalt-50);
+
+  /* Selection */
+  --selection-bg: var(--marigold-200);
+  --selection-fg: var(--ink-900);
+}
+
+/* ----------------------------------------------------------------------------
+   4. SEMANTIC TOKENS — DARK
+   ---------------------------------------------------------------------------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg:            #0B1119;   /* deep navy-black canvas (matches live apps) */
+  --bg-subtle:     #0F1622;
+  --surface:       #131C2B;   /* card / sheet — a step up from the canvas */
+  --surface-2:     #1A2434;
+  --surface-inset: #0D1420;
+  --scrim:         rgba(3, 7, 12, 0.66);
+  --glass:         rgba(11, 17, 25, 0.72);
+
+  --fg:        #EAEEF4;
+  --fg-2:      #9BA7B6;   /* secondary / card body copy */
+  --fg-3:      #6F7C8D;
+  --fg-muted:  #54606F;
+  --fg-on-accent: #FFFFFF;
+  --fg-on-marigold: #11151C;
+
+  --border:        #202B3B;   /* hairline that reads on navy-black */
+  --border-strong: #2C3A4F;
+  --border-faint:  #18212F;
+
+  --primary:        var(--cobalt-400);
+  --primary-hover:  var(--cobalt-300);
+  --primary-press:  var(--cobalt-200);
+  --primary-soft:   rgba(45, 91, 255, 0.16);
+  --primary-ring:   color-mix(in srgb, var(--cobalt-400) 50%, transparent);
+  --accent:         var(--marigold-400);
+  --accent-soft:    rgba(255, 178, 46, 0.14);
+
+  --app-accent:        var(--cobalt-400);
+  --app-accent-strong: var(--cobalt-300);
+  --app-accent-soft:   rgba(45, 91, 255, 0.16);
+  --app-accent-fg:     var(--white);
+
+  --plan:        var(--cobalt-400);  --plan-soft: rgba(45,91,255,0.15);
+  --facilitate:  var(--violet-400);  --facilitate-soft: rgba(124,92,252,0.16);
+  --metrics:     var(--teal-400);    --metrics-soft: rgba(18,181,165,0.15);
+  --health:      var(--coral-400);   --health-soft: rgba(255,107,91,0.15);
+
+  --success: #3FCB85;  --success-soft: rgba(31,164,99,0.16);
+  --warning: var(--marigold-400); --warning-soft: rgba(255,178,46,0.14);
+  --danger:  #F2696D;  --danger-soft: rgba(229,72,77,0.16);
+  --info:    #5E9BFF;  --info-soft: rgba(45,91,255,0.15);
+
+  --selection-bg: rgba(255, 178, 46, 0.32);
+  --selection-fg: #F3F1EC;
+}
+
+::selection { background: var(--selection-bg); color: var(--selection-fg); }
+
+/* ----------------------------------------------------------------------------
+   5. PER-APP ACCENT PRESETS
+   Drop `data-accent="pink"` (etc.) on the app's root element to brand a whole
+   tool. These set the four --app-accent tokens; everything else (header name,
+   active nav pill, primary button, links) follows automatically. Themes are
+   handled: soft tints flip for dark below.
+       cobalt → hub / Salary Formula / Kanban    pink → Planning Poker
+       amber  → Work Profiles / Team Identity     violet → facilitation tools
+       teal   → Sprint Metrics                    coral → Moving Motivators
+   ---------------------------------------------------------------------------- */
+[data-accent="cobalt"] { --app-accent: var(--cobalt-500); --app-accent-strong: var(--cobalt-600); --app-accent-soft: var(--cobalt-50);    --app-accent-fg: var(--white); }
+[data-accent="pink"]   { --app-accent: var(--pink-500);   --app-accent-strong: var(--pink-600);   --app-accent-soft: var(--pink-50);      --app-accent-fg: var(--white); }
+[data-accent="amber"]  { --app-accent: var(--marigold-600); --app-accent-strong: var(--marigold-700); --app-accent-soft: var(--marigold-50); --app-accent-fg: var(--ink-900); }
+[data-accent="violet"] { --app-accent: var(--violet-500); --app-accent-strong: var(--violet-600); --app-accent-soft: #F1EDFF;             --app-accent-fg: var(--white); }
+[data-accent="teal"]   { --app-accent: var(--teal-500);   --app-accent-strong: var(--teal-600);   --app-accent-soft: #E1FAF6;             --app-accent-fg: var(--white); }
+[data-accent="coral"]  { --app-accent: var(--coral-500);  --app-accent-strong: var(--coral-600);  --app-accent-soft: #FFEDEA;             --app-accent-fg: var(--white); }
+
+[data-theme="dark"][data-accent="cobalt"], [data-theme="dark"] [data-accent="cobalt"] { --app-accent: var(--cobalt-400); --app-accent-strong: var(--cobalt-300); --app-accent-soft: rgba(45,91,255,0.16); }
+[data-theme="dark"][data-accent="pink"],   [data-theme="dark"] [data-accent="pink"]   { --app-accent: var(--pink-400);   --app-accent-strong: var(--pink-500);   --app-accent-soft: rgba(236,72,153,0.16); }
+[data-theme="dark"][data-accent="amber"],  [data-theme="dark"] [data-accent="amber"]  { --app-accent: var(--marigold-400); --app-accent-strong: var(--marigold-500); --app-accent-soft: rgba(255,178,46,0.16); --app-accent-fg: var(--ink-900); }
+[data-theme="dark"][data-accent="violet"], [data-theme="dark"] [data-accent="violet"] { --app-accent: var(--violet-400); --app-accent-strong: var(--violet-500); --app-accent-soft: rgba(124,92,252,0.16); }
+[data-theme="dark"][data-accent="teal"],   [data-theme="dark"] [data-accent="teal"]   { --app-accent: var(--teal-400);   --app-accent-strong: var(--teal-500);   --app-accent-soft: rgba(18,181,165,0.16); }
+[data-theme="dark"][data-accent="coral"],  [data-theme="dark"] [data-accent="coral"]  { --app-accent: var(--coral-400);  --app-accent-strong: var(--coral-500);  --app-accent-soft: rgba(255,107,91,0.16); }
+
+/* ----------------------------------------------------------------------------
+   6. TYPE SCALE  (Major-third-ish, tuned for UI density)
+   Step tokens are raw sizes; semantic styles below compose them.
+   ---------------------------------------------------------------------------- */
+:root {
+  --text-2xs: 0.6875rem;  /* 11px — micro labels, legal */
+  --text-xs:  0.75rem;    /* 12px — captions, meta */
+  --text-sm:  0.8125rem;  /* 13px — dense UI, table */
+  --text-md:  0.9375rem;  /* 15px — body default */
+  --text-lg:  1.0625rem;  /* 17px — lead body */
+  --text-xl:  1.25rem;    /* 20px — h5 / card title */
+  --text-2xl: 1.5rem;     /* 24px — h4 */
+  --text-3xl: 1.9375rem;  /* 31px — h3 */
+  --text-4xl: 2.5rem;     /* 40px — h2 */
+  --text-5xl: 3.25rem;    /* 52px — h1 */
+  --text-6xl: 4.25rem;    /* 68px — display */
+
+  --leading-tight:   1.1;
+  --leading-snug:    1.25;
+  --leading-normal:  1.5;
+  --leading-relaxed: 1.65;
+
+  --tracking-tight:  -0.02em;
+  --tracking-snug:   -0.01em;
+  --tracking-normal: 0em;
+  --tracking-wide:   0.04em;
+  --tracking-caps:   0.08em;
+
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-semibold:600;
+  --weight-bold:    700;
+  --weight-extra:   800;
+}
+
+/* ----------------------------------------------------------------------------
+   7. SPACING / RADIUS / ELEVATION / MOTION
+   ---------------------------------------------------------------------------- */
+:root {
+  /* 4px base spatial system */
+  --space-0:  0;
+  --space-1:  0.25rem;   /* 4  */
+  --space-2:  0.5rem;    /* 8  */
+  --space-3:  0.75rem;   /* 12 */
+  --space-4:  1rem;      /* 16 */
+  --space-5:  1.5rem;    /* 24 */
+  --space-6:  2rem;      /* 32 */
+  --space-7:  2.5rem;    /* 40 */
+  --space-8:  3rem;      /* 48 */
+  --space-9:  4rem;      /* 64 */
+  --space-10: 6rem;      /* 96 */
+
+  /* Radii — cards feel like physical playing cards: generous, soft */
+  --radius-xs:  4px;
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  22px;
+  --radius-2xl: 30px;
+  --radius-pill: 999px;
+
+  /* Elevation — FLAT BY DEFAULT. The system reads structure from hairline
+     borders and surface steps, not drop shadows ("design is very simple,
+     without unnecessary shadows"). Surfaces/cards carry no shadow; elevation
+     is reserved for things that float ABOVE the page: menus, popovers, modals,
+     the occasional hover lift. Keep the names so existing components flatten
+     automatically rather than break. */
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: 0 6px 24px rgba(28, 27, 22, 0.10);   /* dropdown / popover  */
+  --shadow-xl: 0 16px 48px rgba(28, 27, 22, 0.16);  /* modal / dialog      */
+  /* Cards are flat; an interactive card may lift a hair on hover, no more. */
+  --shadow-card: none;
+
+  /* Motion — quick, springy, never sluggish */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);  /* playful overshoot */
+  --dur-fast:   120ms;
+  --dur-base:   200ms;
+  --dur-slow:   320ms;
+  --dur-slower: 520ms;
+}
+
+[data-theme="dark"] {
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: 0 6px 24px rgba(0,0,0,0.5);
+  --shadow-xl: 0 16px 48px rgba(0,0,0,0.62);
+  --shadow-card: none;
+}
+
+/* ----------------------------------------------------------------------------
+   SEMANTIC TEXT STYLES — apply as utility classes or @extend in components
+   ---------------------------------------------------------------------------- */
+.t-display {
+  font-family: var(--font-display);
+  font-size: clamp(2.75rem, 6vw, var(--text-6xl));
+  font-weight: var(--weight-extra);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+.t-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 4.5vw, var(--text-5xl));
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+.t-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3.2vw, var(--text-4xl));
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+}
+.t-h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+}
+.t-h4 {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+}
+.t-h5 {
+  font-family: var(--font-sans);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+}
+.t-lead {
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-relaxed);
+  color: var(--fg-2);
+}
+.t-body {
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+}
+.t-small {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+.t-caption {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--fg-3);
+  line-height: var(--leading-normal);
+}
+.t-overline {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-caps);
+  color: var(--fg-3);
+}
+.t-mono {
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum' 1;
+  letter-spacing: var(--tracking-snug);
+}
+/* Big tabular number — planning poker value, metric hero, timer */
+.t-stat {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-bold);
+  font-size: clamp(2rem, 5vw, var(--text-5xl));
+  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  font-feature-settings: 'tnum' 1, 'zero' 1;
+}
