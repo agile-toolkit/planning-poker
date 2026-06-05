@@ -24,7 +24,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [ ] [#7] UX: Keyboard accessibility — full keyboard navigation for card voting and story flow
 - [x] [#8] Integration: Change Planner → Planning Poker deep-link for effort estimation — implemented
 - [x] [#12] Integration: Write planning-poker:lastSession to localStorage for Dashboard card — implemented
-- [ ] [#13] Feature: Session history persistence in localStorage
+- [x] [#13] Feature: Session history persistence in localStorage — implemented
 - [ ] [#14] UX: Reveal animation and consensus celebration
 - [x] [#15] Integration: Team Identity → Planning Poker participant auto-import — implemented
 - [x] [#16] Integration: Scrum Facilitator → Planning Poker sprint planning deep-link — documented (PP side already implemented via `?stories=`; Scrum Facilitator side tracked in scrum-facilitator repo)
@@ -36,7 +36,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 
 - `sprintMetrics_planningPoker` — JSON array of `{ title, finalEstimate }` objects; written when session ends; read by Sprint Metrics and the Dashboard reader.
 - `planning-poker:lastSession` — *(proposed #12)* session-level summary for the Dashboard card: `{ sessionName, deckType, storyCount, estimatedCount, avgPoints, date }`.
-- `planning-poker:history` — *(proposed #13)* array of up to 10 past session objects for the History screen.
+- `planning-poker:history` — array of up to 10 past `SessionHistoryEntry` objects (id, name, date, deckType, storyCount, estimatedCount, avgPoints, stories[]); written on session end; read by History screen on load.
 
 ## Tech notes
 
@@ -44,6 +44,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-06-05 — feat: session history persistence (#13)
+- Done #13: added `SessionHistoryEntry` + `SessionHistoryStory` types to `types.ts`; in `App.tsx` added `loadHistory()` reading `planning-poker:history` localStorage, `sessionHistory` state initialized from localStorage, `expandedSession` state; in `handleSessionBack` now builds a `SessionHistoryEntry` and prepends to history (capped at 10), writing to `planning-poker:history`; replaced in-memory story list with persistent session history view in `phase === 'history'` — shows session cards (name, date, deck, estimated/total, avg pts) expandable to show story-level estimates + votes; added `history.no_history`, `history.clear`, `history.story_count`, `history.avg` i18n keys to EN/ES/BE/RU; removed unused `stories` state and `pokerSessionToStories` function
+- Remaining approved issues: #21 (Firebase team sessions), #14 (reveal animation), #5 (voting timer), #7 (keyboard accessibility)
+- Next task: check issues for human feedback; implement next approved item among #14 (reveal animation), #5 (voting timer), #7 (keyboard accessibility)
 
 ### 2026-05-30 — feat: session results export (#17)
 - Done #17: added `results.copyResults`, `results.saveImage`, `results.copied` i18n keys to EN/ES/BE/RU; in `SessionView.tsx` added `copyResults()` (Clipboard API plain-text table: session name, deck type, date header + story/estimate rows) and `saveImage()` (html2canvas @2x capture of results card triggered as PNG download); buttons appear in the "Completed estimates" card header; installed `html2canvas ^1.4.1`
