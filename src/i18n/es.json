@@ -63,7 +63,11 @@
   "history": {
     "title": "Historial de Sesión",
     "no_stories": "Aún no hay historias completadas.",
-    "new_session": "Nueva Sesión"
+    "no_history": "Aún no hay historial de sesiones. Completa una sesión para verla aquí.",
+    "new_session": "Nueva Sesión",
+    "clear": "Limpiar Historial",
+    "story_count": "{{count}} de {{total}} estimadas",
+    "avg": "Prom: {{avg}} pts"
   },
   "learn": {
     "title": "Acerca de Planning Poker",

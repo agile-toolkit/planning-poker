@@ -63,7 +63,11 @@
   "history": {
     "title": "Session History",
     "no_stories": "No completed stories yet.",
-    "new_session": "New Session"
+    "no_history": "No session history yet. Complete a session to see it here.",
+    "new_session": "New Session",
+    "clear": "Clear History",
+    "story_count": "{{count}} of {{total}} estimated",
+    "avg": "Avg: {{avg}} pts"
   },
   "learn": {
     "title": "About Planning Poker",

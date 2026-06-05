@@ -55,3 +55,21 @@ export const DECKS: Record<DeckType, CardValue[]> = {
 }
 
 export const CARD_VALUES: CardValue[] = DECKS.fibonacci
+
+export interface SessionHistoryStory {
+  id: string
+  title: string
+  finalEstimate: CardValue | null
+  votes: Record<string, CardValue>
+}
+
+export interface SessionHistoryEntry {
+  id: string
+  name: string
+  date: string
+  deckType: DeckType
+  storyCount: number
+  estimatedCount: number
+  avgPoints: number | null
+  stories: SessionHistoryStory[]
+}

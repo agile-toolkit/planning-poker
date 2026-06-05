@@ -1,7 +1,21 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { CardValue, DeckType, GamePhase, Story, PokerSession } from './types'
+import type { CardValue, DeckType, GamePhase, PokerSession, SessionHistoryEntry } from './types'
 import { DECKS } from './types'
+
+const HISTORY_KEY = 'planning-poker:history'
+const HISTORY_MAX = 10
+
+function loadHistory(): SessionHistoryEntry[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
 import SessionView from './components/SessionView'
 import AppHeader from './components/AppHeader'
 import ThemeToggle from './components/ThemeToggle'
@@ -35,21 +49,6 @@ function cardKey(v: CardValue): string {
   return v
 }
 
-function pokerSessionToStories(p: PokerSession): Story[] {
-  return p.stories
-    .filter(s => s.finalEstimate !== null)
-    .map(s => ({
-      id: s.id,
-      title: s.title,
-      finalEstimate: s.finalEstimate,
-      votes: Object.fromEntries(
-        Object.entries(s.votes).map(([pid, v]) => {
-          const name = p.participants.find(x => x.id === pid)?.name ?? pid
-          return [name, v]
-        })
-      ),
-    }))
-}
 
 export default function App() {
   const { t } = useTranslation()
@@ -60,9 +59,10 @@ export default function App() {
   const [currentStory, setCurrentStory] = useState('')
   const [participantsText, setParticipantsText] = useState('Alice\nBob\nCarol')
   const [selectedDeck, setSelectedDeck] = useState<DeckType>('fibonacci')
-  const [stories, setStories] = useState<Story[]>([])
   const [pokerSession, setPokerSession] = useState<PokerSession | null>(null)
   const [importTooltip, setImportTooltip] = useState('')
+  const [sessionHistory, setSessionHistory] = useState<SessionHistoryEntry[]>(loadHistory)
+  const [expandedSession, setExpandedSession] = useState<string | null>(null)
 
   const importFromTeamIdentity = () => {
     try {
@@ -116,16 +116,6 @@ export default function App() {
 
   const handleSessionBack = () => {
     if (pokerSession) {
-      const extra = pokerSessionToStories(pokerSession)
-      setStories(prev => {
-        const ids = new Set(prev.map(s => s.id))
-        const merged = [...prev]
-        for (const s of extra) {
-          if (!ids.has(s.id)) merged.push(s)
-        }
-        return merged
-      })
-
       const estimatedStories = pokerSession.stories.filter(s => s.finalEstimate !== null)
       const smData = estimatedStories.map(s => ({ title: s.title, finalEstimate: s.finalEstimate }))
       if (smData.length > 0) {
@@ -139,6 +129,7 @@ export default function App() {
         numericEstimates.length > 0
           ? Math.round((numericEstimates.reduce((a, b) => a + b, 0) / numericEstimates.length) * 10) / 10
           : null
+      const today = new Date().toISOString().slice(0, 10)
       localStorage.setItem(
         'planning-poker:lastSession',
         JSON.stringify({
@@ -147,9 +138,35 @@ export default function App() {
           storyCount: pokerSession.stories.length,
           estimatedCount: estimatedStories.length,
           avgPoints,
-          date: new Date().toISOString().slice(0, 10),
+          date: today,
         })
       )
+
+      const historyEntry: SessionHistoryEntry = {
+        id: pokerSession.id,
+        name: pokerSession.name,
+        date: today,
+        deckType: pokerSession.deckType,
+        storyCount: pokerSession.stories.length,
+        estimatedCount: estimatedStories.length,
+        avgPoints,
+        stories: pokerSession.stories.map(s => ({
+          id: s.id,
+          title: s.title,
+          finalEstimate: s.finalEstimate,
+          votes: Object.fromEntries(
+            Object.entries(s.votes).map(([pid, v]) => {
+              const name = pokerSession.participants.find(x => x.id === pid)?.name ?? pid
+              return [name, v]
+            })
+          ),
+        })),
+      }
+      setSessionHistory(prev => {
+        const updated = [historyEntry, ...prev].slice(0, HISTORY_MAX)
+        localStorage.setItem(HISTORY_KEY, JSON.stringify(updated))
+        return updated
+      })
     }
     setPokerSession(null)
     setPhase('home')
@@ -168,7 +185,7 @@ export default function App() {
         onTitleClick={() => setPhase('home')}
         navItems={[
           { key: 'learn', label: t('learn.title'), active: phase === 'learn', onClick: () => setPhase('learn') },
-          ...(stories.length > 0
+          ...(sessionHistory.length > 0
             ? [{ key: 'history', label: t('history.title'), active: phase === 'history', onClick: () => setPhase('history') }]
             : []),
         ]}
@@ -356,36 +373,85 @@ export default function App() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('history.title')}</h1>
-              <button
-                type="button"
-                onClick={() => {
-                  setStories([])
-                  setPhase('home')
-                }}
-                className="btn-secondary"
-              >
-                {t('history.new_session')}
-              </button>
+              <div className="flex gap-2">
+                {sessionHistory.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSessionHistory([])
+                      localStorage.removeItem(HISTORY_KEY)
+                      setExpandedSession(null)
+                      setPhase('home')
+                    }}
+                    className="btn-secondary text-sm"
+                  >
+                    {t('history.clear')}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setPhase('setup')}
+                  className="btn-primary text-sm"
+                >
+                  {t('history.new_session')}
+                </button>
+              </div>
             </div>
-            {stories.length === 0 ? (
-              <div className="card text-center py-10 text-gray-500">{t('history.no_stories')}</div>
+            {sessionHistory.length === 0 ? (
+              <div className="card text-center py-10 text-gray-500 dark:text-gray-400">
+                {t('history.no_history')}
+              </div>
             ) : (
               <div className="space-y-3">
-                {stories.map(story => (
-                  <div key={story.id} className="card flex items-center justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 dark:text-white">{story.title}</p>
-                      <div className="flex gap-2 mt-1 flex-wrap">
-                        {Object.entries(story.votes).map(([name, vote]) => (
-                          <span key={name} className="text-xs text-gray-500 dark:text-gray-400">
-                            {name}: <strong className="text-gray-900 dark:text-white">{vote}</strong>
-                          </span>
-                        ))}
+                {sessionHistory.map(entry => (
+                  <div key={entry.id} className="card">
+                    <button
+                      type="button"
+                      onClick={() => setExpandedSession(expandedSession === entry.id ? null : entry.id)}
+                      className="w-full text-left"
+                    >
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-gray-900 dark:text-white">{entry.name}</p>
+                          <div className="flex items-center gap-3 mt-1 flex-wrap">
+                            <span className="text-xs text-gray-500 dark:text-gray-400">{entry.date}</span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              {t(`setup.deck_${entry.deckType}`)}
+                            </span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              {t('history.story_count', { count: entry.estimatedCount, total: entry.storyCount })}
+                            </span>
+                            {entry.avgPoints !== null && (
+                              <span className="text-xs font-medium text-brand-600 dark:text-brand-400">
+                                {t('history.avg', { avg: entry.avgPoints })}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-gray-400 dark:text-gray-500 text-sm shrink-0 mt-0.5">
+                          {expandedSession === entry.id ? '▲' : '▼'}
+                        </span>
                       </div>
-                    </div>
-                    {story.finalEstimate && (
-                      <div className="w-12 h-16 rounded-xl border-2 border-brand-400 bg-brand-100 dark:bg-brand-900 flex items-center justify-center text-lg font-bold text-brand-700 dark:text-brand-300 shrink-0">
-                        {story.finalEstimate}
+                    </button>
+                    {expandedSession === entry.id && (
+                      <div className="mt-4 space-y-2 border-t border-gray-100 dark:border-gray-700 pt-4">
+                        {entry.stories.map(story => (
+                          <div key={story.id} className="flex items-start gap-3">
+                            <div className="w-10 h-14 rounded-lg border-2 border-brand-300 dark:border-brand-600 bg-brand-50 dark:bg-brand-900/40 flex items-center justify-center text-sm font-bold text-brand-700 dark:text-brand-300 shrink-0">
+                              {story.finalEstimate ?? '—'}
+                            </div>
+                            <div className="flex-1 min-w-0 pt-1">
+                              <p className="text-sm font-medium text-gray-900 dark:text-white">{story.title}</p>
+                              <div className="flex gap-2 mt-1 flex-wrap">
+                                {Object.entries(story.votes).map(([name, vote]) => (
+                                  <span key={name} className="text-xs text-gray-500 dark:text-gray-400">
+                                    {name}: <strong className="text-gray-700 dark:text-gray-200">{vote}</strong>
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
