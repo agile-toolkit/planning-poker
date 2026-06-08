@@ -37,6 +37,8 @@ export default function SessionView({ session, onChange, onBack }: Props) {
   const [addingParticipant, setAddingParticipant] = useState(false)
   const [addingStory, setAddingStory] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [recentVotes, setRecentVotes] = useState<Set<string>>(new Set())
+  const [revealAnimating, setRevealAnimating] = useState(false)
   const resultsCardRef = useRef<HTMLDivElement>(null)
 
   const currentStory = session.stories.find(s => s.id === session.currentStoryId) ?? null
@@ -98,10 +100,20 @@ export default function SessionView({ session, onChange, onBack }: Props) {
       p.id === participantId ? { ...p, vote: value } : p
     )
     update({ stories: updatedStories, participants: updatedParticipants })
+    setRecentVotes(prev => new Set([...prev, participantId]))
+    setTimeout(() => {
+      setRecentVotes(prev => {
+        const next = new Set(prev)
+        next.delete(participantId)
+        return next
+      })
+    }, 500)
   }
 
   function reveal() {
+    setRevealAnimating(true)
     update({ revealed: true })
+    setTimeout(() => setRevealAnimating(false), 1500)
   }
 
   function resetVotes() {
@@ -111,6 +123,7 @@ export default function SessionView({ session, onChange, onBack }: Props) {
     )
     const updatedParticipants = session.participants.map(p => ({ ...p, vote: null }))
     update({ stories: updatedStories, participants: updatedParticipants, revealed: false })
+    setRevealAnimating(false)
   }
 
   function setFinalEstimate(value: CardValue) {
@@ -206,17 +219,22 @@ export default function SessionView({ session, onChange, onBack }: Props) {
               <p className="text-xs text-gray-500">{t('session.noParticipants')}</p>
             ) : (
               <ul className="space-y-1">
-                {session.participants.map(p => (
+                {session.participants.map((p, pIdx) => (
                   <li key={p.id} className="flex items-center justify-between text-sm">
                     <span className="text-gray-800 dark:text-gray-200">{p.name}</span>
                     <div className="flex items-center gap-2">
                       {currentStory && (
                         <span
-                          className={`text-xs px-1.5 py-0.5 rounded ${
+                          className={`text-xs px-1.5 py-0.5 rounded inline-block ${
                             currentStory.votes[p.id]
                               ? 'bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300'
                               : 'bg-gray-100 dark:bg-gray-700 text-gray-500'
-                          }`}
+                          } ${session.revealed && revealAnimating && currentStory.votes[p.id] ? 'pp-reveal-flip' : ''}`}
+                          style={
+                            session.revealed && revealAnimating && currentStory.votes[p.id]
+                              ? { animationDelay: `${pIdx * 50}ms` }
+                              : undefined
+                          }
                         >
                           {currentStory.votes[p.id]
                             ? session.revealed
@@ -320,24 +338,28 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                     )}
                   </div>
                   <div className="flex flex-wrap gap-1.5">
-                    {deckValues.map(v => (
-                      <button
-                        key={v}
-                        type="button"
-                        onClick={() => castVote(participant.id, v)}
-                        disabled={session.revealed}
-                        title={cardTitle(v)}
-                        className={`w-10 h-14 border-2 rounded-lg font-bold text-sm transition-all ${
-                          currentStory.votes[participant.id] === v
-                            ? 'border-brand-400 bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200 scale-105 shadow'
-                            : session.revealed
-                              ? 'border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500 cursor-default'
-                              : 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-brand-300 dark:hover:border-brand-500 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                        }`}
-                      >
-                        {v}
-                      </button>
-                    ))}
+                    {deckValues.map(v => {
+                      const isSelected = currentStory.votes[participant.id] === v
+                      const justVoted = isSelected && !session.revealed && recentVotes.has(participant.id)
+                      return (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => castVote(participant.id, v)}
+                          disabled={session.revealed}
+                          title={cardTitle(v)}
+                          className={`w-10 h-14 border-2 rounded-lg font-bold text-sm transition-all ${
+                            isSelected
+                              ? `border-brand-400 bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200 scale-105 shadow${justVoted ? ' pp-vote-ring' : ''}`
+                              : session.revealed
+                                ? 'border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500 cursor-default'
+                                : 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-brand-300 dark:hover:border-brand-500 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                          }`}
+                        >
+                          {v}
+                        </button>
+                      )
+                    })}
                   </div>
                 </div>
               ))}
@@ -374,7 +396,7 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                       <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('session.median')}</div>
                       <div className="font-bold text-gray-900 dark:text-white">{med !== null ? String(med) : '—'}</div>
                     </div>
-                    <div className="bg-gray-100 dark:bg-gray-700/50 rounded-lg p-3 text-center">
+                    <div className={`bg-gray-100 dark:bg-gray-700/50 rounded-lg p-3 text-center${consensus ? ' pp-consensus-glow' : ''}`}>
                       <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('session.consensus')}</div>
                       <div className={`font-bold ${consensus ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                         {consensus ? t('session.yes') : t('session.no')}

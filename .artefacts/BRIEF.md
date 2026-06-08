@@ -25,7 +25,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [x] [#8] Integration: Change Planner → Planning Poker deep-link for effort estimation — implemented
 - [x] [#12] Integration: Write planning-poker:lastSession to localStorage for Dashboard card — implemented
 - [x] [#13] Feature: Session history persistence in localStorage — implemented
-- [ ] [#14] UX: Reveal animation and consensus celebration
+- [x] [#14] UX: Reveal animation and consensus celebration — implemented
 - [x] [#15] Integration: Team Identity → Planning Poker participant auto-import — implemented
 - [x] [#16] Integration: Scrum Facilitator → Planning Poker sprint planning deep-link — documented (PP side already implemented via `?stories=`; Scrum Facilitator side tracked in scrum-facilitator repo)
 - [x] [#19] UX: Header unification — AppHeader + LanguagePicker (white, sticky, h-14)
@@ -44,6 +44,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-06-08 — feat: reveal animation and consensus celebration (#14)
+- Done #14: added CSS keyframes `pp-vote-ring` (box-shadow ring on selected card), `pp-reveal-flip` (3D perspective flip on vote badges), `pp-consensus-glow` (green glow pulse) to `index.css` — all wrapped in `@media (prefers-reduced-motion: no-preference)`; in `SessionView.tsx` added `recentVotes: Set<string>` state (tracks participants who just voted, cleared after 500ms) and `revealAnimating: boolean` state (set true on reveal, cleared after 1.5s); `castVote` adds participant to `recentVotes` → selected card gets `pp-vote-ring` class; `reveal` sets `revealAnimating = true` → left-panel vote badges get `pp-reveal-flip` with 50ms-per-participant staggered delay; `resetVotes` clears `revealAnimating`; consensus stat block gets `pp-consensus-glow` when `consensus === true` and revealed
+- Remaining approved issues: #21 (Firebase team sessions), #5 (voting timer), #7 (keyboard accessibility)
+- Next task: check issues for human feedback; implement next approved item among #5 (voting timer), #7 (keyboard accessibility)
 
 ### 2026-06-05 — feat: session history persistence (#13)
 - Done #13: added `SessionHistoryEntry` + `SessionHistoryStory` types to `types.ts`; in `App.tsx` added `loadHistory()` reading `planning-poker:history` localStorage, `sessionHistory` state initialized from localStorage, `expandedSession` state; in `handleSessionBack` now builds a `SessionHistoryEntry` and prepends to history (capped at 10), writing to `planning-poker:history`; replaced in-memory story list with persistent session history view in `phase === 'history'` — shows session cards (name, date, deck, estimated/total, avg pts) expandable to show story-level estimates + votes; added `history.no_history`, `history.clear`, `history.story_count`, `history.avg` i18n keys to EN/ES/BE/RU; removed unused `stories` state and `pokerSessionToStories` function

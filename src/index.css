@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 @layer base { body { @apply bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-50 antialiased; } }
+@keyframes pp-vote-ring {
+  from { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.55); }
+  to   { box-shadow: 0 0 0 7px rgba(99, 102, 241, 0); }
+}
+@keyframes pp-reveal-flip {
+  from { opacity: 0; transform: perspective(300px) rotateY(-80deg); }
+  to   { opacity: 1; transform: perspective(300px) rotateY(0deg); }
+}
+@keyframes pp-consensus-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.45); }
+  50%       { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pp-vote-ring { animation: pp-vote-ring 450ms ease-out; }
+  .pp-reveal-flip { animation: pp-reveal-flip 280ms ease-out forwards; }
+  .pp-consensus-glow { animation: pp-consensus-glow 900ms ease-in-out 3; }
+}
 @layer components {
   .card { @apply bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-5; }
   .card-white { @apply bg-white rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-5; }
