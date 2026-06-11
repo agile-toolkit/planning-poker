@@ -25,7 +25,8 @@
     "no": "No",
     "spread": "Spread",
     "finalEstimate": "Record final estimate",
-    "history": "Completed estimates"
+    "history": "Completed estimates",
+    "timer_label": "Time remaining"
   },
   "home": {
     "headline": "Planning Poker",
@@ -53,7 +54,12 @@
     "stories_label": "Stories to estimate",
     "remove_story": "Remove",
     "import_team": "Import from Team Identity",
-    "import_team_empty": "No team found. Save a charter in Team Identity first."
+    "import_team_empty": "No team found. Save a charter in Team Identity first.",
+    "timer_label": "Vote Timer",
+    "timer_off": "Off",
+    "timer_30s": "30 s",
+    "timer_60s": "60 s",
+    "timer_90s": "90 s"
   },
   "results": {
     "copyResults": "Copy Results",

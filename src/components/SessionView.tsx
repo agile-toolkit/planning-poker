@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import html2canvas from 'html2canvas'
 import type { PokerSession, CardValue } from '../types'
@@ -39,7 +39,37 @@ export default function SessionView({ session, onChange, onBack }: Props) {
   const [copied, setCopied] = useState(false)
   const [recentVotes, setRecentVotes] = useState<Set<string>>(new Set())
   const [revealAnimating, setRevealAnimating] = useState(false)
+  const [timeLeft, setTimeLeft] = useState<number | null>(session.timerDuration ?? null)
   const resultsCardRef = useRef<HTMLDivElement>(null)
+
+  // Reset timer when story changes or is revealed
+  useEffect(() => {
+    if (session.revealed) {
+      setTimeLeft(null)
+    } else {
+      setTimeLeft(session.timerDuration ?? null)
+    }
+  }, [session.currentStoryId, session.revealed, session.timerDuration])
+
+  // Countdown tick — schedules one decrement per second using setTimeout
+  useEffect(() => {
+    if (timeLeft === null || timeLeft <= 0 || session.revealed) return
+    const id = setTimeout(() => setTimeLeft(prev => (prev !== null && prev > 0 ? prev - 1 : prev)), 1000)
+    return () => clearTimeout(id)
+  }, [timeLeft, session.revealed])
+
+  // Auto-reveal when timer expires and there are votes
+  useEffect(() => {
+    if (timeLeft === 0 && !session.revealed) {
+      const hasVotes = session.currentStoryId
+        ? Object.keys(
+            session.stories.find(s => s.id === session.currentStoryId)?.votes ?? {}
+          ).length > 0
+        : false
+      if (hasVotes) reveal()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeLeft])
 
   const currentStory = session.stories.find(s => s.id === session.currentStoryId) ?? null
   const estimatedStories = session.stories.filter(s => s.finalEstimate !== null)
@@ -321,10 +351,29 @@ export default function SessionView({ session, onChange, onBack }: Props) {
           ) : (
             <>
               <div className="card">
-                <h2 className="font-bold text-gray-900 dark:text-white">{currentStory.title}</h2>
-                {currentStory.description && (
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{currentStory.description}</p>
-                )}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <h2 className="font-bold text-gray-900 dark:text-white">{currentStory.title}</h2>
+                    {currentStory.description && (
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{currentStory.description}</p>
+                    )}
+                  </div>
+                  {!session.revealed && timeLeft !== null && (
+                    <div
+                      className={`shrink-0 font-mono font-bold tabular-nums text-lg px-3 py-1 rounded-lg border-2 transition-colors ${
+                        timeLeft > 10
+                          ? 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50'
+                          : timeLeft > 5
+                          ? 'border-amber-300 dark:border-amber-600 text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30'
+                          : 'border-red-400 dark:border-red-500 text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 animate-pulse'
+                      }`}
+                      aria-label={t('session.timer_label')}
+                      aria-live="polite"
+                    >
+                      {String(Math.floor(timeLeft / 60)).padStart(2, '0')}:{String(timeLeft % 60).padStart(2, '0')}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {session.participants.map(participant => (
