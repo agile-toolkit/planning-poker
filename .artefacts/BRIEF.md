@@ -19,7 +19,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 
 - [x] [#3] Feature: Add ES and BE locales to match suite standard — implemented
 - [x] [#4] Integration: Export session results to Sprint Metrics — implemented
-- [ ] [#5] Research: Per-round voting timer to prevent vote anchoring delay
+- [x] [#5] Feature: Per-round voting timer — Off/30s/60s/90s selector in setup; countdown badge in story card; auto-reveal at 0 — implemented
 - [x] [#6] Feature: Custom card deck selection (Fibonacci, T-shirt, powers-of-2) — implemented
 - [ ] [#7] UX: Keyboard accessibility — full keyboard navigation for card voting and story flow
 - [x] [#8] Integration: Change Planner → Planning Poker deep-link for effort estimation — implemented
@@ -44,6 +44,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-06-11 — feat: per-round voting timer (#5)
+- Done #5: added `timerDuration: number | null` to `PokerSession` in `types.ts`; added `selectedTimer` state (null|30|60|90) in `App.tsx` with 4-button Off/30s/60s/90s picker in setup UI; `startSession()` passes `timerDuration` to session; in `SessionView.tsx` added `timeLeft` state with three effects — reset on story/revealed change, setTimeout countdown tick, auto-reveal at 0 when votes exist; timer badge displayed in current story card header with color progression (gray → amber → red/pulse at ≤5s); `aria-live=polite` for screen readers; `session.timer_label` i18n key added to EN/ES/BE/RU; setup keys `timer_label/off/30s/60s/90s` added to all 4 locales; closed stale implemented issues #3/#4/#6/#8/#12/#13/#15/#16/#17/#19/#20
+- Remaining approved issues: #7 (keyboard accessibility), #21 (Firebase team sessions)
+- Next task: implement #7 (keyboard accessibility: aria-pressed on card buttons, focus-visible ring for keyboard-only, focus to first card on story transition, keyboard shortcut Enter=reveal/→=next-story/R=reset-votes, aria-label on ✕ buttons, ? key opens shortcut legend overlay)
 
 ### 2026-06-08 — feat: reveal animation and consensus celebration (#14)
 - Done #14: added CSS keyframes `pp-vote-ring` (box-shadow ring on selected card), `pp-reveal-flip` (3D perspective flip on vote badges), `pp-consensus-glow` (green glow pulse) to `index.css` — all wrapped in `@media (prefers-reduced-motion: no-preference)`; in `SessionView.tsx` added `recentVotes: Set<string>` state (tracks participants who just voted, cleared after 500ms) and `revealAnimating: boolean` state (set true on reveal, cleared after 1.5s); `castVote` adds participant to `recentVotes` → selected card gets `pp-vote-ring` class; `reveal` sets `revealAnimating = true` → left-panel vote badges get `pp-reveal-flip` with 50ms-per-participant staggered delay; `resetVotes` clears `revealAnimating`; consensus stat block gets `pp-consensus-glow` when `consensus === true` and revealed

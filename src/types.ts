@@ -46,6 +46,7 @@ export interface PokerSession {
   currentStoryId: string | null
   revealed: boolean
   deckType: DeckType
+  timerDuration: number | null
 }
 
 export const DECKS: Record<DeckType, CardValue[]> = {

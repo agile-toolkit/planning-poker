@@ -25,7 +25,8 @@
     "no": "No",
     "spread": "Dispersión",
     "finalEstimate": "Registrar estimación final",
-    "history": "Estimaciones completadas"
+    "history": "Estimaciones completadas",
+    "timer_label": "Tiempo restante"
   },
   "home": {
     "headline": "Planning Poker",
@@ -53,7 +54,12 @@
     "stories_label": "Historias para estimar",
     "remove_story": "Eliminar",
     "import_team": "Importar desde Team Identity",
-    "import_team_empty": "No se encontró equipo. Guarda un charter en Team Identity primero."
+    "import_team_empty": "No se encontró equipo. Guarda un charter en Team Identity primero.",
+    "timer_label": "Temporizador de Votos",
+    "timer_off": "Off",
+    "timer_30s": "30 s",
+    "timer_60s": "60 s",
+    "timer_90s": "90 s"
   },
   "results": {
     "copyResults": "Copiar resultados",

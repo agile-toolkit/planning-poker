@@ -59,6 +59,7 @@ export default function App() {
   const [currentStory, setCurrentStory] = useState('')
   const [participantsText, setParticipantsText] = useState('Alice\nBob\nCarol')
   const [selectedDeck, setSelectedDeck] = useState<DeckType>('fibonacci')
+  const [selectedTimer, setSelectedTimer] = useState<number | null>(null)
   const [pokerSession, setPokerSession] = useState<PokerSession | null>(null)
   const [importTooltip, setImportTooltip] = useState('')
   const [sessionHistory, setSessionHistory] = useState<SessionHistoryEntry[]>(loadHistory)
@@ -110,6 +111,7 @@ export default function App() {
       currentStoryId: sessionStories[0].id,
       revealed: false,
       deckType: selectedDeck,
+      timerDuration: selectedTimer,
     })
     setPhase('session')
   }
@@ -343,6 +345,25 @@ export default function App() {
                 <p className="text-xs text-gray-500 mt-1">
                   {DECKS[selectedDeck].slice(0, -2).join(' · ')}
                 </p>
+              </div>
+              <div>
+                <label className="label">{t('setup.timer_label')}</label>
+                <div className="flex gap-2">
+                  {([null, 30, 60, 90] as Array<number | null>).map(val => (
+                    <button
+                      key={val ?? 'off'}
+                      type="button"
+                      onClick={() => setSelectedTimer(val)}
+                      className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-colors ${
+                        selectedTimer === val
+                          ? 'border-brand-400 bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200'
+                          : 'border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-700 dark:hover:text-gray-200'
+                      }`}
+                    >
+                      {val === null ? t('setup.timer_off') : t(`setup.timer_${val}s`)}
+                    </button>
+                  ))}
+                </div>
               </div>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setPhase('home')} className="btn-secondary">
