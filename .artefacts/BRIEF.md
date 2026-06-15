@@ -21,7 +21,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [x] [#4] Integration: Export session results to Sprint Metrics — implemented
 - [x] [#5] Feature: Per-round voting timer — Off/30s/60s/90s selector in setup; countdown badge in story card; auto-reveal at 0 — implemented
 - [x] [#6] Feature: Custom card deck selection (Fibonacci, T-shirt, powers-of-2) — implemented
-- [ ] [#7] UX: Keyboard accessibility — full keyboard navigation for card voting and story flow
+- [x] [#7] UX: Keyboard accessibility — full keyboard navigation for card voting and story flow
 - [x] [#8] Integration: Change Planner → Planning Poker deep-link for effort estimation — implemented
 - [x] [#12] Integration: Write planning-poker:lastSession to localStorage for Dashboard card — implemented
 - [x] [#13] Feature: Session history persistence in localStorage — implemented
@@ -44,6 +44,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-06-15 — feat: keyboard accessibility (#7)
+- Done #7: added `aria-pressed` to all card vote buttons and final-estimate buttons; added `aria-label` (with participant name) to remove-participant ✕ buttons; added `focus-visible:ring-2 focus-visible:ring-brand-500` focus ring to card and story list buttons; added `useEffect` to focus the first card button when `currentStoryId` changes (story transition); added global `keydown` handler for `Enter`=reveal, `→`=next story, `R`=reset votes, `?`=toggle shortcut legend; added `?` button in action row with `aria-expanded`; added shortcut legend modal (role=dialog, aria-modal) with `<kbd>` tags; added `aria-keyshortcuts` on Reveal/Next/Reset buttons; added 5 i18n keys (`shortcuts_title`, `shortcut_reveal`, `shortcut_next`, `shortcut_reset`, `shortcut_help`) and `common.close` to all 4 locales; wrapped card row with `role=group aria-label={participant.name}` and final-estimate row with `role=group`
+- Remaining approved issues: none
+- Next task: check issues for human feedback; research cycle for next improvements
 
 ### 2026-06-11 — feat: per-round voting timer (#5)
 - Done #5: added `timerDuration: number | null` to `PokerSession` in `types.ts`; added `selectedTimer` state (null|30|60|90) in `App.tsx` with 4-button Off/30s/60s/90s picker in setup UI; `startSession()` passes `timerDuration` to session; in `SessionView.tsx` added `timeLeft` state with three effects — reset on story/revealed change, setTimeout countdown tick, auto-reveal at 0 when votes exist; timer badge displayed in current story card header with color progression (gray → amber → red/pulse at ≤5s); `aria-live=polite` for screen readers; `session.timer_label` i18n key added to EN/ES/BE/RU; setup keys `timer_label/off/30s/60s/90s` added to all 4 locales; closed stale implemented issues #3/#4/#6/#8/#12/#13/#15/#16/#17/#19/#20

@@ -26,6 +26,8 @@ function numericVotes(votes: string[]): number[] {
   return votes.map(v => (v === '½' ? 0.5 : parseFloat(v))).filter(n => !isNaN(n))
 }
 
+const KBD_CLASS = 'inline-block px-1.5 py-0.5 text-xs font-mono bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300'
+
 export default function SessionView({ session, onChange, onBack }: Props) {
   const { t } = useTranslation()
   const deckValues = DECKS[session.deckType] ?? DECKS.fibonacci
@@ -40,7 +42,9 @@ export default function SessionView({ session, onChange, onBack }: Props) {
   const [recentVotes, setRecentVotes] = useState<Set<string>>(new Set())
   const [revealAnimating, setRevealAnimating] = useState(false)
   const [timeLeft, setTimeLeft] = useState<number | null>(session.timerDuration ?? null)
+  const [showShortcuts, setShowShortcuts] = useState(false)
   const resultsCardRef = useRef<HTMLDivElement>(null)
+  const firstCardRef = useRef<HTMLButtonElement>(null)
 
   // Reset timer when story changes or is revealed
   useEffect(() => {
@@ -207,8 +211,75 @@ export default function SessionView({ session, onChange, onBack }: Props) {
   const consensus = numVotes.length > 0 && new Set(voteValues).size === 1
   const spread = numVotes.length >= 2 ? Math.max(...numVotes) - Math.min(...numVotes) : null
 
+  // Move focus to first card button when story changes (keyboard navigation aid)
+  useEffect(() => {
+    if (!session.revealed && session.currentStoryId && firstCardRef.current) {
+      firstCardRef.current.focus()
+    }
+  }, [session.currentStoryId, session.revealed])
+
+  // Global keyboard shortcuts — only active when focus is not in a text field
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      const tag = (e.target as HTMLElement).tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return
+      if (e.key === '?') { setShowShortcuts(v => !v); return }
+      if (e.key === 'Escape') { setShowShortcuts(false); return }
+      if (!currentStory) return
+      if (e.key === 'Enter' && !session.revealed && voteValues.length > 0) { reveal(); return }
+      if (e.key === 'ArrowRight' && session.revealed) { nextStory(); return }
+      if ((e.key === 'r' || e.key === 'R') && !e.metaKey && !e.ctrlKey) { resetVotes(); return }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStory, session.revealed, voteValues.length])
+
   return (
     <div className="space-y-6">
+      {/* Keyboard shortcut legend overlay */}
+      {showShortcuts && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('session.shortcuts_title')}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setShowShortcuts(false)}
+        >
+          <div className="card max-w-sm w-full mx-4" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-semibold text-gray-900 dark:text-white">{t('session.shortcuts_title')}</h2>
+              <button
+                type="button"
+                onClick={() => setShowShortcuts(false)}
+                aria-label={t('common.close')}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-lg leading-none"
+              >
+                ✕
+              </button>
+            </div>
+            <dl className="space-y-3 text-sm">
+              <div className="flex items-center justify-between gap-4">
+                <dt className="text-gray-600 dark:text-gray-300">{t('session.shortcut_reveal')}</dt>
+                <dd><kbd className={KBD_CLASS}>Enter</kbd></dd>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <dt className="text-gray-600 dark:text-gray-300">{t('session.shortcut_next')}</dt>
+                <dd><kbd className={KBD_CLASS}>→</kbd></dd>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <dt className="text-gray-600 dark:text-gray-300">{t('session.shortcut_reset')}</dt>
+                <dd><kbd className={KBD_CLASS}>R</kbd></dd>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <dt className="text-gray-600 dark:text-gray-300">{t('session.shortcut_help')}</dt>
+                <dd><kbd className={KBD_CLASS}>?</kbd></dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center gap-3">
         <button type="button" onClick={onBack} className="btn-ghost text-sm">
           ← {t('session.back')}
@@ -224,6 +295,7 @@ export default function SessionView({ session, onChange, onBack }: Props) {
               <button
                 type="button"
                 onClick={() => setAddingParticipant(v => !v)}
+                aria-label={t('session.addParticipant')}
                 className="text-xs bg-brand-50 dark:bg-brand-900/50 text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900 px-2 py-1 rounded font-medium"
               >
                 +
@@ -276,8 +348,9 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                       <button
                         type="button"
                         onClick={() => removeParticipant(p.id)}
-                        title={t('session.removeParticipant')}
-                        className="text-gray-400 dark:text-gray-500 hover:text-red-400 text-xs"
+                        aria-label={`${t('session.removeParticipant')} ${p.name}`}
+                        title={`${t('session.removeParticipant')} ${p.name}`}
+                        className="text-gray-400 dark:text-gray-500 hover:text-red-400 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 rounded"
                       >
                         ✕
                       </button>
@@ -294,6 +367,7 @@ export default function SessionView({ session, onChange, onBack }: Props) {
               <button
                 type="button"
                 onClick={() => setAddingStory(v => !v)}
+                aria-label={t('session.addStory')}
                 className="text-xs bg-brand-50 dark:bg-brand-900/50 text-brand-700 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900 px-2 py-1 rounded font-medium"
               >
                 +
@@ -328,7 +402,7 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                   <button
                     type="button"
                     onClick={() => selectStory(s.id)}
-                    className={`w-full text-left text-sm px-2 py-1.5 rounded transition-colors ${
+                    className={`w-full text-left text-sm px-2 py-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
                       s.id === session.currentStoryId
                         ? 'bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200 font-medium'
                         : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
@@ -376,7 +450,7 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                 </div>
               </div>
 
-              {session.participants.map(participant => (
+              {session.participants.map((participant, participantIdx) => (
                 <div key={participant.id} className="card">
                   <div className="flex items-center justify-between mb-3">
                     <span className="font-medium text-gray-800 dark:text-gray-200 text-sm">{participant.name}</span>
@@ -386,18 +460,22 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {deckValues.map(v => {
+                  <div className="flex flex-wrap gap-1.5" role="group" aria-label={participant.name}>
+                    {deckValues.map((v, cardIdx) => {
                       const isSelected = currentStory.votes[participant.id] === v
                       const justVoted = isSelected && !session.revealed && recentVotes.has(participant.id)
+                      const isFirstCard = participantIdx === 0 && cardIdx === 0
                       return (
                         <button
                           key={v}
+                          ref={isFirstCard ? firstCardRef : undefined}
                           type="button"
                           onClick={() => castVote(participant.id, v)}
                           disabled={session.revealed}
+                          aria-pressed={isSelected}
                           title={cardTitle(v)}
-                          className={`w-10 h-14 border-2 rounded-lg font-bold text-sm transition-all ${
+                          aria-label={`${cardTitle(v)}`}
+                          className={`w-10 h-14 border-2 rounded-lg font-bold text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 ${
                             isSelected
                               ? `border-brand-400 bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200 scale-105 shadow${justVoted ? ' pp-vote-ring' : ''}`
                               : session.revealed
@@ -413,23 +491,43 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                 </div>
               ))}
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 items-center">
                 {!session.revealed ? (
                   <button
                     type="button"
                     onClick={reveal}
                     disabled={voteValues.length === 0}
+                    aria-keyshortcuts="Enter"
                     className="btn-primary disabled:opacity-40"
                   >
                     {t('session.reveal')}
                   </button>
                 ) : (
-                  <button type="button" onClick={nextStory} className="btn-primary bg-green-600 hover:bg-green-700">
+                  <button
+                    type="button"
+                    onClick={nextStory}
+                    aria-keyshortcuts="ArrowRight"
+                    className="btn-primary bg-green-600 hover:bg-green-700"
+                  >
                     {t('session.nextStory')}
                   </button>
                 )}
-                <button type="button" onClick={resetVotes} className="btn-secondary">
+                <button
+                  type="button"
+                  onClick={resetVotes}
+                  aria-keyshortcuts="r"
+                  className="btn-secondary"
+                >
                   {t('session.resetVotes')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowShortcuts(v => !v)}
+                  aria-label={t('session.shortcut_help')}
+                  aria-expanded={showShortcuts}
+                  className="ml-auto text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 text-sm font-mono border border-gray-200 dark:border-gray-600 rounded px-2 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                >
+                  ?
                 </button>
               </div>
 
@@ -459,14 +557,16 @@ export default function SessionView({ session, onChange, onBack }: Props) {
 
                   <div>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('session.finalEstimate')}</p>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1.5" role="group" aria-label={t('session.finalEstimate')}>
                       {deckValues.map(v => (
                         <button
                           key={v}
                           type="button"
                           onClick={() => setFinalEstimate(v)}
+                          aria-pressed={currentStory.finalEstimate === v}
                           title={cardTitle(v)}
-                          className={`w-10 h-14 border-2 rounded-lg font-bold text-sm transition-all ${
+                          aria-label={`${cardTitle(v)}`}
+                          className={`w-10 h-14 border-2 rounded-lg font-bold text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-1 ${
                             currentStory.finalEstimate === v
                               ? 'border-green-500 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-200 scale-105 shadow'
                               : 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-green-400 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-900/20'

@@ -1,5 +1,5 @@
 {
-  "common": { "add": "Add" },
+  "common": { "add": "Add", "close": "Close" },
   "app": { "title": "Planning Poker", "switch_lang": "ES" },
   "session": {
     "default_name": "Planning session",
@@ -26,7 +26,12 @@
     "spread": "Spread",
     "finalEstimate": "Record final estimate",
     "history": "Completed estimates",
-    "timer_label": "Time remaining"
+    "timer_label": "Time remaining",
+    "shortcuts_title": "Keyboard Shortcuts",
+    "shortcut_reveal": "Reveal cards",
+    "shortcut_next": "Next story",
+    "shortcut_reset": "Reset votes",
+    "shortcut_help": "Toggle shortcuts"
   },
   "home": {
     "headline": "Planning Poker",

@@ -1,5 +1,5 @@
 {
-  "common": { "add": "Добавить" },
+  "common": { "add": "Добавить", "close": "Закрыть" },
   "app": { "title": "Planning Poker", "switch_lang": "EN" },
   "session": {
     "default_name": "Сессия Planning Poker",
@@ -26,7 +26,12 @@
     "spread": "Разброс",
     "finalEstimate": "Зафиксировать итог",
     "history": "Завершённые оценки",
-    "timer_label": "Осталось времени"
+    "timer_label": "Осталось времени",
+    "shortcuts_title": "Клавиатурные Сокращения",
+    "shortcut_reveal": "Раскрыть карты",
+    "shortcut_next": "Следующая история",
+    "shortcut_reset": "Сбросить голоса",
+    "shortcut_help": "Показать/скрыть сокращения"
   },
   "home": {
     "headline": "Planning Poker",
