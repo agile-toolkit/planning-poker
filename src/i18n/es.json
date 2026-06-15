@@ -1,5 +1,5 @@
 {
-  "common": { "add": "Agregar" },
+  "common": { "add": "Agregar", "close": "Cerrar" },
   "app": { "title": "Planning Poker", "switch_lang": "BE" },
   "session": {
     "default_name": "Sesión de Planning Poker",
@@ -26,7 +26,12 @@
     "spread": "Dispersión",
     "finalEstimate": "Registrar estimación final",
     "history": "Estimaciones completadas",
-    "timer_label": "Tiempo restante"
+    "timer_label": "Tiempo restante",
+    "shortcuts_title": "Atajos de Teclado",
+    "shortcut_reveal": "Revelar cartas",
+    "shortcut_next": "Siguiente historia",
+    "shortcut_reset": "Reiniciar votos",
+    "shortcut_help": "Alternar atajos"
   },
   "home": {
     "headline": "Planning Poker",
