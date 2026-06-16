@@ -181,7 +181,7 @@ export default function App() {
   ]
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950" data-accent="pink">
       <AppHeader
         title={t('app.title')}
         onTitleClick={() => setPhase('home')}
