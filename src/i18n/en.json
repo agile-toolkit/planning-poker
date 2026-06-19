@@ -93,6 +93,28 @@
     "tip4": "☕ means 'I need a break' — honor it.",
     "tip5": "Velocity is what matters, not the absolute size of story points."
   },
+  "team": {
+    "host_session": "Host Session",
+    "join_session": "Join Session",
+    "pin_label": "Session PIN",
+    "waiting_for_players": "Waiting for players to join…",
+    "start_voting": "Start Voting",
+    "your_vote": "Your vote",
+    "waiting_for_votes": "Waiting for the host to continue…",
+    "reveal": "Reveal Votes",
+    "final_estimate": "Final Estimate",
+    "next_story": "Next Story",
+    "end_session": "End Session",
+    "enter_name": "Your name",
+    "name_placeholder": "Enter your name",
+    "host_heading": "Host a session",
+    "join_heading": "Join by PIN",
+    "join_error": "Session not found. Check the PIN and try again.",
+    "story_label": "Story to estimate",
+    "story_placeholder": "What are we estimating?",
+    "vote_progress": "{{done}} / {{total}} voted",
+    "voted_badge": "Voted ✓"
+  },
   "cards": {
     "half": "½ — trivial, minutes",
     "1": "1 — tiny, under an hour",
