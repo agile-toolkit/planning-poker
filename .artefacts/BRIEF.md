@@ -17,6 +17,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 
 ## Backlog
 
+- [ ] [#21] Feature: Firebase real-time team sessions — host creates PIN session, participants join by PIN, votes hidden until host reveals, results written to localStorage on end; `src/firebase.ts` + `TeamSession.tsx` pattern from moving-motivators; conditional on `isFirebaseConfigured()`; i18n keys `team.*` in 4 locales
 - [x] [#3] Feature: Add ES and BE locales to match suite standard — implemented
 - [x] [#4] Integration: Export session results to Sprint Metrics — implemented
 - [x] [#5] Feature: Per-round voting timer — Off/30s/60s/90s selector in setup; countdown badge in story card; auto-reveal at 0 — implemented
@@ -44,6 +45,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-06-19 — research: found approved #21 Firebase team sessions
+- Done: checked open issues; found #21 (Firebase real-time team sessions) with `approved` label — unimplemented; set project status to In Progress; added to BRIEF Backlog
+- Remaining: #21 to implement
+- Next task: implement #21 — add `src/firebase.ts` (isFirebaseConfigured + getFirebaseDb, copy moving-motivators pattern); add `src/components/TeamSession.tsx` (host creates PIN, participants join, voting phase, reveal, end writes to localStorage); enable home.start_team CTA when Firebase configured; add `team.*` i18n keys (host_session, join_session, pin_label, waiting_for_players, start_voting, your_vote, waiting_for_votes, reveal, final_estimate, next_story, end_session) to EN/ES/BE/RU; solo mode must remain unaffected when Firebase not configured
 
 ### 2026-06-15 — feat: keyboard accessibility (#7)
 - Done #7: added `aria-pressed` to all card vote buttons and final-estimate buttons; added `aria-label` (with participant name) to remove-participant ✕ buttons; added `focus-visible:ring-2 focus-visible:ring-brand-500` focus ring to card and story list buttons; added `useEffect` to focus the first card button when `currentStoryId` changes (story transition); added global `keydown` handler for `Enter`=reveal, `→`=next story, `R`=reset votes, `?`=toggle shortcut legend; added `?` button in action row with `aria-expanded`; added shortcut legend modal (role=dialog, aria-modal) with `<kbd>` tags; added `aria-keyshortcuts` on Reveal/Next/Reset buttons; added 5 i18n keys (`shortcuts_title`, `shortcut_reveal`, `shortcut_next`, `shortcut_reset`, `shortcut_help`) and `common.close` to all 4 locales; wrapped card row with `role=group aria-label={participant.name}` and final-estimate row with `role=group`
