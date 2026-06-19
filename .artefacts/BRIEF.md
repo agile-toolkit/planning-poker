@@ -9,7 +9,8 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [x] Home + learn content, solo/practice setup flow (`App.tsx`, `HomeScreen.tsx`)
 - [x] Session runner — `session.*` / `setup.*` wired in `SessionView.tsx`
 - [x] EN + RU + ES + BE — all four suite locales; dropdown LanguagePicker in header
-- [x] Team session entry — `home.start_team` disabled CTA on home screen with Firebase tooltip
+- [x] Team session entry — `home.start_team` enabled when Firebase configured; disabled stub with tooltip when not
+- [x] Firebase real-time team sessions — `src/firebase.ts` (isFirebaseConfigured + getFirebaseDb); `src/components/TeamSession.tsx` (host creates 4-digit PIN, participants join by PIN, lobby shows PIN + joiners, story-by-story voting with hidden votes until host reveals, host sets final estimate per story, end writes to sprintMetrics_planningPoker + planning-poker:lastSession + session history); `team.*` i18n keys in EN/ES/BE/RU; solo mode unaffected when Firebase not configured
 - [x] Card value legend on home screen — `home.cards_title` + `cards.*` descriptions
 - [x] Card value tooltips — `cards.*` wired as `title` on all card buttons in `SessionView.tsx`
 - [x] Language toggle — uses `app.switch_lang` i18n key (removes raw EN/RU strings)
@@ -17,7 +18,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 
 ## Backlog
 
-- [ ] [#21] Feature: Firebase real-time team sessions — host creates PIN session, participants join by PIN, votes hidden until host reveals, results written to localStorage on end; `src/firebase.ts` + `TeamSession.tsx` pattern from moving-motivators; conditional on `isFirebaseConfigured()`; i18n keys `team.*` in 4 locales
+- [x] [#21] Feature: Firebase real-time team sessions — implemented (see above)
 - [x] [#3] Feature: Add ES and BE locales to match suite standard — implemented
 - [x] [#4] Integration: Export session results to Sprint Metrics — implemented
 - [x] [#5] Feature: Per-round voting timer — Off/30s/60s/90s selector in setup; countdown badge in story card; auto-reveal at 0 — implemented
@@ -45,6 +46,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-06-19 — feat: Firebase real-time team sessions (#21)
+- Done: `src/firebase.ts` (isFirebaseConfigured + getFirebaseDb, pattern from moving-motivators); `src/components/TeamSession.tsx` (host creates 4-digit PIN session written to Realtime DB, participants join by PIN, lobby shows PIN + participant list, story-by-story voting phase with hidden votes, host reveal, host sets final estimate per story, next-story or end, end writes sprintMetrics_planningPoker + planning-poker:lastSession + history entry); updated App.tsx to enable team CTA when Firebase configured and render TeamSession in `team` phase; added `team.*` i18n keys (20 keys) to EN/ES/BE/RU; solo mode unaffected when Firebase not configured; `firebase@^11.10.0` added
+- Remaining: none — all known BRIEF features done
+- Next task: check issues for human feedback
 
 ### 2026-06-19 — research: found approved #21 Firebase team sessions
 - Done: checked open issues; found #21 (Firebase real-time team sessions) with `approved` label — unimplemented; set project status to In Progress; added to BRIEF Backlog

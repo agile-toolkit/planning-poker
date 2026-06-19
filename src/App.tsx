@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CardValue, DeckType, GamePhase, PokerSession, SessionHistoryEntry } from './types'
 import { DECKS } from './types'
+import { isFirebaseConfigured } from './firebase'
 
 const HISTORY_KEY = 'planning-poker:history'
 const HISTORY_MAX = 10
@@ -17,6 +18,7 @@ function loadHistory(): SessionHistoryEntry[] {
   }
 }
 import SessionView from './components/SessionView'
+import TeamSession from './components/TeamSession'
 import AppHeader from './components/AppHeader'
 import ThemeToggle from './components/ThemeToggle'
 
@@ -49,6 +51,8 @@ function cardKey(v: CardValue): string {
   return v
 }
 
+
+const firebaseReady = isFirebaseConfigured()
 
 export default function App() {
   const { t } = useTranslation()
@@ -174,6 +178,56 @@ export default function App() {
     setPhase('home')
   }
 
+  const handleTeamSessionEnd = (
+    results: { title: string; finalEstimate: string | null }[],
+    deckType: DeckType,
+  ) => {
+    const estimated = results.filter(s => s.finalEstimate !== null)
+    if (estimated.length > 0) {
+      localStorage.setItem('sprintMetrics_planningPoker', JSON.stringify(estimated))
+    }
+    const numericEstimates = estimated
+      .map(s => (s.finalEstimate === '½' ? 0.5 : parseFloat(s.finalEstimate ?? '')))
+      .filter(n => !isNaN(n))
+    const avgPoints =
+      numericEstimates.length > 0
+        ? Math.round((numericEstimates.reduce((a, b) => a + b, 0) / numericEstimates.length) * 10) / 10
+        : null
+    const today = new Date().toISOString().slice(0, 10)
+    localStorage.setItem(
+      'planning-poker:lastSession',
+      JSON.stringify({
+        sessionName: t('home.start_team'),
+        deckType,
+        storyCount: results.length,
+        estimatedCount: estimated.length,
+        avgPoints,
+        date: today,
+      }),
+    )
+    const historyEntry: SessionHistoryEntry = {
+      id: crypto.randomUUID(),
+      name: t('home.start_team'),
+      date: today,
+      deckType,
+      storyCount: results.length,
+      estimatedCount: estimated.length,
+      avgPoints,
+      stories: results.map(s => ({
+        id: crypto.randomUUID(),
+        title: s.title,
+        finalEstimate: s.finalEstimate,
+        votes: {},
+      })),
+    }
+    setSessionHistory(prev => {
+      const updated = [historyEntry, ...prev].slice(0, HISTORY_MAX)
+      localStorage.setItem(HISTORY_KEY, JSON.stringify(updated))
+      return updated
+    })
+    setPhase('home')
+  }
+
   const deckOptions: { value: DeckType; labelKey: string }[] = [
     { value: 'fibonacci', labelKey: 'setup.deck_fibonacci' },
     { value: 'tshirt',    labelKey: 'setup.deck_tshirt' },
@@ -212,14 +266,17 @@ export default function App() {
                 </button>
                 <button
                   type="button"
-                  disabled
-                  title={t('home.team_note')}
-                  className="btn-secondary text-base px-8 py-3 opacity-40 cursor-not-allowed"
+                  onClick={firebaseReady ? () => setPhase('team') : undefined}
+                  disabled={!firebaseReady}
+                  title={!firebaseReady ? t('home.team_note') : undefined}
+                  className={`btn-secondary text-base px-8 py-3 ${!firebaseReady ? 'opacity-40 cursor-not-allowed' : ''}`}
                 >
                   {t('home.start_team')}
                 </button>
               </div>
-              <p className="text-xs text-gray-500 dark:text-gray-600 mt-3">{t('home.team_note')}</p>
+              {!firebaseReady && (
+                <p className="text-xs text-gray-500 dark:text-gray-600 mt-3">{t('home.team_note')}</p>
+              )}
             </div>
             <div className="card mb-4">
               <h2 className="font-semibold text-gray-900 dark:text-white mb-2">{t('home.why_title')}</h2>
@@ -387,6 +444,13 @@ export default function App() {
             session={pokerSession}
             onChange={setPokerSession}
             onBack={handleSessionBack}
+          />
+        )}
+
+        {phase === 'team' && (
+          <TeamSession
+            onBack={() => setPhase('home')}
+            onSessionEnd={handleTeamSessionEnd}
           />
         )}
 

@@ -93,6 +93,28 @@
     "tip4": "☕ significa 'Necesito un descanso' — respétalo.",
     "tip5": "La velocidad es lo que importa, no el tamaño absoluto de los puntos de historia."
   },
+  "team": {
+    "host_session": "Organizar Sesión",
+    "join_session": "Unirse",
+    "pin_label": "PIN de Sesión",
+    "waiting_for_players": "Esperando a que los jugadores se unan…",
+    "start_voting": "Iniciar Votación",
+    "your_vote": "Tu voto",
+    "waiting_for_votes": "Esperando a que el host continúe…",
+    "reveal": "Revelar Votos",
+    "final_estimate": "Estimación Final",
+    "next_story": "Siguiente Historia",
+    "end_session": "Finalizar Sesión",
+    "enter_name": "Tu nombre",
+    "name_placeholder": "Ingresa tu nombre",
+    "host_heading": "Organizar una sesión",
+    "join_heading": "Unirse por PIN",
+    "join_error": "Sesión no encontrada. Verifica el PIN e inténtalo de nuevo.",
+    "story_label": "Historia a estimar",
+    "story_placeholder": "¿Qué estamos estimando?",
+    "vote_progress": "{{done}} / {{total}} votaron",
+    "voted_badge": "Votado ✓"
+  },
   "cards": {
     "half": "½ — trivial, minutos",
     "1": "1 — tiny, menos de una hora",

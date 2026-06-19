@@ -2,7 +2,7 @@ export type CardValue = string
 
 export type DeckType = 'fibonacci' | 'tshirt' | 'powers2'
 
-export type GamePhase = 'home' | 'setup' | 'session' | 'history' | 'learn'
+export type GamePhase = 'home' | 'setup' | 'session' | 'history' | 'learn' | 'team'
 
 export interface Participant {
   name: string
