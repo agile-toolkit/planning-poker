@@ -18,6 +18,9 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 
 ## Backlog
 
+- [ ] [#32] Feature: Observer/spectator mode in team sessions — join as observer (no vote card, excluded from consensus denominator); `team.join_as_observer` i18n key; host-only visibility badge
+- [ ] [#33] UX: Story drag-to-reorder during estimation session — native HTML5 drag events, no new dependency; grip handle on story rows; solo always, team host-only; storyOrder array in Firebase for team mode
+- [ ] [#34] Integration: Sprint Metrics velocity hint in session header — read `sprint-metrics:sprints`, show trailing 3-sprint avg velocity chip in SessionView header; dismissible; only when >=3 sprints exist; `session.velocity_hint` i18n key
 - [x] [#21] Feature: Firebase real-time team sessions — implemented (see above)
 - [x] [#3] Feature: Add ES and BE locales to match suite standard — implemented
 - [x] [#4] Integration: Export session results to Sprint Metrics — implemented
@@ -46,6 +49,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-06-22 — research: observer mode, story reorder, Sprint Metrics velocity hint
+- Done: closed already-implemented approved issues #5, #7, #21; created #32 (observer/spectator mode in team sessions), #33 (story drag-to-reorder), #34 (Sprint Metrics velocity hint in session header); all set to Backlog
+- Remaining: awaiting human review on #32, #33, #34
+- Next task: check issues for human feedback; implement first approved item among #32, #33, #34
 
 ### 2026-06-19 — feat: Firebase real-time team sessions (#21)
 - Done: `src/firebase.ts` (isFirebaseConfigured + getFirebaseDb, pattern from moving-motivators); `src/components/TeamSession.tsx` (host creates 4-digit PIN session written to Realtime DB, participants join by PIN, lobby shows PIN + participant list, story-by-story voting phase with hidden votes, host reveal, host sets final estimate per story, next-story or end, end writes sprintMetrics_planningPoker + planning-poker:lastSession + history entry); updated App.tsx to enable team CTA when Firebase configured and render TeamSession in `team` phase; added `team.*` i18n keys (20 keys) to EN/ES/BE/RU; solo mode unaffected when Firebase not configured; `firebase@^11.10.0` added
