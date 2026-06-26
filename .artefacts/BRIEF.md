@@ -21,6 +21,9 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [ ] [#32] Feature: Observer/spectator mode in team sessions — join as observer (no vote card, excluded from consensus denominator); `team.join_as_observer` i18n key; host-only visibility badge
 - [ ] [#33] UX: Story drag-to-reorder during estimation session — native HTML5 drag events, no new dependency; grip handle on story rows; solo always, team host-only; storyOrder array in Firebase for team mode
 - [ ] [#34] Integration: Sprint Metrics velocity hint in session header — read `sprint-metrics:sprints`, show trailing 3-sprint avg velocity chip in SessionView header; dismissible; only when >=3 sprints exist; `session.velocity_hint` i18n key
+- [ ] [#35] Feature: Anonymous/blind voting mode — hide participant names during voting phase to prevent anchoring bias; `blindMode: boolean` in Firebase session doc; `team.blind_mode_label/hint/anonymous_voter` i18n keys; host always sees real names; ~30 LOC in TeamSession.tsx
+- [ ] [#36] Integration: Planning Poker → Change Planner estimate sync — detect `?source=change-planner&initiativeId=<id>` query param; write `change-planner:pendingEstimates` localStorage on session end; Change Planner side tracked separately; ~20 LOC in SessionView.tsx App.tsx
+- [ ] [#37] UX: Per-story discussion notes after reveal — optional textarea after host sets final estimate; `SessionStory.note?: string` in types.ts; shown in history view; included in Copy Results text export; team mode: host writes to Firebase, participants read-only; ~40 LOC
 - [x] [#21] Feature: Firebase real-time team sessions — implemented (see above)
 - [x] [#3] Feature: Add ES and BE locales to match suite standard — implemented
 - [x] [#4] Integration: Export session results to Sprint Metrics — implemented
@@ -49,6 +52,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-06-26 — research: blind voting mode, PP→Change Planner sync, per-story notes
+- Done: created #35 (anonymous/blind voting mode in TeamSession.tsx), #36 (PP→Change Planner bidirectional estimate sync via `change-planner:pendingEstimates` localStorage), #37 (per-story discussion notes after reveal, stored in SessionStory.note, shown in history + export); all set to Backlog pending needs-review
+- Remaining: awaiting human review on #32, #33, #34, #35, #36, #37
+- Next task: check issues for human feedback; if any of #32–#37 approved, implement first approved
 
 ### 2026-06-22 — research: observer mode, story reorder, Sprint Metrics velocity hint
 - Done: closed already-implemented approved issues #5, #7, #21; created #32 (observer/spectator mode in team sessions), #33 (story drag-to-reorder), #34 (Sprint Metrics velocity hint in session header); all set to Backlog
