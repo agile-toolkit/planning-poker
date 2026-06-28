@@ -24,6 +24,9 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [ ] [#35] Feature: Anonymous/blind voting mode — hide participant names during voting phase to prevent anchoring bias; `blindMode: boolean` in Firebase session doc; `team.blind_mode_label/hint/anonymous_voter` i18n keys; host always sees real names; ~30 LOC in TeamSession.tsx
 - [ ] [#36] Integration: Planning Poker → Change Planner estimate sync — detect `?source=change-planner&initiativeId=<id>` query param; write `change-planner:pendingEstimates` localStorage on session end; Change Planner side tracked separately; ~20 LOC in SessionView.tsx App.tsx
 - [ ] [#37] UX: Per-story discussion notes after reveal — optional textarea after host sets final estimate; `SessionStory.note?: string` in types.ts; shown in history view; included in Copy Results text export; team mode: host writes to Firebase, participants read-only; ~40 LOC
+- [ ] [#38] UX: QR code PIN sharing in team session lobby — render `<QRCode value={joinUrl} />` below PIN display (qrcode.react); auto-read `?joinPin=` param to pre-fill join form; `team.qr_scan_label` i18n key; ~20 LOC
+- [ ] [#39] UX: Swipe-to-select card gesture on mobile — Pointer Events API (no dependency); swipe L/R to browse cards, swipe up to cast vote; `session.swipe_hint` i18n key; dismissible first-use hint stored in `planning-poker:swipeHintSeen`; ~50 LOC in SessionView.tsx
+- [ ] [#40] Integration: Estimation accuracy cross-reference with Sprint Metrics — read `planning-poker:history` + `sprint-metrics:sprints`; match sessions to sprints by date; show Accuracy tab in history screen with committed vs delivered table; `history.accuracy_tab/accuracy_no_data` i18n keys; read-only, no new dependency
 - [x] [#21] Feature: Firebase real-time team sessions — implemented (see above)
 - [x] [#3] Feature: Add ES and BE locales to match suite standard — implemented
 - [x] [#4] Integration: Export session results to Sprint Metrics — implemented
@@ -52,6 +55,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-06-28 — research: QR code PIN sharing, mobile swipe-to-vote, estimation accuracy
+- Done: created #38 (QR code PIN sharing in lobby — qrcode.react, ?joinPin= param), #39 (swipe-to-select card on mobile — Pointer Events API, no dependency), #40 (estimation accuracy cross-reference with Sprint Metrics — history Accuracy tab, read-only); all set to Backlog pending needs-review; project board Backlog status not set (GraphQL proxying disabled this session)
+- Remaining: awaiting human review on #32–#40
+- Next task: check issues for human feedback; #32, #33, #34 reach 7-day auto-approve threshold on 2026-06-29 — implement first approved; #35, #36, #37 reach threshold on 2026-07-03
 
 ### 2026-06-26 — research: blind voting mode, PP→Change Planner sync, per-story notes
 - Done: created #35 (anonymous/blind voting mode in TeamSession.tsx), #36 (PP→Change Planner bidirectional estimate sync via `change-planner:pendingEstimates` localStorage), #37 (per-story discussion notes after reveal, stored in SessionStory.note, shown in history + export); all set to Backlog pending needs-review
