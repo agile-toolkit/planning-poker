@@ -11,6 +11,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - [x] EN + RU + ES + BE — all four suite locales; dropdown LanguagePicker in header
 - [x] Team session entry — `home.start_team` enabled when Firebase configured; disabled stub with tooltip when not
 - [x] Firebase real-time team sessions — `src/firebase.ts` (isFirebaseConfigured + getFirebaseDb); `src/components/TeamSession.tsx` (host creates 4-digit PIN, participants join by PIN, lobby shows PIN + joiners, story-by-story voting with hidden votes until host reveals, host sets final estimate per story, end writes to sprintMetrics_planningPoker + planning-poker:lastSession + session history); `team.*` i18n keys in EN/ES/BE/RU; solo mode unaffected when Firebase not configured
+- [x] Observer/spectator mode in team sessions — join checkbox on entry screen; `isObserver: true` in Firebase participant record; eye badge in lobby list; observers see vote progress but not card deck; excluded from vote denominator; `team.join_as_observer`, `team.observer_badge`, `team.voters_only` i18n keys in EN/ES/BE/RU
 - [x] Card value legend on home screen — `home.cards_title` + `cards.*` descriptions
 - [x] Card value tooltips — `cards.*` wired as `title` on all card buttons in `SessionView.tsx`
 - [x] Language toggle — uses `app.switch_lang` i18n key (removes raw EN/RU strings)
@@ -18,7 +19,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 
 ## Backlog
 
-- [ ] [#32] Feature: Observer/spectator mode in team sessions — join as observer (no vote card, excluded from consensus denominator); `team.join_as_observer` i18n key; host-only visibility badge
+- [x] [#32] Feature: Observer/spectator mode in team sessions — join as observer (no vote card, excluded from consensus denominator); `team.join_as_observer` i18n key; host-only visibility badge
 - [ ] [#33] UX: Story drag-to-reorder during estimation session — native HTML5 drag events, no new dependency; grip handle on story rows; solo always, team host-only; storyOrder array in Firebase for team mode
 - [ ] [#34] Integration: Sprint Metrics velocity hint in session header — read `sprint-metrics:sprints`, show trailing 3-sprint avg velocity chip in SessionView header; dismissible; only when >=3 sprints exist; `session.velocity_hint` i18n key
 - [ ] [#35] Feature: Anonymous/blind voting mode — hide participant names during voting phase to prevent anchoring bias; `blindMode: boolean` in Firebase session doc; `team.blind_mode_label/hint/anonymous_voter` i18n keys; host always sees real names; ~30 LOC in TeamSession.tsx
@@ -55,6 +56,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
 
 ## Agent Log
+
+### 2026-06-30 — feat: observer/spectator mode in team sessions (#32)
+- Done: added `isObserver?: boolean` to `FirebaseParticipant` interface; `joinAsObserver` state + checkbox on join entry screen; `handleJoin` writes `isObserver: true` to Firebase when checked; `voterEntries`/`voterCount` exclude observers from vote denominator; host lobby shows 👁 badge for observers; host voting list shows "Observer" label (no vote status) for observer entries; observer participant sees watch screen (story title + 👁 badge + vote progress) instead of card deck; `team.join_as_observer`, `team.observer_badge`, `team.voters_only` i18n keys added to EN/ES/BE/RU; auto-approved #32, #33, #34 (all past 7-day threshold)
+- Remaining: #33 (drag-to-reorder, approved), #34 (velocity hint, approved)
+- Next task: implement #33 (story drag-to-reorder — HTML5 drag events; grip handle on story rows in SessionView.tsx; solo always, team host-only; `storyOrder: string[]` in Firebase for team mode)
 
 ### 2026-06-28 — research: QR code PIN sharing, mobile swipe-to-vote, estimation accuracy
 - Done: created #38 (QR code PIN sharing in lobby — qrcode.react, ?joinPin= param), #39 (swipe-to-select card on mobile — Pointer Events API, no dependency), #40 (estimation accuracy cross-reference with Sprint Metrics — history Accuracy tab, read-only); all set to Backlog pending needs-review; project board Backlog status not set (GraphQL proxying disabled this session)

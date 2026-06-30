@@ -113,7 +113,10 @@
     "story_label": "Гісторыя для ацэнкі",
     "story_placeholder": "Што ацэньваем?",
     "vote_progress": "{{done}} / {{total}} прагаласавалі",
-    "voted_badge": "Галас пададзены ✓"
+    "voted_badge": "Галас пададзены ✓",
+    "join_as_observer": "Далучыцца як назіральнік",
+    "observer_badge": "Назіральнік",
+    "voters_only": "толькі галасуючыя"
   },
   "cards": {
     "half": "½ — трывіяльна, хвіліны",
