@@ -113,7 +113,10 @@
     "story_label": "Historia a estimar",
     "story_placeholder": "¿Qué estamos estimando?",
     "vote_progress": "{{done}} / {{total}} votaron",
-    "voted_badge": "Votado ✓"
+    "voted_badge": "Votado ✓",
+    "join_as_observer": "Unirse como observador",
+    "observer_badge": "Observador",
+    "voters_only": "solo votantes"
   },
   "cards": {
     "half": "½ — trivial, minutos",

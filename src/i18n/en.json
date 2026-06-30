@@ -113,7 +113,10 @@
     "story_label": "Story to estimate",
     "story_placeholder": "What are we estimating?",
     "vote_progress": "{{done}} / {{total}} voted",
-    "voted_badge": "Voted ✓"
+    "voted_badge": "Voted ✓",
+    "join_as_observer": "Join as observer",
+    "observer_badge": "Observer",
+    "voters_only": "voters only"
   },
   "cards": {
     "half": "½ — trivial, minutes",

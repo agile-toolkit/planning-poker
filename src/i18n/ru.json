@@ -113,7 +113,10 @@
     "story_label": "История для оценки",
     "story_placeholder": "Что оцениваем?",
     "vote_progress": "{{done}} / {{total}} проголосовали",
-    "voted_badge": "Голос подан ✓"
+    "voted_badge": "Голос подан ✓",
+    "join_as_observer": "Присоединиться как наблюдатель",
+    "observer_badge": "Наблюдатель",
+    "voters_only": "только голосующие"
   },
   "cards": {
     "half": "½ — тривиально, минуты",

@@ -8,6 +8,7 @@ import { DECKS } from '../types'
 interface FirebaseParticipant {
   name: string
   isHost: boolean
+  isObserver?: boolean
 }
 
 interface FirebaseStory {
@@ -49,6 +50,7 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
   const [mode, setMode] = useState<'entry' | 'host' | 'participant'>('entry')
   const [name, setName] = useState('')
   const [joinPin, setJoinPin] = useState('')
+  const [joinAsObserver, setJoinAsObserver] = useState(false)
   const [pin, setPin] = useState('')
   const [participantId, setParticipantId] = useState('')
   const [selectedDeck, setSelectedDeck] = useState<DeckType>('fibonacci')
@@ -108,6 +110,7 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
     await update(ref(db, `sessions/${joinPin}/participants/${pId}`), {
       name: name.trim(),
       isHost: false,
+      ...(joinAsObserver ? { isObserver: true } : {}),
     })
     setPin(joinPin)
     setParticipantId(pId)
@@ -235,6 +238,15 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
               <p className="text-xs text-red-600 dark:text-red-400 mt-1">{joinError}</p>
             )}
           </div>
+          <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={joinAsObserver}
+              onChange={e => setJoinAsObserver(e.target.checked)}
+              className="rounded border-gray-300 dark:border-gray-600 text-brand-600 focus:ring-brand-500"
+            />
+            {t('team.join_as_observer')}
+          </label>
           <button
             type="button"
             onClick={handleJoin}
@@ -283,9 +295,11 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
   const deck = DECKS[session.deck ?? 'fibonacci']
   const participantEntries = Object.entries(participants)
   const nonHostEntries = participantEntries.filter(([, p]) => !p.isHost)
+  const voterEntries = participantEntries.filter(([, p]) => !p.isHost && !p.isObserver)
   const votes = currentStoryData?.votes ?? {}
-  const voteCount = Object.keys(votes).length
+  const voteCount = Object.keys(votes).filter(id => !participants[id]?.isObserver).length
   const nonHostCount = nonHostEntries.length
+  const voterCount = voterEntries.length
 
   // ── HOST VIEW ──────────────────────────────────────────────────────────
   if (mode === 'host') {
@@ -316,6 +330,11 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
                     {p.name}
                     {p.isHost && (
                       <span className="text-xs text-gray-400 dark:text-gray-600">(host)</span>
+                    )}
+                    {p.isObserver && !p.isHost && (
+                      <span className="text-xs text-gray-400 dark:text-gray-600 flex items-center gap-0.5">
+                        👁 {t('team.observer_badge')}
+                      </span>
                     )}
                   </li>
                 ))}
@@ -365,23 +384,35 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
           <div className="card space-y-3">
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                {t('team.vote_progress', { done: voteCount, total: nonHostCount || participantEntries.length })}
+                {t('team.vote_progress', { done: voteCount, total: voterCount || participantEntries.length })}
+                {voterCount < nonHostCount && (
+                  <span className="ml-1 text-xs text-gray-400 dark:text-gray-600">({t('team.voters_only')})</span>
+                )}
               </p>
               <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                voteCount > 0 && voteCount >= (nonHostCount || participantEntries.length)
+                voteCount > 0 && voteCount >= (voterCount || participantEntries.length)
                   ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                   : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
               }`}>
-                {voteCount > 0 && voteCount >= (nonHostCount || participantEntries.length) ? '✓ All voted' : t('team.waiting_for_votes')}
+                {voteCount > 0 && voteCount >= (voterCount || participantEntries.length) ? '✓ All voted' : t('team.waiting_for_votes')}
               </span>
             </div>
             <ul className="space-y-1">
               {participantEntries.map(([id, p]) => (
                 <li key={id} className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
-                  <span>{p.name}</span>
-                  <span className={`text-xs ${votes[id] ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-600'}`}>
-                    {votes[id] ? t('team.voted_badge') : '…'}
+                  <span className="flex items-center gap-1.5">
+                    {p.name}
+                    {p.isObserver && !p.isHost && (
+                      <span className="text-xs text-gray-400 dark:text-gray-600">👁</span>
+                    )}
                   </span>
+                  {p.isObserver ? (
+                    <span className="text-xs text-gray-400 dark:text-gray-600">{t('team.observer_badge')}</span>
+                  ) : (
+                    <span className={`text-xs ${votes[id] ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-600'}`}>
+                      {votes[id] ? t('team.voted_badge') : '…'}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
@@ -484,6 +515,29 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
     }
 
     if (session.phase === 'voting') {
+      if (participants[participantId]?.isObserver) {
+        return (
+          <div className="max-w-sm mx-auto pt-8 space-y-6">
+            <div className="card">
+              <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1">
+                {t('team.story_label')}
+              </p>
+              <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                {currentStoryData?.title ?? '—'}
+              </p>
+            </div>
+            <div className="card text-center space-y-2 py-6">
+              <p className="text-3xl">👁</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('team.observer_badge')}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-600">
+                {t('team.vote_progress', { done: voteCount, total: voterCount || participantEntries.length })}
+              </p>
+              <p className="text-xs text-gray-400 dark:text-gray-600">{t('team.waiting_for_votes')}</p>
+            </div>
+          </div>
+        )
+      }
+
       return (
         <div className="max-w-sm mx-auto pt-8 space-y-6">
           <div className="card">
