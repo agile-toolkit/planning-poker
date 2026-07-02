@@ -43,6 +43,8 @@ export default function SessionView({ session, onChange, onBack }: Props) {
   const [revealAnimating, setRevealAnimating] = useState(false)
   const [timeLeft, setTimeLeft] = useState<number | null>(session.timerDuration ?? null)
   const [showShortcuts, setShowShortcuts] = useState(false)
+  const [draggedStoryId, setDraggedStoryId] = useState<string | null>(null)
+  const [dragOverStoryId, setDragOverStoryId] = useState<string | null>(null)
   const resultsCardRef = useRef<HTMLDivElement>(null)
   const firstCardRef = useRef<HTMLButtonElement>(null)
 
@@ -121,6 +123,23 @@ export default function SessionView({ session, onChange, onBack }: Props) {
 
   function selectStory(id: string) {
     update({ currentStoryId: id, revealed: false })
+  }
+
+  // Reorders the pending-story queue only; already-estimated stories keep their slot.
+  function reorderStories(draggedId: string, targetId: string) {
+    if (draggedId === targetId) return
+    const pending = session.stories.filter(s => s.finalEstimate === null)
+    const fromIdx = pending.findIndex(s => s.id === draggedId)
+    const toIdx = pending.findIndex(s => s.id === targetId)
+    if (fromIdx === -1 || toIdx === -1) return
+    const reorderedPending = [...pending]
+    const [moved] = reorderedPending.splice(fromIdx, 1)
+    reorderedPending.splice(toIdx, 0, moved)
+    let cursor = 0
+    const newStories = session.stories.map(s =>
+      s.finalEstimate === null ? reorderedPending[cursor++] : s
+    )
+    update({ stories: newStories })
   }
 
   function castVote(participantId: string, value: CardValue) {
@@ -397,21 +416,53 @@ export default function SessionView({ session, onChange, onBack }: Props) {
               </div>
             )}
             <ul className="space-y-1">
-              {session.stories.filter(s => s.finalEstimate === null).map(s => (
-                <li key={s.id}>
-                  <button
-                    type="button"
-                    onClick={() => selectStory(s.id)}
-                    className={`w-full text-left text-sm px-2 py-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
-                      s.id === session.currentStoryId
-                        ? 'bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200 font-medium'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
-                    }`}
+              {session.stories.filter(s => s.finalEstimate === null).map(s => {
+                const isCurrent = s.id === session.currentStoryId
+                return (
+                  <li
+                    key={s.id}
+                    draggable={!isCurrent}
+                    onDragStart={() => setDraggedStoryId(s.id)}
+                    onDragEnd={() => { setDraggedStoryId(null); setDragOverStoryId(null) }}
+                    onDragOver={e => {
+                      if (!draggedStoryId) return
+                      e.preventDefault()
+                      setDragOverStoryId(s.id)
+                    }}
+                    onDrop={e => {
+                      e.preventDefault()
+                      if (draggedStoryId) reorderStories(draggedStoryId, s.id)
+                      setDraggedStoryId(null)
+                      setDragOverStoryId(null)
+                    }}
+                    className={`flex items-center gap-1 rounded transition-colors ${
+                      dragOverStoryId === s.id && draggedStoryId && draggedStoryId !== s.id
+                        ? 'bg-brand-50 dark:bg-brand-900/30 ring-1 ring-brand-300 dark:ring-brand-600'
+                        : ''
+                    } ${draggedStoryId === s.id ? 'opacity-40' : ''}`}
                   >
-                    {s.title}
-                  </button>
-                </li>
-              ))}
+                    {!isCurrent && (
+                      <span
+                        aria-hidden="true"
+                        className="cursor-grab active:cursor-grabbing text-gray-300 dark:text-gray-600 px-0.5 select-none"
+                      >
+                        ⠿
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => selectStory(s.id)}
+                      className={`flex-1 text-left text-sm px-2 py-1.5 rounded transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
+                        isCurrent
+                          ? 'bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200 font-medium'
+                          : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                      }`}
+                    >
+                      {s.title}
+                    </button>
+                  </li>
+                )
+              })}
               {session.stories.filter(s => s.finalEstimate === null).length === 0 && (
                 <li className="text-xs text-gray-500">{t('session.noCurrentStory')}</li>
               )}
