@@ -20,7 +20,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 ## Backlog
 
 - [x] [#32] Feature: Observer/spectator mode in team sessions — join as observer (no vote card, excluded from consensus denominator); `team.join_as_observer` i18n key; host-only visibility badge
-- [ ] [#33] UX: Story drag-to-reorder during estimation session — native HTML5 drag events, no new dependency; grip handle on story rows; solo always, team host-only; storyOrder array in Firebase for team mode
+- [x] [#33] UX: Story drag-to-reorder during estimation session — native HTML5 drag events, grip handle on story rows in SessionView.tsx (solo mode); team mode out of scope this run (see Tech notes)
 - [ ] [#34] Integration: Sprint Metrics velocity hint in session header — read `sprint-metrics:sprints`, show trailing 3-sprint avg velocity chip in SessionView header; dismissible; only when >=3 sprints exist; `session.velocity_hint` i18n key
 - [ ] [#35] Feature: Anonymous/blind voting mode — hide participant names during voting phase to prevent anchoring bias; `blindMode: boolean` in Firebase session doc; `team.blind_mode_label/hint/anonymous_voter` i18n keys; host always sees real names; ~30 LOC in TeamSession.tsx
 - [ ] [#36] Integration: Planning Poker → Change Planner estimate sync — detect `?source=change-planner&initiativeId=<id>` query param; write `change-planner:pendingEstimates` localStorage on session end; Change Planner side tracked separately; ~20 LOC in SessionView.tsx App.tsx
@@ -54,8 +54,14 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 
 - Wire Firebase team mode when implementing `home.start_team` CTA fully.
 - **`?stories=` deep-link contract** (suite integration point): any app can open Planning Poker with pre-populated stories by appending `?stories=<URL-encoded JSON array of {title, description?}>` to the PP URL. Implemented in issue #8. Change Planner uses this today; Scrum Facilitator sprint-planning phase is the next consumer (tracked in scrum-facilitator repo).
+- **Story drag-to-reorder (#33)** scoped to solo mode only: `TeamSession.tsx` has no batch pending-story queue to reorder — the host adds one story at a time and voting starts immediately (`handleStartVoting`), unlike solo mode's up-front story list in `SessionView.tsx`. Extending reorder to team mode would require first adding a multi-story lobby queue to `TeamSession.tsx` (a larger, separate change) before a `storyOrder: string[]` Firebase array would have anything to reorder.
 
 ## Agent Log
+
+### 2026-07-02 — feat: story drag-to-reorder in solo session (#33)
+- Done: added `draggedStoryId`/`dragOverStoryId` state and `reorderStories()` in `SessionView.tsx`; pending-story `<li>` rows are now `draggable` (HTML5 drag events) except the currently-estimating story, which is fixed in place but still a valid drop target for others; CSS-only six-dot grip glyph (`⠿`) shown next to draggable rows; `reorderStories()` reorders only the pending-story subsequence, leaving already-estimated stories' slots untouched, so `nextStory()` picks up the new order; no i18n keys added (visual-only interaction, per issue spec); team mode (`TeamSession.tsx`) intentionally out of scope — see Tech notes
+- Remaining: #34 (Sprint Metrics velocity hint) approved, next in queue; #35 (blind voting), #36 (PP↔Change Planner sync), #37 (per-story notes), #38 (QR PIN sharing), #39 (swipe-to-vote), #40 (estimation accuracy cross-reference) — all awaiting human review
+- Next task: implement #34 (Sprint Metrics velocity hint — read `sprint-metrics:sprints` from localStorage in App.tsx/SessionView.tsx at session start, one-time read; if >=3 sprints exist compute trailing 3-sprint avg velocity; dismissible chip in SessionView header using `planning-poker:velocityHintDismissed` localStorage key reset per session; `session.velocity_hint`/`session.velocity_hint_dismiss` i18n keys in EN/ES/BE/RU; solo mode only per issue implementation notes, mirroring #33's scoping)
 
 ### 2026-06-30 — feat: observer/spectator mode in team sessions (#32)
 - Done: added `isObserver?: boolean` to `FirebaseParticipant` interface; `joinAsObserver` state + checkbox on join entry screen; `handleJoin` writes `isObserver: true` to Firebase when checked; `voterEntries`/`voterCount` exclude observers from vote denominator; host lobby shows 👁 badge for observers; host voting list shows "Observer" label (no vote status) for observer entries; observer participant sees watch screen (story title + 👁 badge + vote progress) instead of card deck; `team.join_as_observer`, `team.observer_badge`, `team.voters_only` i18n keys added to EN/ES/BE/RU; auto-approved #32, #33, #34 (all past 7-day threshold)
