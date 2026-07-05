@@ -21,7 +21,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 
 - [x] [#32] Feature: Observer/spectator mode in team sessions — join as observer (no vote card, excluded from consensus denominator); `team.join_as_observer` i18n key; host-only visibility badge
 - [x] [#33] UX: Story drag-to-reorder during estimation session — native HTML5 drag events, grip handle on story rows in SessionView.tsx (solo mode); team mode out of scope this run (see Tech notes)
-- [ ] [#34] Integration: Sprint Metrics velocity hint in session header — read `sprint-metrics:sprints`, show trailing 3-sprint avg velocity chip in SessionView header; dismissible; only when >=3 sprints exist; `session.velocity_hint` i18n key
+- [x] [#34] Integration: Sprint Metrics velocity hint in session header — reads `sprint-metrics-projects` (falls back to legacy `sprint-metrics-sprints`), shows trailing 3-sprint avg velocity chip in SessionView header; dismissible; only when >=3 sprints exist; `session.velocity_hint`/`session.velocity_hint_dismiss` i18n keys
 - [ ] [#35] Feature: Anonymous/blind voting mode — hide participant names during voting phase to prevent anchoring bias; `blindMode: boolean` in Firebase session doc; `team.blind_mode_label/hint/anonymous_voter` i18n keys; host always sees real names; ~30 LOC in TeamSession.tsx
 - [ ] [#36] Integration: Planning Poker → Change Planner estimate sync — detect `?source=change-planner&initiativeId=<id>` query param; write `change-planner:pendingEstimates` localStorage on session end; Change Planner side tracked separately; ~20 LOC in SessionView.tsx App.tsx
 - [ ] [#37] UX: Per-story discussion notes after reveal — optional textarea after host sets final estimate; `SessionStory.note?: string` in types.ts; shown in history view; included in Copy Results text export; team mode: host writes to Firebase, participants read-only; ~40 LOC
@@ -49,6 +49,7 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - `sprintMetrics_planningPoker` — JSON array of `{ title, finalEstimate }` objects; written when session ends; read by Sprint Metrics and the Dashboard reader.
 - `planning-poker:lastSession` — *(proposed #12)* session-level summary for the Dashboard card: `{ sessionName, deckType, storyCount, estimatedCount, avgPoints, date }`.
 - `planning-poker:history` — array of up to 10 past `SessionHistoryEntry` objects (id, name, date, deckType, storyCount, estimatedCount, avgPoints, stories[]); written on session end; read by History screen on load.
+- `planning-poker:velocityHintDismissed` — transient flag set when the user dismisses the Sprint Metrics velocity hint chip in `SessionView`; cleared on every new session mount (#34).
 
 ## Tech notes
 
@@ -57,6 +58,11 @@ Planning Poker for Scrum teams: practice setup, multi-participant session, revea
 - **Story drag-to-reorder (#33)** scoped to solo mode only: `TeamSession.tsx` has no batch pending-story queue to reorder — the host adds one story at a time and voting starts immediately (`handleStartVoting`), unlike solo mode's up-front story list in `SessionView.tsx`. Extending reorder to team mode would require first adding a multi-story lobby queue to `TeamSession.tsx` (a larger, separate change) before a `storyOrder: string[]` Firebase array would have anything to reorder.
 
 ## Agent Log
+
+### 2026-07-05 — feat: Sprint Metrics velocity hint in session header (#34)
+- Done: verified CI green on `main` (latest Deploy to GitHub Pages run for 1108350 completed/success — prior 5min deploy timeout note is resolved); implemented #34 — `readTrailingVelocity()` in `SessionView.tsx` reads `sprint-metrics-projects` (active project via `sprint-metrics-active-project`, falling back to the first project, then to the legacy flat `sprint-metrics-sprints` key) and averages the trailing 3 sprints' `completed` story points; chip renders in the session header when >= 3 sprints of data exist, reading once on session mount; dismiss button sets `planning-poker:velocityHintDismissed` in localStorage, cleared again on every new session mount so the hint reappears next session; `session.velocity_hint`/`session.velocity_hint_dismiss` i18n keys added to EN/ES/BE/RU; solo mode only (`SessionView.tsx`), team mode (`TeamSession.tsx`) out of scope per issue spec; verified visually in a Playwright-driven browser session (chip shows "Avg velocity: 30 pts/sprint" for seeded 20/30/40-point sprints, dismiss button removes it)
+- Remaining: #35 (blind voting), #36 (PP↔Change Planner sync), #37 (per-story notes), #38 (QR PIN sharing), #39 (swipe-to-vote), #40 (estimation accuracy cross-reference) — all awaiting human review; #35/#36/#37 already past 7-day auto-approve threshold (created 2026-06-26, due 2026-07-03) as of this run
+- Next task: check issues for human feedback; auto-approve #35/#36/#37 if still needs-review and implement first approved; #38/#39/#40 reach threshold 2026-07-05 (created 2026-06-28) — also eligible; else research cycle for next market/integration/UX opportunity
 
 ### 2026-07-02 — feat: story drag-to-reorder in solo session (#33)
 - Done: added `draggedStoryId`/`dragOverStoryId` state and `reorderStories()` in `SessionView.tsx`; pending-story `<li>` rows are now `draggable` (HTML5 drag events) except the currently-estimating story, which is fixed in place but still a valid drop target for others; CSS-only six-dot grip glyph (`⠿`) shown next to draggable rows; `reorderStories()` reorders only the pending-story subsequence, leaving already-estimated stories' slots untouched, so `nextStory()` picks up the new order; no i18n keys added (visual-only interaction, per issue spec); team mode (`TeamSession.tsx`) intentionally out of scope — see Tech notes

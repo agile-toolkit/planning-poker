@@ -31,7 +31,9 @@
     "shortcut_reveal": "Reveal cards",
     "shortcut_next": "Next story",
     "shortcut_reset": "Reset votes",
-    "shortcut_help": "Toggle shortcuts"
+    "shortcut_help": "Toggle shortcuts",
+    "velocity_hint": "Avg velocity: {{n}} pts/sprint",
+    "velocity_hint_dismiss": "Dismiss"
   },
   "home": {
     "headline": "Planning Poker",

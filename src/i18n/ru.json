@@ -31,7 +31,9 @@
     "shortcut_reveal": "Раскрыть карты",
     "shortcut_next": "Следующая история",
     "shortcut_reset": "Сбросить голоса",
-    "shortcut_help": "Показать/скрыть сокращения"
+    "shortcut_help": "Показать/скрыть сокращения",
+    "velocity_hint": "Средняя velocity: {{n}} оч/спринт",
+    "velocity_hint_dismiss": "Скрыть"
   },
   "home": {
     "headline": "Planning Poker",
