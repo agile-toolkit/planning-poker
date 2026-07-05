@@ -26,6 +26,32 @@ function numericVotes(votes: string[]): number[] {
   return votes.map(v => (v === '½' ? 0.5 : parseFloat(v))).filter(n => !isNaN(n))
 }
 
+const VELOCITY_DISMISS_KEY = 'planning-poker:velocityHintDismissed'
+
+/** Reads trailing 3-sprint avg velocity from Sprint Metrics' localStorage; null if unavailable or < 3 sprints. */
+function readTrailingVelocity(): number | null {
+  try {
+    let sprints: { completed?: number }[] | null = null
+    const projectsRaw = localStorage.getItem('sprint-metrics-projects')
+    if (projectsRaw) {
+      const projects: { id: string; sprints?: { completed?: number }[] }[] = JSON.parse(projectsRaw)
+      const activeId = localStorage.getItem('sprint-metrics-active-project')
+      const project = projects.find(p => p.id === activeId) ?? projects[0]
+      sprints = project?.sprints ?? null
+    }
+    if (!sprints) {
+      const legacyRaw = localStorage.getItem('sprint-metrics-sprints')
+      if (legacyRaw) sprints = JSON.parse(legacyRaw)
+    }
+    if (!sprints || sprints.length < 3) return null
+    const last3 = sprints.slice(-3)
+    const avg = last3.reduce((sum, s) => sum + (s.completed ?? 0), 0) / last3.length
+    return Math.round(avg * 10) / 10
+  } catch {
+    return null
+  }
+}
+
 const KBD_CLASS = 'inline-block px-1.5 py-0.5 text-xs font-mono bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300'
 
 export default function SessionView({ session, onChange, onBack }: Props) {
@@ -45,8 +71,23 @@ export default function SessionView({ session, onChange, onBack }: Props) {
   const [showShortcuts, setShowShortcuts] = useState(false)
   const [draggedStoryId, setDraggedStoryId] = useState<string | null>(null)
   const [dragOverStoryId, setDragOverStoryId] = useState<string | null>(null)
+  const [velocityHint, setVelocityHint] = useState<number | null>(null)
+  const [velocityHintDismissed, setVelocityHintDismissed] = useState(false)
   const resultsCardRef = useRef<HTMLDivElement>(null)
   const firstCardRef = useRef<HTMLButtonElement>(null)
+
+  // One-time read at session start; dismissal resets for each new session.
+  useEffect(() => {
+    localStorage.removeItem(VELOCITY_DISMISS_KEY)
+    setVelocityHintDismissed(false)
+    setVelocityHint(readTrailingVelocity())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  function dismissVelocityHint() {
+    setVelocityHintDismissed(true)
+    localStorage.setItem(VELOCITY_DISMISS_KEY, '1')
+  }
 
   // Reset timer when story changes or is revealed
   useEffect(() => {
@@ -305,6 +346,20 @@ export default function SessionView({ session, onChange, onBack }: Props) {
         </button>
         <h1 className="text-xl font-bold text-gray-900 dark:text-white flex-1 truncate">{session.name}</h1>
       </div>
+
+      {velocityHint !== null && !velocityHintDismissed && (
+        <div className="flex items-center gap-2 text-sm bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 rounded-full px-3 py-1.5 w-fit">
+          <span>{t('session.velocity_hint', { n: velocityHint })}</span>
+          <button
+            type="button"
+            onClick={dismissVelocityHint}
+            aria-label={t('session.velocity_hint_dismiss')}
+            className="text-brand-500 hover:text-brand-700 dark:hover:text-brand-100 leading-none"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="space-y-4">

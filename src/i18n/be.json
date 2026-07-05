@@ -31,7 +31,9 @@
     "shortcut_reveal": "Раскрыць карты",
     "shortcut_next": "Наступная гісторыя",
     "shortcut_reset": "Скінуць галасы",
-    "shortcut_help": "Паказаць/схаваць скароты"
+    "shortcut_help": "Паказаць/схаваць скароты",
+    "velocity_hint": "Сярэдняя velocity: {{n}} ач/спрынт",
+    "velocity_hint_dismiss": "Схаваць"
   },
   "home": {
     "headline": "Planning Poker",

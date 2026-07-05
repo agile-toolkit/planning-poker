@@ -31,7 +31,9 @@
     "shortcut_reveal": "Revelar cartas",
     "shortcut_next": "Siguiente historia",
     "shortcut_reset": "Reiniciar votos",
-    "shortcut_help": "Alternar atajos"
+    "shortcut_help": "Alternar atajos",
+    "velocity_hint": "Velocidad media: {{n}} pts/sprint",
+    "velocity_hint_dismiss": "Descartar"
   },
   "home": {
     "headline": "Planning Poker",
