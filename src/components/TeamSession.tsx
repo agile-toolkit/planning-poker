@@ -25,6 +25,7 @@ interface FirebaseSession {
   participants: Record<string, FirebaseParticipant>
   currentStory: string
   stories: Record<string, FirebaseStory>
+  blindMode?: boolean
 }
 
 interface Props {
@@ -54,6 +55,7 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
   const [pin, setPin] = useState('')
   const [participantId, setParticipantId] = useState('')
   const [selectedDeck, setSelectedDeck] = useState<DeckType>('fibonacci')
+  const [blindMode, setBlindMode] = useState(false)
   const [session, setSession] = useState<FirebaseSession | null>(null)
   const [sessionLoaded, setSessionLoaded] = useState(false)
   const [newStoryTitle, setNewStoryTitle] = useState('')
@@ -89,6 +91,7 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
       participants: { [hostId]: { name: name.trim(), isHost: true } },
       currentStory: '',
       stories: {},
+      blindMode,
     })
     setPin(newPin)
     setParticipantId(hostId)
@@ -204,6 +207,18 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
               ))}
             </div>
           </div>
+          <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={blindMode}
+              onChange={e => setBlindMode(e.target.checked)}
+              className="rounded border-gray-300 dark:border-gray-600 text-brand-600 focus:ring-brand-500"
+            />
+            {t('team.blind_mode_label')}
+          </label>
+          {blindMode && (
+            <p className="text-xs text-gray-400 dark:text-gray-600">{t('team.blind_mode_hint')}</p>
+          )}
           <button
             type="button"
             onClick={handleHost}
@@ -575,6 +590,22 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
               </div>
             </div>
           )}
+
+          <div className="card space-y-2">
+            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+              {t('team.vote_progress', { done: voteCount, total: voterCount || participantEntries.length })}
+            </p>
+            <ul className="space-y-1">
+              {voterEntries.map(([id, p], idx) => (
+                <li key={id} className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300">
+                  <span>{session.blindMode ? t('team.anonymous_voter', { n: idx + 1 }) : p.name}</span>
+                  <span className={`text-xs ${votes[id] ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-600'}`}>
+                    {votes[id] ? t('team.voted_badge') : '…'}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       )
     }
