@@ -118,7 +118,10 @@
     "voted_badge": "Votado ✓",
     "join_as_observer": "Unirse como observador",
     "observer_badge": "Observador",
-    "voters_only": "solo votantes"
+    "voters_only": "solo votantes",
+    "blind_mode_label": "Votación ciega",
+    "blind_mode_hint": "Nombres de participantes ocultos hasta la revelación",
+    "anonymous_voter": "Votante {{n}}"
   },
   "cards": {
     "half": "½ — trivial, minutos",
