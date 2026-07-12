@@ -33,7 +33,8 @@
     "shortcut_reset": "Сбросить голоса",
     "shortcut_help": "Показать/скрыть сокращения",
     "velocity_hint": "Средняя velocity: {{n}} оч/спринт",
-    "velocity_hint_dismiss": "Скрыть"
+    "velocity_hint_dismiss": "Скрыть",
+    "story_note_placeholder": "Добавить заметку к обсуждению…"
   },
   "home": {
     "headline": "Planning Poker",

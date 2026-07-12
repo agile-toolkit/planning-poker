@@ -33,7 +33,8 @@
     "shortcut_reset": "Reset votes",
     "shortcut_help": "Toggle shortcuts",
     "velocity_hint": "Avg velocity: {{n}} pts/sprint",
-    "velocity_hint_dismiss": "Dismiss"
+    "velocity_hint_dismiss": "Dismiss",
+    "story_note_placeholder": "Add a discussion note…"
   },
   "home": {
     "headline": "Planning Poker",

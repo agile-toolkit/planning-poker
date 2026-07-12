@@ -33,7 +33,8 @@
     "shortcut_reset": "Reiniciar votos",
     "shortcut_help": "Alternar atajos",
     "velocity_hint": "Velocidad media: {{n}} pts/sprint",
-    "velocity_hint_dismiss": "Descartar"
+    "velocity_hint_dismiss": "Descartar",
+    "story_note_placeholder": "Añadir una nota de discusión…"
   },
   "home": {
     "headline": "Planning Poker",

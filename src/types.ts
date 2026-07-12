@@ -36,6 +36,7 @@ export interface SessionStory {
   description?: string
   finalEstimate: CardValue | null
   votes: Record<string, CardValue>
+  note?: string
 }
 
 export interface PokerSession {
@@ -62,6 +63,7 @@ export interface SessionHistoryStory {
   title: string
   finalEstimate: CardValue | null
   votes: Record<string, CardValue>
+  note?: string
 }
 
 export interface SessionHistoryEntry {
