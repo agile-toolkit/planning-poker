@@ -45,6 +45,13 @@ function parseDeeplinkStories(): DeeplinkStory[] {
   }
 }
 
+function parseChangePlannerParams(): { initiativeId: string } | null {
+  const p = new URLSearchParams(window.location.search)
+  if (p.get('source') !== 'change-planner') return null
+  const initiativeId = p.get('initiativeId') ?? ''
+  return { initiativeId }
+}
+
 function cardKey(v: CardValue): string {
   if (v === '½') return 'half'
   if (v === '☕') return 'coffee'
@@ -57,6 +64,7 @@ const firebaseReady = isFirebaseConfigured()
 export default function App() {
   const { t } = useTranslation()
   const [deeplinkedStories, setDeeplinkedStories] = useState<DeeplinkStory[]>(parseDeeplinkStories)
+  const [changePlannerSource] = useState(parseChangePlannerParams)
   const [phase, setPhase] = useState<GamePhase>(() =>
     parseDeeplinkStories().length > 0 ? 'setup' : 'home'
   )
@@ -173,6 +181,17 @@ export default function App() {
         localStorage.setItem(HISTORY_KEY, JSON.stringify(updated))
         return updated
       })
+
+      if (changePlannerSource && estimatedStories.length > 0) {
+        localStorage.setItem(
+          'change-planner:pendingEstimates',
+          JSON.stringify({
+            initiativeId: changePlannerSource.initiativeId,
+            date: new Date().toISOString(),
+            stories: estimatedStories.map(s => ({ title: s.title, estimate: s.finalEstimate ?? '' })),
+          })
+        )
+      }
     }
     setPokerSession(null)
     setPhase('home')
@@ -225,6 +244,17 @@ export default function App() {
       localStorage.setItem(HISTORY_KEY, JSON.stringify(updated))
       return updated
     })
+
+    if (changePlannerSource && estimated.length > 0) {
+      localStorage.setItem(
+        'change-planner:pendingEstimates',
+        JSON.stringify({
+          initiativeId: changePlannerSource.initiativeId,
+          date: new Date().toISOString(),
+          stories: estimated.map(s => ({ title: s.title, estimate: s.finalEstimate ?? '' })),
+        })
+      )
+    }
     setPhase('home')
   }
 
