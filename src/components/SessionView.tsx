@@ -244,9 +244,10 @@ export default function SessionView({ session, onChange, onBack }: Props) {
     const deckLabel = session.deckType === 'fibonacci' ? 'Fibonacci' : session.deckType === 'tshirt' ? 'T-Shirt' : 'Powers of 2'
     const header = `${session.name} — ${deckLabel} — ${date}`
     const separator = `${'—'.repeat(32)}|${'—'.repeat(8)}`
-    const rows = estimatedStories.map(s => {
+    const rows = estimatedStories.flatMap(s => {
       const title = s.title.length > 32 ? s.title.slice(0, 29) + '...' : s.title.padEnd(32)
-      return `${title}| ${s.finalEstimate}`
+      const line = `${title}| ${s.finalEstimate}`
+      return s.note ? [line, `  Note: ${s.note}`] : [line]
     })
     const text = [header, `${'Story'.padEnd(32)}| Estimate`, separator, ...rows].join('\n')
     navigator.clipboard.writeText(text).then(() => {
@@ -683,6 +684,24 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                       ))}
                     </div>
                   </div>
+
+                  {currentStory.finalEstimate && (
+                    <textarea
+                      className="input resize-none w-full text-sm mt-1"
+                      rows={2}
+                      maxLength={200}
+                      placeholder={t('session.story_note_placeholder')}
+                      value={currentStory.note ?? ''}
+                      onChange={e => {
+                        const note = e.target.value
+                        update({
+                          stories: session.stories.map(s =>
+                            s.id === currentStory.id ? { ...s, note } : s
+                          ),
+                        })
+                      }}
+                    />
+                  )}
                 </div>
               )}
             </>
@@ -713,8 +732,13 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                 <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                   {estimatedStories.map(s => (
                     <tr key={s.id}>
-                      <td className="py-2 text-gray-800 dark:text-gray-200">{s.title}</td>
-                      <td className="py-2 text-right">
+                      <td className="py-2 pr-2">
+                        <p className="text-gray-800 dark:text-gray-200">{s.title}</p>
+                        {s.note && (
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate max-w-xs">{s.note}</p>
+                        )}
+                      </td>
+                      <td className="py-2 text-right align-top">
                         <span className="bg-brand-50 dark:bg-brand-900/50 text-brand-700 dark:text-brand-200 font-bold px-2 py-0.5 rounded">
                           {s.finalEstimate}
                         </span>

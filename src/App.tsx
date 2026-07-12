@@ -168,6 +168,7 @@ export default function App() {
           id: s.id,
           title: s.title,
           finalEstimate: s.finalEstimate,
+          note: s.note,
           votes: Object.fromEntries(
             Object.entries(s.votes).map(([pid, v]) => {
               const name = pokerSession.participants.find(x => x.id === pid)?.name ?? pid
@@ -557,6 +558,9 @@ export default function App() {
                             </div>
                             <div className="flex-1 min-w-0 pt-1">
                               <p className="text-sm font-medium text-gray-900 dark:text-white">{story.title}</p>
+                              {story.note && (
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">{story.note}</p>
+                              )}
                               <div className="flex gap-2 mt-1 flex-wrap">
                                 {Object.entries(story.votes).map(([name, vote]) => (
                                   <span key={name} className="text-xs text-gray-500 dark:text-gray-400">

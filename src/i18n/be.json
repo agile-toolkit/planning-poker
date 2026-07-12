@@ -33,7 +33,8 @@
     "shortcut_reset": "Скінуць галасы",
     "shortcut_help": "Паказаць/схаваць скароты",
     "velocity_hint": "Сярэдняя velocity: {{n}} ач/спрынт",
-    "velocity_hint_dismiss": "Схаваць"
+    "velocity_hint_dismiss": "Схаваць",
+    "story_note_placeholder": "Дадаць нататку да абмеркавання…"
   },
   "home": {
     "headline": "Planning Poker",
