@@ -4,6 +4,18 @@ import { ref, set, update, onValue, get } from 'firebase/database'
 import { getFirebaseDb } from '../firebase'
 import type { CardValue, DeckType } from '../types'
 import { DECKS } from '../types'
+import { QRCodeSVG } from 'qrcode.react'
+
+function buildJoinUrl(pin: string): string {
+  const url = new URL(window.location.href)
+  url.search = ''
+  url.searchParams.set('joinPin', pin)
+  return url.toString()
+}
+
+function parseJoinPinParam(): string {
+  return new URLSearchParams(window.location.search).get('joinPin') ?? ''
+}
 
 interface FirebaseParticipant {
   name: string
@@ -50,7 +62,7 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
   const { t } = useTranslation()
   const [mode, setMode] = useState<'entry' | 'host' | 'participant'>('entry')
   const [name, setName] = useState('')
-  const [joinPin, setJoinPin] = useState('')
+  const [joinPin, setJoinPin] = useState(parseJoinPinParam)
   const [joinAsObserver, setJoinAsObserver] = useState(false)
   const [pin, setPin] = useState('')
   const [participantId, setParticipantId] = useState('')
@@ -322,12 +334,18 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
     if (session.phase === 'lobby') {
       return (
         <div className="max-w-sm mx-auto pt-8 space-y-6">
-          <div className="card text-center space-y-2">
+          <div className="card text-center space-y-3">
             <p className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">
               {t('team.pin_label')}
             </p>
             <div className="text-5xl font-mono font-bold text-brand-600 dark:text-brand-400 tracking-widest bg-brand-50 dark:bg-gray-800 px-6 py-3 rounded-2xl inline-block">
               {pin}
+            </div>
+            <div className="flex flex-col items-center gap-1 pt-1">
+              <div className="bg-white p-2 rounded-xl inline-block">
+                <QRCodeSVG value={buildJoinUrl(pin)} size={128} />
+              </div>
+              <p className="text-xs text-gray-400 dark:text-gray-500">{t('team.qr_scan_label')}</p>
             </div>
           </div>
 
