@@ -1,6 +1,12 @@
 {
-  "common": { "add": "Дадаць", "close": "Закрыць" },
-  "app": { "title": "Planning Poker", "switch_lang": "RU" },
+  "common": {
+    "add": "Дадаць",
+    "close": "Закрыць"
+  },
+  "app": {
+    "title": "Planning Poker",
+    "switch_lang": "RU"
+  },
   "session": {
     "default_name": "Сесія Planning Poker",
     "back": "Галоўная",
@@ -122,7 +128,8 @@
     "voters_only": "толькі галасуючыя",
     "blind_mode_label": "Сляпое галасаванне",
     "blind_mode_hint": "Імёны ўдзельнікаў схаваны да раскрыцця",
-    "anonymous_voter": "Удзельнік {{n}}"
+    "anonymous_voter": "Удзельнік {{n}}",
+    "qr_scan_label": "Адсканіраваць для далучэння"
   },
   "cards": {
     "half": "½ — трывіяльна, хвіліны",

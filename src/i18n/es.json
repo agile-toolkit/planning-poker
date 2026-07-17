@@ -1,6 +1,12 @@
 {
-  "common": { "add": "Agregar", "close": "Cerrar" },
-  "app": { "title": "Planning Poker", "switch_lang": "BE" },
+  "common": {
+    "add": "Agregar",
+    "close": "Cerrar"
+  },
+  "app": {
+    "title": "Planning Poker",
+    "switch_lang": "BE"
+  },
   "session": {
     "default_name": "Sesión de Planning Poker",
     "back": "Inicio",
@@ -122,7 +128,8 @@
     "voters_only": "solo votantes",
     "blind_mode_label": "Votación ciega",
     "blind_mode_hint": "Nombres de participantes ocultos hasta la revelación",
-    "anonymous_voter": "Votante {{n}}"
+    "anonymous_voter": "Votante {{n}}",
+    "qr_scan_label": "Escanear para unirse"
   },
   "cards": {
     "half": "½ — trivial, minutos",
