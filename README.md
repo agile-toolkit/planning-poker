@@ -4,7 +4,7 @@ A real-time Planning Poker tool for Scrum teams — simultaneous voting, instant
 
 Part of the [Agile Tools](https://github.com/bthos) suite built on Management 3.0 and ICAgile source materials.
 
-See [`.artefacts/GOAL.md`](.artefacts/GOAL.md) for why this app exists and [`.artefacts/ROADMAP.md`](.artefacts/ROADMAP.md) for what's next. `.artefacts/BRIEF.md` retains the full run-by-run build history.
+See [`GOAL.md`](GOAL.md) for why this app exists and [`ROADMAP.md`](ROADMAP.md) for what's next. `.artefacts/BRIEF.md` retains the full run-by-run build history.
 
 ## Stack
 React 18 · TypeScript · Vite · Tailwind CSS · Firebase (optional, team sessions) · react-i18next (EN/ES/BE/RU)
