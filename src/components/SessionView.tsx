@@ -53,6 +53,9 @@ function readTrailingVelocity(): number | null {
 }
 
 const KBD_CLASS = 'inline-block px-1.5 py-0.5 text-xs font-mono bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300'
+const SWIPE_HINT_KEY = 'planning-poker:swipeHintSeen'
+const SWIPE_H_THRESHOLD = 40
+const SWIPE_V_THRESHOLD = 60
 
 export default function SessionView({ session, onChange, onBack }: Props) {
   const { t } = useTranslation()
@@ -73,6 +76,9 @@ export default function SessionView({ session, onChange, onBack }: Props) {
   const [dragOverStoryId, setDragOverStoryId] = useState<string | null>(null)
   const [velocityHint, setVelocityHint] = useState<number | null>(null)
   const [velocityHintDismissed, setVelocityHintDismissed] = useState(false)
+  const [swipeIndex, setSwipeIndex] = useState<Record<string, number>>({})
+  const [swipeHintSeen, setSwipeHintSeen] = useState(() => localStorage.getItem(SWIPE_HINT_KEY) === '1')
+  const swipeStart = useRef<{ x: number; y: number; participantId: string } | null>(null)
   const resultsCardRef = useRef<HTMLDivElement>(null)
   const firstCardRef = useRef<HTMLButtonElement>(null)
 
@@ -202,6 +208,48 @@ export default function SessionView({ session, onChange, onBack }: Props) {
         return next
       })
     }, 500)
+  }
+
+  function dismissSwipeHint() {
+    if (swipeHintSeen) return
+    setSwipeHintSeen(true)
+    localStorage.setItem(SWIPE_HINT_KEY, '1')
+  }
+
+  // Touch-only swipe layer, additive to tap/keyboard voting: horizontal swipe browses
+  // the highlighted card within a participant's row, swipe up casts it as that
+  // participant's vote. Mouse/pen pointers are ignored so desktop drag (story
+  // reordering elsewhere) is unaffected.
+  function handleCardPointerDown(e: React.PointerEvent, participantId: string) {
+    if (e.pointerType !== 'touch' || session.revealed) return
+    e.currentTarget.setPointerCapture(e.pointerId)
+    swipeStart.current = { x: e.clientX, y: e.clientY, participantId }
+  }
+
+  function handleCardPointerMove(e: React.PointerEvent, participantId: string) {
+    const start = swipeStart.current
+    if (e.pointerType !== 'touch' || !start || start.participantId !== participantId) return
+    const dx = e.clientX - start.x
+    const dy = e.clientY - start.y
+    if (dy <= -SWIPE_V_THRESHOLD && Math.abs(dx) < SWIPE_H_THRESHOLD) {
+      const idx = swipeIndex[participantId] ?? 0
+      castVote(participantId, deckValues[idx])
+      dismissSwipeHint()
+      swipeStart.current = null
+    } else if (Math.abs(dx) >= SWIPE_H_THRESHOLD) {
+      const dir = dx > 0 ? 1 : -1
+      setSwipeIndex(prev => {
+        const cur = prev[participantId] ?? 0
+        return { ...prev, [participantId]: Math.min(deckValues.length - 1, Math.max(0, cur + dir)) }
+      })
+      dismissSwipeHint()
+      swipeStart.current = { x: e.clientX, y: e.clientY, participantId }
+    }
+  }
+
+  function handleCardPointerUp(e: React.PointerEvent) {
+    if (e.pointerType !== 'touch') return
+    swipeStart.current = null
   }
 
   function reveal() {
@@ -567,11 +615,21 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                       </span>
                     )}
                   </div>
-                  <div className="flex flex-wrap gap-1.5" role="group" aria-label={participant.name}>
+                  <div
+                    className="flex flex-wrap gap-1.5"
+                    role="group"
+                    aria-label={participant.name}
+                    style={session.revealed ? undefined : { touchAction: 'none' }}
+                    onPointerDown={e => handleCardPointerDown(e, participant.id)}
+                    onPointerMove={e => handleCardPointerMove(e, participant.id)}
+                    onPointerUp={handleCardPointerUp}
+                    onPointerCancel={handleCardPointerUp}
+                  >
                     {deckValues.map((v, cardIdx) => {
                       const isSelected = currentStory.votes[participant.id] === v
                       const justVoted = isSelected && !session.revealed && recentVotes.has(participant.id)
                       const isFirstCard = participantIdx === 0 && cardIdx === 0
+                      const isBrowsed = !isSelected && !session.revealed && swipeIndex[participant.id] === cardIdx
                       return (
                         <button
                           key={v}
@@ -587,7 +645,7 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                               ? `border-brand-400 bg-brand-50 dark:bg-brand-900/40 text-brand-700 dark:text-brand-200 scale-105 shadow${justVoted ? ' pp-vote-ring' : ''}`
                               : session.revealed
                                 ? 'border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500 cursor-default'
-                                : 'border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-brand-300 dark:hover:border-brand-500 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                                : `border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-brand-300 dark:hover:border-brand-500 hover:bg-gray-50 dark:hover:bg-gray-700/50${isBrowsed ? ' ring-2 ring-brand-300 dark:ring-brand-600' : ''}`
                           }`}
                         >
                           {v}
@@ -597,6 +655,10 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                   </div>
                 </div>
               ))}
+
+              {!swipeHintSeen && !session.revealed && session.participants.length > 0 && (
+                <p className="text-xs text-gray-400 dark:text-gray-500 -mt-2 sm:hidden">{t('session.swipe_hint')}</p>
+              )}
 
               <div className="flex flex-wrap gap-2 items-center">
                 {!session.revealed ? (

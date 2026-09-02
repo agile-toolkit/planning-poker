@@ -40,7 +40,8 @@
     "shortcut_help": "Показать/скрыть сокращения",
     "velocity_hint": "Средняя velocity: {{n}} оч/спринт",
     "velocity_hint_dismiss": "Скрыть",
-    "story_note_placeholder": "Добавить заметку к обсуждению…"
+    "story_note_placeholder": "Добавить заметку к обсуждению…",
+    "swipe_hint": "Проведите пальцем для просмотра карт · проведите вверх, чтобы проголосовать"
   },
   "home": {
     "headline": "Planning Poker",

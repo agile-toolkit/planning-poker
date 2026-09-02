@@ -40,7 +40,8 @@
     "shortcut_help": "Toggle shortcuts",
     "velocity_hint": "Avg velocity: {{n}} pts/sprint",
     "velocity_hint_dismiss": "Dismiss",
-    "story_note_placeholder": "Add a discussion note…"
+    "story_note_placeholder": "Add a discussion note…",
+    "swipe_hint": "Swipe to browse cards · Swipe up to vote"
   },
   "home": {
     "headline": "Planning Poker",

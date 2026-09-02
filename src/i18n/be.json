@@ -40,7 +40,8 @@
     "shortcut_help": "Паказаць/схаваць скароты",
     "velocity_hint": "Сярэдняя velocity: {{n}} ач/спрынт",
     "velocity_hint_dismiss": "Схаваць",
-    "story_note_placeholder": "Дадаць нататку да абмеркавання…"
+    "story_note_placeholder": "Дадаць нататку да абмеркавання…",
+    "swipe_hint": "Правядзіце пальцам, каб пераглядзець карты · правядзіце ўверх, каб прагаласаваць"
   },
   "home": {
     "headline": "Planning Poker",

@@ -40,7 +40,8 @@
     "shortcut_help": "Alternar atajos",
     "velocity_hint": "Velocidad media: {{n}} pts/sprint",
     "velocity_hint_dismiss": "Descartar",
-    "story_note_placeholder": "Añadir una nota de discusión…"
+    "story_note_placeholder": "Añadir una nota de discusión…",
+    "swipe_hint": "Desliza para explorar cartas · Desliza hacia arriba para votar"
   },
   "home": {
     "headline": "Planning Poker",
