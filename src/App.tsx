@@ -312,6 +312,7 @@ export default function App() {
                           type="button"
                           onClick={() => removeDeeplinkStory(i)}
                           title={t('setup.remove_story')}
+                          aria-label={t('setup.remove_story')}
                           className="text-gray-400 dark:text-gray-500 hover:text-red-400 text-xs shrink-0 mt-0.5"
                         >
                           ✕
@@ -349,6 +350,7 @@ export default function App() {
                         <button
                           type="button"
                           onClick={() => setImportTooltip('')}
+                          aria-label={t('common.close')}
                           className="ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white"
                         >
                           ✕

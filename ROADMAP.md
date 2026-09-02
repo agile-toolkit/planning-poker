@@ -9,6 +9,8 @@ None — idle. See `## Next epics` below.
 1. **E2: Estimation accuracy cross-reference with Sprint Metrics** — serves #3. Blocked on a data-model gap discovered this run: Sprint Metrics' `SprintData` has no date field to match Planning Poker sessions against (see [#40](https://github.com/agile-toolkit/planning-poker/issues/40) comment, 2026-09-02) — needs a human call on whether Sprint Metrics adds a date field first, or this drops the per-sprint framing for a coarser trend comparison.
 
 ## Recently shipped
+**Fix accessibility gaps; remove dead code** (2026-09-02) — see `## Shipped`. A suite-wide UX audit flagged two unlabeled icon-only buttons, a PIN input missing `inputMode="numeric"`, and an unused duplicate `HomeScreen.tsx`. Fixed all three.
+
 **Remove Management 3.0 reference; fix invisible brand colors; first test coverage** (2026-09-02) — see `## Shipped`. Dropped a stray "Management 3.0" mention from `README.md`; completed the `brand` Tailwind scale (`200`/`300`/`800`/`900` were undefined but referenced 39 times across 6 files — the most of any repo in the suite); split `App.tsx`'s URL-parsing functions into `src/deeplink.ts` so they're testable without triggering the module-level Firebase config check, and added this repo's first automated tests.
 
 **E1: Mobile swipe-to-vote gesture** (2026-09-02) — see `## Shipped`. [#39](https://github.com/agile-toolkit/planning-poker/issues/39) shipped for solo mode; team mode swipe support is a possible future follow-up, not filed as its own issue yet.
@@ -32,3 +34,8 @@ None — idle. See `## Next epics` below.
   missing, used 39 times across 6 files)~~
 - ~~Extracted `App.tsx`'s URL-parsing functions into `src/deeplink.ts`;
   added `vitest` + `jsdom` and 13 tests~~
+
+**v0.2.2 — Fix accessibility gaps; remove dead code** (2026-09-02):
+- ~~Added `aria-label` to two unlabeled icon-only "✕" buttons~~
+- ~~Added `inputMode="numeric"` to the 4-digit PIN input~~
+- ~~Removed the unused duplicate `HomeScreen.tsx`~~

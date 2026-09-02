@@ -4,6 +4,19 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.2.2 — Fix accessibility gaps; remove dead code (2026-09-02)
+
+- **fix**: two icon-only "✕" buttons (remove deep-linked story, dismiss
+  the import tooltip) had only a `title` or nothing at all — added
+  `aria-label` to both, matching the rest of the app's existing pattern.
+- **fix**: the 4-digit team-session PIN input triggered the full
+  keyboard on mobile. Added `inputMode="numeric"` and a numeric
+  `pattern`.
+- **chore**: deleted `src/components/HomeScreen.tsx` — a second, unused
+  home-screen component; the actual home screen has always been inline
+  in `App.tsx`.
+- Found via a suite-wide UX/scope audit.
+
 ## 0.2.1 — Remove Management 3.0 ref; fix invisible brand colors; first tests (2026-09-02)
 
 - **content**: removed a stray "Management 3.0" mention from `README.md`.

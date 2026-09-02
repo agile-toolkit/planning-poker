@@ -259,6 +259,8 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
               placeholder="0000"
               value={joinPin}
               maxLength={4}
+              inputMode="numeric"
+              pattern="[0-9]*"
               onChange={e => { setJoinPin(e.target.value); setJoinError('') }}
             />
             {joinError && (
