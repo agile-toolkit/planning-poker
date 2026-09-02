@@ -3,61 +3,14 @@ import { useTranslation } from 'react-i18next'
 import type { CardValue, DeckType, GamePhase, PokerSession, SessionHistoryEntry } from './types'
 import { DECKS } from './types'
 import { isFirebaseConfigured } from './firebase'
-
-const HISTORY_KEY = 'planning-poker:history'
-const HISTORY_MAX = 10
-
-function loadHistory(): SessionHistoryEntry[] {
-  try {
-    const raw = localStorage.getItem(HISTORY_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw)
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
-  }
-}
+import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, cardKey, type DeeplinkStory } from './deeplink'
 import SessionView from './components/SessionView'
 import TeamSession from './components/TeamSession'
 import AppHeader from './components/AppHeader'
 import ThemeToggle from './components/ThemeToggle'
 
-interface DeeplinkStory {
-  title: string
-  description?: string
-}
-
-function parseDeeplinkStories(): DeeplinkStory[] {
-  try {
-    const raw = new URLSearchParams(window.location.search).get('stories')
-    if (!raw) return []
-    const parsed: unknown = JSON.parse(decodeURIComponent(raw))
-    if (!Array.isArray(parsed)) return []
-    return (parsed as unknown[])
-      .slice(0, 50)
-      .filter((s): s is { title: string; description?: string } =>
-        typeof s === 'object' && s !== null && typeof (s as { title?: unknown }).title === 'string'
-      )
-      .map(s => ({ title: s.title.trim(), description: s.description?.trim() || undefined }))
-      .filter(s => s.title.length > 0)
-  } catch {
-    return []
-  }
-}
-
-function parseChangePlannerParams(): { initiativeId: string } | null {
-  const p = new URLSearchParams(window.location.search)
-  if (p.get('source') !== 'change-planner') return null
-  const initiativeId = p.get('initiativeId') ?? ''
-  return { initiativeId }
-}
-
-function cardKey(v: CardValue): string {
-  if (v === '½') return 'half'
-  if (v === '☕') return 'coffee'
-  return v
-}
-
+const HISTORY_KEY = 'planning-poker:history'
+const HISTORY_MAX = 10
 
 const firebaseReady = isFirebaseConfigured()
 

@@ -15,6 +15,7 @@ npm install
 npm run dev      # start Vite dev server
 npm run build    # tsc typecheck + production build
 npm run preview  # preview the production build locally
+npm test         # vitest run — src/deeplink.ts
 ```
 
 ## Deploy
@@ -37,6 +38,7 @@ This app also *reads* (but does not own) `sprint-metrics-projects` / `sprint-met
 ## Tech notes
 
 - **State management:** plain React `useState`/`useEffect` in `App.tsx` and the two session views (`SessionView.tsx` solo, `TeamSession.tsx` team) — no external state library.
+- **Test coverage:** `src/deeplink.ts` holds the URL-parsing and history-loading functions (`parseDeeplinkStories`, `parseChangePlannerParams`, `cardKey`, `loadHistory`), split out of `App.tsx` so they're testable without triggering `App.tsx`'s module-level `isFirebaseConfigured()` call. `src/deeplink.test.ts` covers all four, including the slice-before-filter ordering in `parseDeeplinkStories` (an invalid entry within the first 50 raw entries is dropped, not backfilled from later valid ones).
 - **i18n:** `react-i18next` + `i18next-browser-languagedetector`; four locale files under `src/i18n/` (`en`, `es`, `be`, `ru.json`), registered in `src/i18n/index.ts`.
 - **Theme:** `darkMode: 'class'` in `tailwind.config.js`; `ThemeToggle.tsx` sets `data-theme` on `<html>` and persists to the `theme` localStorage key; an anti-flash inline script in `index.html` applies the stored/system preference before first paint.
 - **Team sessions (optional):** `src/firebase.ts` exposes `isFirebaseConfigured()` / `getFirebaseDb()`; when no Firebase config is present, `home.start_team` is a disabled stub with a tooltip and solo mode is fully unaffected. When configured, `TeamSession.tsx` drives host/join/vote/reveal entirely through the Firebase Realtime Database (PIN-keyed session doc, `blindMode`/`isObserver` fields on participants/session).
