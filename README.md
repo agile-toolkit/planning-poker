@@ -2,7 +2,7 @@
 
 A real-time Planning Poker tool for Scrum teams — simultaneous voting, instant reveal, and educational context on estimation best practices. Run a solo/practice session on one device, or host a live multi-participant team session (PIN or QR-code join) with hidden-until-reveal voting, anchoring-bias mitigations, and session history that exports to the rest of the Agile Toolkit suite.
 
-Part of the [Agile Tools](https://github.com/bthos) suite built on Management 3.0 and ICAgile source materials.
+Part of the [Agile Tools](https://github.com/bthos) suite built on ICAgile source materials.
 
 See [`GOAL.md`](GOAL.md) for why this app exists and [`ROADMAP.md`](ROADMAP.md) for what's next. `.artefacts/BRIEF.md` retains the full run-by-run build history.
 
