@@ -6,9 +6,14 @@ import { useEffect, useState } from 'react'
  *
  * Facilitator (projector) mode: bigger UI, hidden secondary chrome, for
  * in-room workshops presented on a screen. Session-scoped per tab via
- * sessionStorage — pass an app-prefixed key (e.g.
- * 'team-identity:facilitatorMode') so it doesn't leak across suite apps
- * sharing an origin.
+ * sessionStorage — pass the shared key 'agile-toolkit:facilitatorMode'
+ * (the same string in every app) so the mode survives navigating between
+ * suite apps within one tab: sessionStorage is already shared across
+ * pages on the same origin, and a facilitator running a session across
+ * several tools (e.g. Planning Poker into Scrum Facilitator) shouldn't
+ * have to re-enable it each time. This was originally app-prefixed to
+ * avoid "leaking" between apps, but that's exactly the behavior a
+ * cross-app presentation session needs — deliberately shared now.
  *
  * State is lifted to the app's own App.tsx rather than a self-contained
  * toggle like ThemeToggle, because most apps also need to react to
@@ -20,7 +25,7 @@ import { useEffect, useState } from 'react'
  * Everything sized in rem scales automatically from that one rule.
  *
  * Usage:
- *   const [facilitatorMode, toggleFacilitatorMode] = useFacilitatorMode('myapp:facilitatorMode')
+ *   const [facilitatorMode, toggleFacilitatorMode] = useFacilitatorMode('agile-toolkit:facilitatorMode')
  *   ...
  *   <AppHeader title={t('app.title')} hideLanguagePicker={facilitatorMode}>
  *     <ThemeToggle />

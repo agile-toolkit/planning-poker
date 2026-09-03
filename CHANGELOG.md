@@ -4,6 +4,17 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.2.11 — Facilitator Mode persists across suite apps (2026-09-03)
+
+- **fix**: `useFacilitatorMode`'s storage key changed from
+  `'planning-poker:facilitatorMode'` to the shared
+  `'agile-toolkit:facilitatorMode'` — user-requested so Facilitator Mode
+  survives navigating to another suite app in the same tab instead of
+  resetting. sessionStorage is already shared per-origin-per-tab; this
+  was previously app-prefixed specifically to keep it isolated, which
+  turned out to be the wrong default for a cross-app presentation
+  session.
+
 ## 0.2.10 — Fix duplicated card values; hide "Why Planning Poker?" in Facilitator Mode (2026-09-03)
 
 - **fix**: the Card Values legend showed each value twice — once in its

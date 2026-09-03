@@ -20,7 +20,7 @@ const firebaseReady = isFirebaseConfigured()
 
 export default function App() {
   const { t } = useTranslation()
-  const [facilitatorMode, toggleFacilitatorMode] = useFacilitatorMode('planning-poker:facilitatorMode')
+  const [facilitatorMode, toggleFacilitatorMode] = useFacilitatorMode('agile-toolkit:facilitatorMode')
   // The card-value legend already shows the value in its own box, so strip
   // the "value — " prefix that cards.* translations carry for use as a
   // standalone accessible label elsewhere (see SessionView's cardTitle).
