@@ -33,6 +33,31 @@ All notable changes to this project are documented in this file.
   `html2canvas`.
 - **ci**: `npm test` now runs before `npm run build` in `deploy.yml`.
 
+## 0.2.11 — Facilitator Mode persists across suite apps (2026-09-03)
+
+- **fix**: `useFacilitatorMode`'s storage key changed from
+  `'planning-poker:facilitatorMode'` to the shared
+  `'agile-toolkit:facilitatorMode'` — user-requested so Facilitator Mode
+  survives navigating to another suite app in the same tab instead of
+  resetting. sessionStorage is already shared per-origin-per-tab; this
+  was previously app-prefixed specifically to keep it isolated, which
+  turned out to be the wrong default for a cross-app presentation
+  session.
+
+## 0.2.10 — Fix duplicated card values; hide "Why Planning Poker?" in Facilitator Mode (2026-09-03)
+
+- **fix**: the Card Values legend showed each value twice — once in its
+  own card-shaped box, once again as the leading word of the
+  description (e.g. "**3** 3 — small-medium, half a day"), because the
+  `cards.*` i18n strings are written to double as full standalone
+  accessible labels elsewhere (`SessionView`'s card tooltips). Added a
+  legend-only `cardDesc()` helper that strips the "value — " prefix
+  before display; the tooltip usage is untouched. User-reported.
+- **fix**: the Home screen's "Why Planning Poker?" card wasn't gated by
+  Facilitator Mode at all — user-reported. Hidden while presenting,
+  matching the pattern used for the rest of the suite's Home/setup
+  screens.
+
 ## 0.2.9 — Replace decorative ✕ emoji with SVG icons (2026-09-03)
 
 - **feat**: replaced 5 decorative `✕` text-glyph buttons (shortcuts-modal
