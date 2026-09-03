@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.2.8 — Facilitator Mode (2026-09-03)
+
+- **feat**: added Facilitator (projector) Mode — a presentation toggle for
+  in-room estimation sessions, bigger UI via one CSS rule (everything
+  sized in `rem` scales automatically) plus hiding the nav pills and
+  language picker while active. Toggled from a new header button next to
+  the theme toggle, session-scoped via `sessionStorage`. Adopted from the
+  shared design-system pattern (`useFacilitatorMode.ts` +
+  `FacilitatorToggle.tsx`), originally built for Team Identity.
+
 ## 0.2.7 — Fix "Import from Team Identity" dropping every member name (2026-09-03)
 
 - **fix (broken integration, payload-shape mismatch)**: `importFromTeamIdentity`

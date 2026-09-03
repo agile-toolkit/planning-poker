@@ -9,6 +9,8 @@ import SessionView from './components/SessionView'
 import TeamSession from './components/TeamSession'
 import AppHeader from './components/AppHeader'
 import ThemeToggle from './components/ThemeToggle'
+import FacilitatorToggle from './components/FacilitatorToggle'
+import { useFacilitatorMode } from './components/useFacilitatorMode'
 
 const HISTORY_KEY = 'planning-poker:history'
 const HISTORY_MAX = 10
@@ -17,6 +19,7 @@ const firebaseReady = isFirebaseConfigured()
 
 export default function App() {
   const { t } = useTranslation()
+  const [facilitatorMode, toggleFacilitatorMode] = useFacilitatorMode('planning-poker:facilitatorMode')
   const [deeplinkedStories, setDeeplinkedStories] = useState<DeeplinkStory[]>(() => {
     const stories = parseDeeplinkStories()
     return stories.length > 0 ? stories : parseKanbanBoardParam()
@@ -221,7 +224,8 @@ export default function App() {
       <AppHeader
         title={t('app.title')}
         onTitleClick={() => setPhase('home')}
-        navItems={[
+        hideLanguagePicker={facilitatorMode}
+        navItems={facilitatorMode ? [] : [
           { key: 'learn', label: t('learn.title'), active: phase === 'learn', onClick: () => setPhase('learn') },
           ...(sessionHistory.length > 0
             ? [{ key: 'history', label: t('history.title'), active: phase === 'history', onClick: () => setPhase('history') }]
@@ -229,6 +233,12 @@ export default function App() {
         ]}
       >
         <ThemeToggle />
+        <FacilitatorToggle
+          active={facilitatorMode}
+          onToggle={toggleFacilitatorMode}
+          labelOn={t('facilitator.toggle_on')}
+          labelOff={t('facilitator.toggle_off')}
+        />
       </AppHeader>
 
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-8">

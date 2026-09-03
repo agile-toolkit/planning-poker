@@ -150,5 +150,9 @@
     "100": "100 — épica, divídela de inmediato",
     "?": "? — necesita aclaración",
     "coffee": "☕ — necesito un descanso"
+  },
+  "facilitator": {
+    "toggle_on": "Modo Facilitador",
+    "toggle_off": "Salir del Modo Facilitador"
   }
 }

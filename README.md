@@ -32,6 +32,7 @@ GitHub Pages via GitHub Actions on push to `main`. `deploy.yml` passes `VITE_FIR
 | `sprintMetrics_planningPoker` | JSON array of `{ title, finalEstimate }` | Written on session end; read by Sprint Metrics to seed story points. |
 | `change-planner:pendingEstimates` | `{ initiativeId, date: ISO-8601, stories: [{ title, estimate }] }` | Written on session end only when the session was opened via the `?source=change-planner&initiativeId=<id>` deep-link; read and cleared by Change Planner on its next load. |
 | `theme` | `'light' \| 'dark'` | Shared suite theme-toggle convention key (same key name used across Agile Toolkit apps sharing the `github.io` origin). |
+| `planning-poker:facilitatorMode` (`sessionStorage`) | `'1' \| '0'` | Facilitator (projector) mode toggle — per-tab, not persisted across sessions. See `src/components/useFacilitatorMode.ts`. |
 
 This app also *reads* (but does not own) `sprint-metrics-projects` / `sprint-metrics-active-project` / `sprint-metrics-sprints` (velocity hint) and `team-identity-charter` (participant auto-import) — see those repos for the keys they write.
 

@@ -150,5 +150,9 @@
     "100": "100 — epic, split immediately",
     "?": "? — need clarification",
     "coffee": "☕ — need a break"
+  },
+  "facilitator": {
+    "toggle_on": "Facilitator Mode",
+    "toggle_off": "Exit Facilitator Mode"
   }
 }

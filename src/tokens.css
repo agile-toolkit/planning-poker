@@ -429,3 +429,13 @@
   letter-spacing: var(--tracking-tight);
   font-feature-settings: 'tnum' 1, 'zero' 1;
 }
+
+/* ----------------------------------------------------------------------------
+   9. FACILITATOR (PROJECTOR) MODE
+   Toggled by src/components/useFacilitatorMode.ts + FacilitatorToggle.tsx.
+   Bigger UI for in-room workshops presented on a screen — everything sized
+   in rem scales automatically from this one rule.
+   ---------------------------------------------------------------------------- */
+html.facilitator-mode {
+  font-size: 1.25rem;
+}
