@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { CardValue, DeckType, GamePhase, PokerSession, SessionHistoryEntry } from './types'
 import { DECKS } from './types'
 import { isFirebaseConfigured } from './firebase'
-import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, cardKey, type DeeplinkStory } from './deeplink'
+import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, parseJoinPinParam, cardKey, type DeeplinkStory } from './deeplink'
 import SessionView from './components/SessionView'
 import TeamSession from './components/TeamSession'
 import AppHeader from './components/AppHeader'
@@ -18,8 +18,13 @@ export default function App() {
   const { t } = useTranslation()
   const [deeplinkedStories, setDeeplinkedStories] = useState<DeeplinkStory[]>(parseDeeplinkStories)
   const [changePlannerSource] = useState(parseChangePlannerParams)
-  const [phase, setPhase] = useState<GamePhase>(() =>
-    parseDeeplinkStories().length > 0 ? 'setup' : 'home'
+  const [phase, setPhase] = useState<GamePhase>(() => {
+    if (parseDeeplinkStories().length > 0) return 'setup'
+    if (firebaseReady && parseJoinPinParam()) return 'team'
+    return 'home'
+  })
+  const [teamEntryMode, setTeamEntryMode] = useState<'host' | 'join'>(() =>
+    firebaseReady && parseJoinPinParam() ? 'join' : 'host'
   )
   const [currentStory, setCurrentStory] = useState('')
   const [participantsText, setParticipantsText] = useState('Alice\nBob\nCarol')
@@ -240,7 +245,7 @@ export default function App() {
               <div className="text-6xl mb-4">🃏</div>
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">{t('home.headline')}</h1>
               <p className="text-gray-600 dark:text-gray-400 mb-8">{t('home.subheadline')}</p>
-              <div className="flex gap-3 justify-center">
+              <div className="flex gap-3 justify-center flex-wrap">
                 <button
                   type="button"
                   onClick={() => setPhase('setup')}
@@ -250,12 +255,21 @@ export default function App() {
                 </button>
                 <button
                   type="button"
-                  onClick={firebaseReady ? () => setPhase('team') : undefined}
+                  onClick={firebaseReady ? () => { setTeamEntryMode('host'); setPhase('team') } : undefined}
                   disabled={!firebaseReady}
                   title={!firebaseReady ? t('home.team_note') : undefined}
                   className={`btn-secondary text-base px-8 py-3 ${!firebaseReady ? 'opacity-40 cursor-not-allowed' : ''}`}
                 >
-                  {t('home.start_team')}
+                  {t('home.host_team')}
+                </button>
+                <button
+                  type="button"
+                  onClick={firebaseReady ? () => { setTeamEntryMode('join'); setPhase('team') } : undefined}
+                  disabled={!firebaseReady}
+                  title={!firebaseReady ? t('home.team_note') : undefined}
+                  className={`btn-secondary text-base px-8 py-3 ${!firebaseReady ? 'opacity-40 cursor-not-allowed' : ''}`}
+                >
+                  {t('home.join_team')}
                 </button>
               </div>
               {!firebaseReady && (
@@ -437,6 +451,7 @@ export default function App() {
           <TeamSession
             onBack={() => setPhase('home')}
             onSessionEnd={handleTeamSessionEnd}
+            initialMode={teamEntryMode}
           />
         )}
 

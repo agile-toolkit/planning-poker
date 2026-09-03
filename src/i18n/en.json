@@ -48,6 +48,8 @@
     "subheadline": "Simultaneous voting, instant reveal. No anchoring bias.",
     "start_practice": "Practice Solo",
     "start_team": "Team Session",
+    "host_team": "Host Team Session",
+    "join_team": "Join Team Session",
     "team_note": "Team mode requires Firebase. Configure secrets to enable.",
     "why_title": "Why Planning Poker?",
     "why_body": "Planning Poker prevents anchoring bias — the tendency for the first number mentioned to dominate discussion. By voting simultaneously and revealing all at once, everyone's independent estimate is surfaced, leading to richer discussion and better estimates.",

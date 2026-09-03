@@ -9,6 +9,8 @@ None — idle. See `## Next epics` below.
 1. **E2: Estimation accuracy cross-reference with Sprint Metrics** — serves #3. Blocked on a data-model gap discovered this run: Sprint Metrics' `SprintData` has no date field to match Planning Poker sessions against (see [#40](https://github.com/agile-toolkit/planning-poker/issues/40) comment, 2026-09-02) — needs a human call on whether Sprint Metrics adds a date field first, or this drops the per-sprint framing for a coarser trend comparison.
 
 ## Recently shipped
+**Split host/join into two dedicated screens** (2026-09-02) — see `## Shipped`. Replaced the single "Team Session" button + combined host+join form with two entry points ("Host Team Session" / "Join Team Session"), each landing on a screen scoped to just that action — matching Moving Motivators' pattern. A `?joinPin=...` link now opens straight onto the Join screen instead of requiring a manual click through Home first.
+
 **Wire up team-session Firebase secrets in deploy** (2026-09-02) — see `## Shipped`. The live site never actually enabled team sessions — `deploy.yml` didn't pass `VITE_FIREBASE_*` into the build, so `isFirebaseConfigured()` was always false and "Start Team Session" stayed a disabled stub, despite `TeamSession.tsx` being fully built. Added the same secrets passthrough Moving Motivators' workflow already has.
 
 **Fix accessibility gaps; remove dead code** (2026-09-02) — see `## Shipped`. A suite-wide UX audit flagged two unlabeled icon-only buttons, a PIN input missing `inputMode="numeric"`, and an unused duplicate `HomeScreen.tsx`. Fixed all three.
@@ -48,3 +50,10 @@ None — idle. See `## Next epics` below.
   a configured Firebase project instead of always building with team
   sessions disabled~~
 - ~~Added `.env.example` for local dev~~
+
+**v0.2.4 — Split host/join into two dedicated screens** (2026-09-02):
+- ~~Home screen now offers "Host Team Session" / "Join Team Session" as
+  two separate entry points, each landing on a screen scoped to that
+  one action instead of a combined host+join form~~
+- ~~A `?joinPin=...` link opens straight onto the Join screen with the
+  PIN pre-filled~~

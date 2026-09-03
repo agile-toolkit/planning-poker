@@ -48,6 +48,8 @@
     "subheadline": "Votación simultánea, revelación instantánea. Sin sesgo de anclaje.",
     "start_practice": "Practicar Solo",
     "start_team": "Sesión de Equipo",
+    "host_team": "Organizar Sesión de Equipo",
+    "join_team": "Unirse a Sesión de Equipo",
     "team_note": "El modo equipo requiere Firebase. Configura los secretos para habilitarlo.",
     "why_title": "¿Por qué Planning Poker?",
     "why_body": "Planning Poker previene el sesgo de anclaje — la tendencia del primer número mencionado a dominar la discusión. Al votar simultáneamente y revelar todo a la vez, se muestran las estimaciones independientes de cada persona, lo que lleva a discusiones más ricas y mejores estimaciones.",

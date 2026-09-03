@@ -43,6 +43,10 @@ export function parseChangePlannerParams(): { initiativeId: string } | null {
   return { initiativeId }
 }
 
+export function parseJoinPinParam(): string {
+  return new URLSearchParams(window.location.search).get('joinPin') ?? ''
+}
+
 export function cardKey(v: CardValue): string {
   if (v === '½') return 'half'
   if (v === '☕') return 'coffee'

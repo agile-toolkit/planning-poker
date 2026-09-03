@@ -5,16 +5,13 @@ import { getFirebaseDb } from '../firebase'
 import type { CardValue, DeckType } from '../types'
 import { DECKS } from '../types'
 import { QRCodeSVG } from 'qrcode.react'
+import { parseJoinPinParam } from '../deeplink'
 
 function buildJoinUrl(pin: string): string {
   const url = new URL(window.location.href)
   url.search = ''
   url.searchParams.set('joinPin', pin)
   return url.toString()
-}
-
-function parseJoinPinParam(): string {
-  return new URLSearchParams(window.location.search).get('joinPin') ?? ''
 }
 
 interface FirebaseParticipant {
@@ -46,6 +43,7 @@ interface Props {
     results: { title: string; finalEstimate: string | null }[],
     deckType: DeckType,
   ) => void
+  initialMode: 'host' | 'join'
 }
 
 function generatePin(): string {
@@ -58,11 +56,15 @@ const deckOptions: { value: DeckType; labelKey: string }[] = [
   { value: 'powers2',   labelKey: 'setup.deck_powers2' },
 ]
 
-export default function TeamSession({ onBack, onSessionEnd }: Props) {
+export default function TeamSession({ onBack, onSessionEnd, initialMode }: Props) {
   const { t } = useTranslation()
-  const [mode, setMode] = useState<'entry' | 'host' | 'participant'>('entry')
-  const [name, setName] = useState('')
   const [joinPin, setJoinPin] = useState(parseJoinPinParam)
+  // A join-link (?joinPin=...) always means "join," regardless of which
+  // button the user came in through.
+  const [mode, setMode] = useState<'host-setup' | 'join-setup' | 'host' | 'participant'>(
+    () => (initialMode === 'join' || parseJoinPinParam() ? 'join-setup' : 'host-setup')
+  )
+  const [name, setName] = useState('')
   const [joinAsObserver, setJoinAsObserver] = useState(false)
   const [pin, setPin] = useState('')
   const [participantId, setParticipantId] = useState('')
@@ -183,8 +185,8 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
     onSessionEnd(results, session.deck ?? 'fibonacci')
   }
 
-  // ── ENTRY ──────────────────────────────────────────────────────────────
-  if (mode === 'entry') {
+  // ── HOST SETUP ─────────────────────────────────────────────────────────
+  if (mode === 'host-setup') {
     return (
       <div className="max-w-sm mx-auto pt-8 space-y-6">
         <div>
@@ -241,13 +243,30 @@ export default function TeamSession({ onBack, onSessionEnd }: Props) {
           </button>
         </div>
 
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center" aria-hidden="true">
-            <div className="w-full border-t border-gray-200 dark:border-gray-700" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="bg-gray-50 dark:bg-gray-950 px-2 text-gray-400 dark:text-gray-600">or</span>
-          </div>
+        <button
+          type="button"
+          onClick={onBack}
+          className="w-full text-sm text-gray-400 hover:text-gray-600 dark:text-gray-600 dark:hover:text-gray-400"
+        >
+          {t('session.back')}
+        </button>
+      </div>
+    )
+  }
+
+  // ── JOIN SETUP ─────────────────────────────────────────────────────────
+  if (mode === 'join-setup') {
+    return (
+      <div className="max-w-sm mx-auto pt-8 space-y-6">
+        <div>
+          <label className="label">{t('team.enter_name')}</label>
+          <input
+            autoFocus
+            className="input"
+            placeholder={t('team.name_placeholder')}
+            value={name}
+            onChange={e => setName(e.target.value)}
+          />
         </div>
 
         <div className="card space-y-4">

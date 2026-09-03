@@ -4,6 +4,24 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.2.4 — Split host/join into two dedicated screens (2026-09-02)
+
+- **change**: the Home screen's single "Team Session" button became two —
+  "Host Team Session" and "Join Team Session" — each landing directly on
+  a screen scoped to that one action, matching Moving Motivators'
+  pattern instead of the combined host+join form (deck picker and blind
+  mode next to the PIN field) `TeamSession.tsx` used to show up front.
+  `mode`'s `'entry'` state split into `'host-setup'` / `'join-setup'`;
+  the in-session `'host'` / `'participant'` states are unchanged.
+- **fix**: a `?joinPin=...` link now drops the visitor straight onto the
+  Join screen with the PIN pre-filled, instead of landing on the Home
+  screen and requiring a manual click through first.
+- `parseJoinPinParam` moved from a local function in `TeamSession.tsx`
+  into `src/deeplink.ts` (now covered by `deeplink.test.ts`) so both
+  `App.tsx` and `TeamSession.tsx` share one implementation.
+- Prompted by a user question comparing this app's session-entry UX to
+  Moving Motivators'.
+
 ## 0.2.3 — Wire up team-session Firebase secrets in deploy (2026-09-02)
 
 - **fix**: `.github/workflows/deploy.yml` never passed `VITE_FIREBASE_*`

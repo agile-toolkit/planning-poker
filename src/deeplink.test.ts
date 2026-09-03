@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, cardKey } from './deeplink'
+import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, parseJoinPinParam, cardKey } from './deeplink'
 
 beforeEach(() => {
   localStorage.clear()
@@ -70,6 +70,17 @@ describe('parseChangePlannerParams', () => {
   it('defaults to an empty initiativeId when missing', () => {
     window.history.replaceState({}, '', '/?source=change-planner')
     expect(parseChangePlannerParams()).toEqual({ initiativeId: '' })
+  })
+})
+
+describe('parseJoinPinParam', () => {
+  it('returns an empty string with no ?joinPin param', () => {
+    expect(parseJoinPinParam()).toBe('')
+  })
+
+  it('extracts the PIN from the URL', () => {
+    window.history.replaceState({}, '', '/?joinPin=4821')
+    expect(parseJoinPinParam()).toBe('4821')
   })
 })
 
