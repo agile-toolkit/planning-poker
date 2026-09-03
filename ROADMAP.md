@@ -9,6 +9,8 @@ None — idle. See `## Next epics` below.
 1. **E2: Estimation accuracy cross-reference with Sprint Metrics** — serves #3. Blocked on a data-model gap discovered this run: Sprint Metrics' `SprintData` has no date field to match Planning Poker sessions against (see [#40](https://github.com/agile-toolkit/planning-poker/issues/40) comment, 2026-09-02) — needs a human call on whether Sprint Metrics adds a date field first, or this drops the per-sprint framing for a coarser trend comparison.
 
 ## Recently shipped
+**Fix duplicated card values; hide "Why Planning Poker?" in Facilitator Mode** (2026-09-03) — see `## Shipped`. Both directly user-reported.
+
 **Replace decorative ✕ emoji with SVG icons** (2026-09-03) — see `## Shipped`. Part of a suite-wide emoji→SVG sweep the user asked for; the `☕` deck card value stays untouched (functional, not decorative).
 
 **Facilitator Mode** (2026-09-03) — see `## Shipped`. A user asked for the presentation/projector mode already built for Team Identity to be adopted suite-wide; this is repo 8 of an 11-repo rollout, adopting the pattern now shared in `design-system/`.
@@ -33,6 +35,8 @@ None — idle. See `## Next epics` below.
 - No small polish items queued — the rest of BRIEF.md's backlog (issues #32–#38) was confirmed already implemented and closed this run (2026-09-02).
 
 ## Shipped
+- ~~Fix duplicated card values in the Card Values legend~~
+- ~~Hide "Why Planning Poker?" in Facilitator Mode~~
 - ~~Replace decorative ✕ text-glyph buttons with shared SVG icons~~
 - ~~Facilitator Mode — bigger UI + hidden nav/language picker for in-room presentation, adopted from the shared design-system pattern~~
 - ~~Fix "Import from Team Identity" mapping `.name` over plain-string members, dropping every entry~~

@@ -4,6 +4,20 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.2.10 — Fix duplicated card values; hide "Why Planning Poker?" in Facilitator Mode (2026-09-03)
+
+- **fix**: the Card Values legend showed each value twice — once in its
+  own card-shaped box, once again as the leading word of the
+  description (e.g. "**3** 3 — small-medium, half a day"), because the
+  `cards.*` i18n strings are written to double as full standalone
+  accessible labels elsewhere (`SessionView`'s card tooltips). Added a
+  legend-only `cardDesc()` helper that strips the "value — " prefix
+  before display; the tooltip usage is untouched. User-reported.
+- **fix**: the Home screen's "Why Planning Poker?" card wasn't gated by
+  Facilitator Mode at all — user-reported. Hidden while presenting,
+  matching the pattern used for the rest of the suite's Home/setup
+  screens.
+
 ## 0.2.9 — Replace decorative ✕ emoji with SVG icons (2026-09-03)
 
 - **feat**: replaced 5 decorative `✕` text-glyph buttons (shortcuts-modal

@@ -21,6 +21,10 @@ const firebaseReady = isFirebaseConfigured()
 export default function App() {
   const { t } = useTranslation()
   const [facilitatorMode, toggleFacilitatorMode] = useFacilitatorMode('planning-poker:facilitatorMode')
+  // The card-value legend already shows the value in its own box, so strip
+  // the "value — " prefix that cards.* translations carry for use as a
+  // standalone accessible label elsewhere (see SessionView's cardTitle).
+  const cardDesc = (v: CardValue) => t(`cards.${cardKey(v)}`).replace(/^[^—]+—\s*/, '')
   const [deeplinkedStories, setDeeplinkedStories] = useState<DeeplinkStory[]>(() => {
     const stories = parseDeeplinkStories()
     return stories.length > 0 ? stories : parseKanbanBoardParam()
@@ -287,10 +291,12 @@ export default function App() {
               </div>
             </div>
 
-            <div className="card mb-4">
-              <h2 className="font-semibold text-gray-900 dark:text-white mb-2">{t('home.why_title')}</h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{t('home.why_body')}</p>
-            </div>
+            {!facilitatorMode && (
+              <div className="card mb-4">
+                <h2 className="font-semibold text-gray-900 dark:text-white mb-2">{t('home.why_title')}</h2>
+                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{t('home.why_body')}</p>
+              </div>
+            )}
             <div className="card mb-4">
               <h2 className="font-semibold text-gray-900 dark:text-white mb-3">{t('home.cards_title')}</h2>
               <div className="space-y-1">
@@ -299,7 +305,7 @@ export default function App() {
                     <span className="w-8 h-11 border border-gray-300 dark:border-gray-600 rounded-md flex items-center justify-center font-bold text-gray-700 dark:text-gray-200 shrink-0 text-xs">
                       {v}
                     </span>
-                    <span className="text-gray-600 dark:text-gray-400">{t(`cards.${cardKey(v)}`)}</span>
+                    <span className="text-gray-600 dark:text-gray-400">{cardDesc(v)}</span>
                   </div>
                 ))}
               </div>
