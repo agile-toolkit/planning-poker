@@ -9,6 +9,8 @@ None — idle. See `## Next epics` below.
 1. **E2: Estimation accuracy cross-reference with Sprint Metrics** — serves #3. Blocked on a data-model gap discovered this run: Sprint Metrics' `SprintData` has no date field to match Planning Poker sessions against (see [#40](https://github.com/agile-toolkit/planning-poker/issues/40) comment, 2026-09-02) — needs a human call on whether Sprint Metrics adds a date field first, or this drops the per-sprint framing for a coarser trend comparison.
 
 ## Recently shipped
+**Redesign home-screen entry cards to match Moving Motivators** (2026-09-02) — see `## Shipped`. The flat pill-button row from the split-screens change looked worse than the sibling app it was modeled on. Replaced with the same bordered, hoverable entry-card grid (icon + description).
+
 **Split host/join into two dedicated screens** (2026-09-02) — see `## Shipped`. Replaced the single "Team Session" button + combined host+join form with two entry points ("Host Team Session" / "Join Team Session"), each landing on a screen scoped to just that action — matching Moving Motivators' pattern. A `?joinPin=...` link now opens straight onto the Join screen instead of requiring a manual click through Home first.
 
 **Wire up team-session Firebase secrets in deploy** (2026-09-02) — see `## Shipped`. The live site never actually enabled team sessions — `deploy.yml` didn't pass `VITE_FIREBASE_*` into the build, so `isFirebaseConfigured()` was always false and "Start Team Session" stayed a disabled stub, despite `TeamSession.tsx` being fully built. Added the same secrets passthrough Moving Motivators' workflow already has.
@@ -57,3 +59,8 @@ None — idle. See `## Next epics` below.
   one action instead of a combined host+join form~~
 - ~~A `?joinPin=...` link opens straight onto the Join screen with the
   PIN pre-filled~~
+
+**v0.2.5 — Redesign home-screen entry cards to match Moving Motivators** (2026-09-02):
+- ~~Replaced 3 flat pill buttons with a bordered, hoverable entry-card
+  grid (Solo card with icon + description; Team column with Host/Join
+  cards)~~

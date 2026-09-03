@@ -4,6 +4,20 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.2.5 — Redesign home-screen entry cards to match Moving Motivators (2026-09-02)
+
+- **fix (design)**: the 3 flat pill buttons ("Practice Solo" / "Host Team
+  Session" / "Join Team Session") added in 0.2.4 looked worse than
+  Moving Motivators' equivalent screen — no icons, no descriptions, no
+  visual grouping. Replaced with the same card-grid pattern: a bordered,
+  hoverable Solo card with icon + description on the left, a "🤝 Team
+  Session" labeled column with two stacked Host/Join cards on the right.
+  Verified visually in both themes.
+- User feedback prompted a follow-up: this exact pattern (entry-card
+  grid, described in `TECH-NOTES.md`) is now duplicated by hand across
+  at least 2 repos — a shared `design-system/` component is the next
+  step so a 3rd implementation doesn't drift again.
+
 ## 0.2.4 — Split host/join into two dedicated screens (2026-09-02)
 
 - **change**: the Home screen's single "Team Session" button became two —

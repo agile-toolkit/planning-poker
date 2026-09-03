@@ -241,41 +241,48 @@ export default function App() {
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 py-8">
         {phase === 'home' && (
           <div className="max-w-lg mx-auto">
-            <div className="text-center mb-10">
+            <div className="text-center mb-8">
               <div className="text-6xl mb-4">🃏</div>
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">{t('home.headline')}</h1>
-              <p className="text-gray-600 dark:text-gray-400 mb-8">{t('home.subheadline')}</p>
-              <div className="flex gap-3 justify-center flex-wrap">
-                <button
-                  type="button"
-                  onClick={() => setPhase('setup')}
-                  className="btn-primary text-base px-8 py-3"
-                >
-                  {t('home.start_practice')}
-                </button>
+              <p className="text-gray-600 dark:text-gray-400">{t('home.subheadline')}</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+              <button
+                type="button"
+                onClick={() => setPhase('setup')}
+                className="group flex flex-col items-start gap-2 p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-sm border-2 border-transparent hover:border-brand-500 dark:border-gray-700 dark:hover:border-brand-500 transition-all text-left"
+              >
+                <span className="text-3xl">🎯</span>
+                <span className="font-semibold text-gray-900 dark:text-white text-lg">{t('home.start_practice')}</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">{t('home.solo_desc')}</span>
+              </button>
+
+              <div className="flex flex-col gap-2">
+                <span className="font-semibold text-gray-900 dark:text-white text-lg px-1">🤝 {t('home.team_label')}</span>
                 <button
                   type="button"
                   onClick={firebaseReady ? () => { setTeamEntryMode('host'); setPhase('team') } : undefined}
                   disabled={!firebaseReady}
-                  title={!firebaseReady ? t('home.team_note') : undefined}
-                  className={`btn-secondary text-base px-8 py-3 ${!firebaseReady ? 'opacity-40 cursor-not-allowed' : ''}`}
+                  className="flex flex-col items-start gap-1 p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-sm border-2 border-transparent enabled:hover:border-brand-500 dark:border-gray-700 dark:enabled:hover:border-brand-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed text-left"
                 >
-                  {t('home.host_team')}
+                  <span className="font-semibold text-gray-900 dark:text-white">{t('home.host_team')}</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">{t('home.host_desc')}</span>
                 </button>
                 <button
                   type="button"
                   onClick={firebaseReady ? () => { setTeamEntryMode('join'); setPhase('team') } : undefined}
                   disabled={!firebaseReady}
-                  title={!firebaseReady ? t('home.team_note') : undefined}
-                  className={`btn-secondary text-base px-8 py-3 ${!firebaseReady ? 'opacity-40 cursor-not-allowed' : ''}`}
+                  className="flex flex-col items-start gap-1 p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-sm border-2 border-transparent enabled:hover:border-brand-500 dark:border-gray-700 dark:enabled:hover:border-brand-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed text-left"
                 >
-                  {t('home.join_team')}
+                  <span className="font-semibold text-gray-900 dark:text-white">{t('home.join_team')}</span>
                 </button>
+                {!firebaseReady && (
+                  <p className="text-xs text-gray-400 dark:text-gray-600 px-1">{t('home.team_note')}</p>
+                )}
               </div>
-              {!firebaseReady && (
-                <p className="text-xs text-gray-500 dark:text-gray-600 mt-3">{t('home.team_note')}</p>
-              )}
             </div>
+
             <div className="card mb-4">
               <h2 className="font-semibold text-gray-900 dark:text-white mb-2">{t('home.why_title')}</h2>
               <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{t('home.why_body')}</p>
