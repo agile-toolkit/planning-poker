@@ -47,6 +47,25 @@ export function parseJoinPinParam(): string {
   return new URLSearchParams(window.location.search).get('joinPin') ?? ''
 }
 
+/** Kanban Designer's "Send to Planning Poker" button: ?kanban-board=<base64 UTF-8 board name> */
+export function parseKanbanBoardParam(): DeeplinkStory[] {
+  try {
+    const raw = new URLSearchParams(window.location.search).get('kanban-board')
+    if (!raw) return []
+    const name = decodeURIComponent(escape(atob(raw))).trim()
+    return name ? [{ title: name }] : []
+  } catch {
+    return []
+  }
+}
+
+/** Scrum Facilitator's ceremony "Open in Planning Poker" link: ?participants=Alice,Bob,Carol */
+export function parseParticipantsParam(): string[] {
+  const raw = new URLSearchParams(window.location.search).get('participants')
+  if (!raw) return []
+  return raw.split(',').map(n => n.trim()).filter(Boolean)
+}
+
 export function cardKey(v: CardValue): string {
   if (v === '½') return 'half'
   if (v === '☕') return 'coffee'

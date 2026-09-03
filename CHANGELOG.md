@@ -4,6 +4,22 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.2.6 — Receive Kanban Designer's and Scrum Facilitator's session handoffs (2026-09-03)
+
+- **fix (broken integration)**: two "Open in Planning Poker" links sent
+  real data that nothing here read. Found by a suite-wide cross-app
+  link audit:
+  - Kanban Designer's "Send to Planning Poker" button (`?kanban-board=`,
+    a base64-encoded board name) now seeds the setup screen with that
+    name as the story to estimate.
+  - Scrum Facilitator's ceremony "Open in Planning Poker" link
+    (`?participants=Alice,Bob,Carol`) now seeds the participants
+    textarea, same as the existing Team Identity import.
+  - Both jump straight to the setup screen on load, same as the
+    existing `?stories=` deeplink.
+- `src/deeplink.ts` gains `parseKanbanBoardParam`/`parseParticipantsParam`
+  (tested).
+
 ## 0.2.5 — Redesign home-screen entry cards to match Moving Motivators (2026-09-02)
 
 - **fix (design)**: the 3 flat pill buttons ("Practice Solo" / "Host Team

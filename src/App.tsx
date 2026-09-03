@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import type { CardValue, DeckType, GamePhase, PokerSession, SessionHistoryEntry } from './types'
 import { DECKS } from './types'
 import { isFirebaseConfigured } from './firebase'
-import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, parseJoinPinParam, cardKey, type DeeplinkStory } from './deeplink'
+import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, parseJoinPinParam, parseKanbanBoardParam, parseParticipantsParam, cardKey, type DeeplinkStory } from './deeplink'
 import SessionView from './components/SessionView'
 import TeamSession from './components/TeamSession'
 import AppHeader from './components/AppHeader'
@@ -16,10 +16,13 @@ const firebaseReady = isFirebaseConfigured()
 
 export default function App() {
   const { t } = useTranslation()
-  const [deeplinkedStories, setDeeplinkedStories] = useState<DeeplinkStory[]>(parseDeeplinkStories)
+  const [deeplinkedStories, setDeeplinkedStories] = useState<DeeplinkStory[]>(() => {
+    const stories = parseDeeplinkStories()
+    return stories.length > 0 ? stories : parseKanbanBoardParam()
+  })
   const [changePlannerSource] = useState(parseChangePlannerParams)
   const [phase, setPhase] = useState<GamePhase>(() => {
-    if (parseDeeplinkStories().length > 0) return 'setup'
+    if (parseDeeplinkStories().length > 0 || parseKanbanBoardParam().length > 0 || parseParticipantsParam().length > 0) return 'setup'
     if (firebaseReady && parseJoinPinParam()) return 'team'
     return 'home'
   })
@@ -27,7 +30,10 @@ export default function App() {
     firebaseReady && parseJoinPinParam() ? 'join' : 'host'
   )
   const [currentStory, setCurrentStory] = useState('')
-  const [participantsText, setParticipantsText] = useState('Alice\nBob\nCarol')
+  const [participantsText, setParticipantsText] = useState(() => {
+    const fromParams = parseParticipantsParam()
+    return fromParams.length > 0 ? fromParams.join('\n') : 'Alice\nBob\nCarol'
+  })
   const [selectedDeck, setSelectedDeck] = useState<DeckType>('fibonacci')
   const [selectedTimer, setSelectedTimer] = useState<number | null>(null)
   const [pokerSession, setPokerSession] = useState<PokerSession | null>(null)

@@ -9,6 +9,8 @@ None — idle. See `## Next epics` below.
 1. **E2: Estimation accuracy cross-reference with Sprint Metrics** — serves #3. Blocked on a data-model gap discovered this run: Sprint Metrics' `SprintData` has no date field to match Planning Poker sessions against (see [#40](https://github.com/agile-toolkit/planning-poker/issues/40) comment, 2026-09-02) — needs a human call on whether Sprint Metrics adds a date field first, or this drops the per-sprint framing for a coarser trend comparison.
 
 ## Recently shipped
+**Receive Kanban Designer's and Scrum Facilitator's session handoffs** (2026-09-03) — see `## Shipped`. A suite-wide cross-app link audit found `?kanban-board=` and `?participants=` both sent real data that nothing here read. Both now seed the setup screen.
+
 **Redesign home-screen entry cards to match Moving Motivators** (2026-09-02) — see `## Shipped`. The flat pill-button row from the split-screens change looked worse than the sibling app it was modeled on. Replaced with the same bordered, hoverable entry-card grid (icon + description).
 
 **Split host/join into two dedicated screens** (2026-09-02) — see `## Shipped`. Replaced the single "Team Session" button + combined host+join form with two entry points ("Host Team Session" / "Join Team Session"), each landing on a screen scoped to just that action — matching Moving Motivators' pattern. A `?joinPin=...` link now opens straight onto the Join screen instead of requiring a manual click through Home first.
@@ -25,6 +27,7 @@ None — idle. See `## Next epics` below.
 - No small polish items queued — the rest of BRIEF.md's backlog (issues #32–#38) was confirmed already implemented and closed this run (2026-09-02).
 
 ## Shipped
+- ~~Receive Kanban Designer's `?kanban-board=` and Scrum Facilitator's `?participants=` handoffs into the setup screen~~
 - ~~Solo/practice session flow with configurable card decks (Fibonacci, T-shirt, powers-of-2) and per-round voting timer~~
 - ~~Firebase real-time team sessions — PIN-based host/join, hidden-until-reveal voting, QR code join, observer/spectator mode, blind/anonymous voting~~
 - ~~Session history persistence, results export (copy-as-text, PNG image), per-story discussion notes after reveal~~
