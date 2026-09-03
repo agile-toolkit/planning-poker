@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import html2canvas from 'html2canvas'
 import type { PokerSession, CardValue } from '../types'
 import { DECKS } from '../types'
+import { CloseIcon } from './icons'
 
 function cardKey(v: CardValue): string {
   if (v === '½') return 'half'
@@ -362,9 +363,9 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                 type="button"
                 onClick={() => setShowShortcuts(false)}
                 aria-label={t('common.close')}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-lg leading-none"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 leading-none"
               >
-                ✕
+                <CloseIcon className="w-4 h-4" />
               </button>
             </div>
             <dl className="space-y-3 text-sm">
@@ -405,7 +406,7 @@ export default function SessionView({ session, onChange, onBack }: Props) {
             aria-label={t('session.velocity_hint_dismiss')}
             className="text-brand-500 hover:text-brand-700 dark:hover:text-brand-100 leading-none"
           >
-            ✕
+            <CloseIcon className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
@@ -475,7 +476,7 @@ export default function SessionView({ session, onChange, onBack }: Props) {
                         title={`${t('session.removeParticipant')} ${p.name}`}
                         className="text-gray-400 dark:text-gray-500 hover:text-red-400 text-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 rounded"
                       >
-                        ✕
+                        <CloseIcon className="w-3 h-3" />
                       </button>
                     </div>
                   </li>

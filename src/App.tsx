@@ -11,6 +11,7 @@ import AppHeader from './components/AppHeader'
 import ThemeToggle from './components/ThemeToggle'
 import FacilitatorToggle from './components/FacilitatorToggle'
 import { useFacilitatorMode } from './components/useFacilitatorMode'
+import { CloseIcon } from './components/icons'
 
 const HISTORY_KEY = 'planning-poker:history'
 const HISTORY_MAX = 10
@@ -339,7 +340,7 @@ export default function App() {
                           aria-label={t('setup.remove_story')}
                           className="text-gray-400 dark:text-gray-500 hover:text-red-400 text-xs shrink-0 mt-0.5"
                         >
-                          ✕
+                          <CloseIcon className="w-3 h-3" />
                         </button>
                       </li>
                     ))}
@@ -377,7 +378,7 @@ export default function App() {
                           aria-label={t('common.close')}
                           className="ml-2 text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-white"
                         >
-                          ✕
+                          <CloseIcon className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     )}

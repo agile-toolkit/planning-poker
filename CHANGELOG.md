@@ -4,6 +4,19 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.2.9 — Replace decorative ✕ emoji with SVG icons (2026-09-03)
+
+- **feat**: replaced 5 decorative `✕` text-glyph buttons (shortcuts-modal
+  close, velocity-hint dismiss, participant remove, deep-link story
+  remove, import-tooltip close) with `CloseIcon` from the new shared
+  `icons.tsx`, `currentColor` throughout. Left `TeamSession.tsx`'s
+  hardcoded `'✓ All voted'` status text as-is — it also has an unrelated
+  pre-existing i18n gap (only the else-branch is translated) that should
+  be fixed together, not addressed piecemeal here. Part of a suite-wide
+  emoji→SVG sweep the user asked for; the `☕` "need a break" card value
+  (a real, votable deck entry) stays untouched — it's functional data,
+  not decoration.
+
 ## 0.2.8 — Facilitator Mode (2026-09-03)
 
 - **feat**: added Facilitator (projector) Mode — a presentation toggle for
