@@ -43,8 +43,18 @@ export function parseChangePlannerParams(): { initiativeId: string } | null {
   return { initiativeId }
 }
 
+/**
+ * The PIN from a join link, or '' if there isn't a usable one.
+ *
+ * This value is interpolated into a Realtime Database path, so it is
+ * constrained here rather than trusted: anything that is not a bare run of
+ * digits is dropped, and the length cap matches the six-digit PINs
+ * `session.ts` mints. The security rules reject the rest, but a link should
+ * not be able to steer a query at a path of its choosing in the first place.
+ */
 export function parseJoinPinParam(): string {
-  return new URLSearchParams(window.location.search).get('joinPin') ?? ''
+  const raw = new URLSearchParams(window.location.search).get('joinPin') ?? ''
+  return /^[0-9]{1,6}$/.test(raw) ? raw : ''
 }
 
 /** Kanban Designer's "Send to Planning Poker" button: ?kanban-board=<base64 UTF-8 board name> */

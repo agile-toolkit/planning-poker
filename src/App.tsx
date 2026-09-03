@@ -1,12 +1,15 @@
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CardValue, DeckType, GamePhase, PokerSession, SessionHistoryEntry } from './types'
 import { DECKS } from './types'
-import { isFirebaseConfigured } from './firebase'
+import { isFirebaseConfigured } from './firebaseConfig'
 import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, parseJoinPinParam, parseKanbanBoardParam, parseParticipantsParam, cardKey, type DeeplinkStory } from './deeplink'
 import { parseTeamIdentityMembers } from './teamIdentityImport'
 import SessionView from './components/SessionView'
-import TeamSession from './components/TeamSession'
+// Lazy: TeamSession is the only thing that needs the Firebase SDK, and most
+// visitors never open a team session. Loading it on demand keeps ~450 kB out
+// of the entry chunk for everyone else.
+const TeamSession = lazy(() => import('./components/TeamSession'))
 import AppHeader from './components/AppHeader'
 import ThemeToggle from './components/ThemeToggle'
 import FacilitatorToggle from './components/FacilitatorToggle'
@@ -459,11 +462,13 @@ export default function App() {
         )}
 
         {phase === 'team' && (
-          <TeamSession
-            onBack={() => setPhase('home')}
-            onSessionEnd={handleTeamSessionEnd}
-            initialMode={teamEntryMode}
-          />
+          <Suspense fallback={<p className="pt-8 text-center text-gray-500 dark:text-gray-400">{t('team.loading')}</p>}>
+            <TeamSession
+              onBack={() => setPhase('home')}
+              onSessionEnd={handleTeamSessionEnd}
+              initialMode={teamEntryMode}
+            />
+          </Suspense>
         )}
 
         {phase === 'history' && (

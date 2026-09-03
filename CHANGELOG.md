@@ -4,6 +4,35 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.3.0 — Session integrity, error boundary, code-splitting (2026-09-03)
+
+- **fix**: session PINs could silently destroy a live session. The app minted a
+  4-digit `Math.random()` PIN and wrote it with `set()` **without checking
+  whether it was taken** — a collision dropped a team mid-vote. Worse, this app
+  and Moving Motivators both wrote `sessions/<pin>` in the *same* Firebase
+  project (both deploy workflows inject the same org-level `VITE_FIREBASE_*`
+  secrets), so those 9,000 PINs were shared between two apps with incompatible
+  schemas and either could destroy the other's session. New `src/session.ts`:
+  900,000 PINs from `crypto.getRandomValues` (rejection-sampled, since `%` bias
+  raises the collision rate), `claimSession` checks-then-writes with retry, and
+  the path is namespaced to `sessions/planning-poker/<pin>`.
+- **fix**: no session was ever deleted, so the database grew without bound and
+  the PIN space saturated permanently. `createdAt` is now set by the server and
+  drives a 24h TTL in the security rules; `releaseSession` frees a PIN when the
+  host ends a session; joining a PIN whose session has expired reports "not
+  found" rather than dropping the joiner into yesterday's session.
+- **fix**: `?joinPin=` was interpolated into a database path unvalidated. Now
+  constrained to digits before use.
+- **feat**: `ErrorBoundary` at the root. An unexpected payload from another app
+  used to unmount the tree and leave a blank page that a reload could not fix,
+  because the offending data was still in localStorage. The fallback offers
+  "clear this app's saved data", scoped to this app's own key prefixes.
+- **perf**: entry chunk 195 kB gz → 87 kB gz. The Firebase SDK reached every
+  visitor including the majority who never open a team session; split the
+  config-only gate into `firebaseConfig.ts` and lazy-loaded `TeamSession` and
+  `html2canvas`.
+- **ci**: `npm test` now runs before `npm run build` in `deploy.yml`.
+
 ## 0.2.9 — Replace decorative ✕ emoji with SVG icons (2026-09-03)
 
 - **feat**: replaced 5 decorative `✕` text-glyph buttons (shortcuts-modal

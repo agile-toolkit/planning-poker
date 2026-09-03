@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import html2canvas from 'html2canvas'
 import type { PokerSession, CardValue } from '../types'
 import { DECKS } from '../types'
 import { CloseIcon } from './icons'
@@ -307,6 +306,9 @@ export default function SessionView({ session, onChange, onBack }: Props) {
 
   async function saveImage() {
     if (!resultsCardRef.current) return
+    // Loaded on demand: html2canvas is ~200 kB and only the "save as image"
+    // button needs it, so it stays out of the entry chunk.
+    const { default: html2canvas } = await import('html2canvas')
     const canvas = await html2canvas(resultsCardRef.current, { backgroundColor: null, scale: 2 })
     const link = document.createElement('a')
     link.download = `${session.name.replace(/\s+/g, '-')}-results.png`

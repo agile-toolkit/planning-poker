@@ -125,6 +125,8 @@
     "host_heading": "Organizar una sesión",
     "join_heading": "Unirse por PIN",
     "join_error": "Sesión no encontrada. Verifica el PIN e inténtalo de nuevo.",
+    "host_error": "No se pudo iniciar una sesión ahora mismo. Inténtalo de nuevo.",
+    "loading": "Cargando sesión de equipo…",
     "story_label": "Historia a estimar",
     "story_placeholder": "¿Qué estamos estimando?",
     "vote_progress": "{{done}} / {{total}} votaron",

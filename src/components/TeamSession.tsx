@@ -6,6 +6,7 @@ import type { CardValue, DeckType } from '../types'
 import { DECKS } from '../types'
 import { QRCodeSVG } from 'qrcode.react'
 import { parseJoinPinParam } from '../deeplink'
+import { claimSession, releaseSession, sessionPath, isReclaimable } from '../session'
 
 function buildJoinUrl(pin: string): string {
   const url = new URL(window.location.href)
@@ -35,6 +36,8 @@ interface FirebaseSession {
   currentStory: string
   stories: Record<string, FirebaseStory>
   blindMode?: boolean
+  /** Set by the server on create; drives the 24h TTL in the security rules. */
+  createdAt?: number
 }
 
 interface Props {
@@ -44,10 +47,6 @@ interface Props {
     deckType: DeckType,
   ) => void
   initialMode: 'host' | 'join'
-}
-
-function generatePin(): string {
-  return String(Math.floor(1000 + Math.random() * 9000))
 }
 
 const deckOptions: { value: DeckType; labelKey: string }[] = [
@@ -81,7 +80,7 @@ export default function TeamSession({ onBack, onSessionEnd, initialMode }: Props
 
   useEffect(() => {
     if (!db || !pin) return
-    const unsub = onValue(ref(db, `sessions/${pin}`), snap => {
+    const unsub = onValue(ref(db, sessionPath(pin)), snap => {
       setSession(snap.val() as FirebaseSession | null)
       setSessionLoaded(true)
     })
@@ -96,35 +95,43 @@ export default function TeamSession({ onBack, onSessionEnd, initialMode }: Props
   const handleHost = async () => {
     if (!db || !name.trim()) return
     setLoading(true)
-    const newPin = generatePin()
+    setJoinError('')
     const hostId = `host-${crypto.randomUUID().slice(0, 8)}`
-    await set(ref(db, `sessions/${newPin}`), {
-      phase: 'lobby',
-      deck: selectedDeck,
-      hostId,
-      participants: { [hostId]: { name: name.trim(), isHost: true } },
-      currentStory: '',
-      stories: {},
-      blindMode,
-    })
-    setPin(newPin)
-    setParticipantId(hostId)
-    setMode('host')
-    setLoading(false)
+    try {
+      // claimSession finds a PIN nobody is using. The previous code minted a
+      // 4-digit one and wrote straight over whatever was already there.
+      const newPin = await claimSession(db, {
+        phase: 'lobby',
+        deck: selectedDeck,
+        hostId,
+        participants: { [hostId]: { name: name.trim(), isHost: true } },
+        currentStory: '',
+        blindMode,
+      })
+      setPin(newPin)
+      setParticipantId(hostId)
+      setMode('host')
+    } catch {
+      setJoinError(t('team.host_error'))
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleJoin = async () => {
     if (!db || !name.trim() || !joinPin.trim()) return
     setLoading(true)
     setJoinError('')
-    const snap = await get(ref(db, `sessions/${joinPin}`))
-    if (!snap.exists()) {
+    const snap = await get(ref(db, sessionPath(joinPin)))
+    // A session past its TTL reads as present but counts as gone, so a
+    // recycled PIN never drops a joiner into yesterday's session.
+    if (!snap.exists() || isReclaimable(snap.val())) {
       setJoinError(t('team.join_error'))
       setLoading(false)
       return
     }
     const pId = `p-${crypto.randomUUID().slice(0, 8)}`
-    await update(ref(db, `sessions/${joinPin}/participants/${pId}`), {
+    await update(ref(db, `${sessionPath(joinPin)}/participants/${pId}`), {
       name: name.trim(),
       isHost: false,
       ...(joinAsObserver ? { isObserver: true } : {}),
@@ -139,41 +146,41 @@ export default function TeamSession({ onBack, onSessionEnd, initialMode }: Props
     if (!db || !pin || !newStoryTitle.trim()) return
     const storyId = `s-${crypto.randomUUID().slice(0, 8)}`
     const storyCount = session ? Object.keys(session.stories ?? {}).length : 0
-    await set(ref(db, `sessions/${pin}/stories/${storyId}`), {
+    await set(ref(db, `${sessionPath(pin)}/stories/${storyId}`), {
       title: newStoryTitle.trim(),
       order: storyCount,
       votes: {},
     })
-    await update(ref(db, `sessions/${pin}`), { phase: 'voting', currentStory: storyId })
+    await update(ref(db, sessionPath(pin)), { phase: 'voting', currentStory: storyId })
     setNewStoryTitle('')
   }
 
   const handleVote = async (card: CardValue) => {
     if (!db || !pin || !session || session.phase !== 'voting' || !session.currentStory) return
     await update(
-      ref(db, `sessions/${pin}/stories/${session.currentStory}/votes`),
+      ref(db, `${sessionPath(pin)}/stories/${session.currentStory}/votes`),
       { [participantId]: card },
     )
   }
 
   const handleReveal = async () => {
     if (!db || !pin) return
-    await update(ref(db, `sessions/${pin}`), { phase: 'revealed' })
+    await update(ref(db, sessionPath(pin)), { phase: 'revealed' })
   }
 
   const handleNextStory = async () => {
     if (!db || !pin || !session || !finalEstimate) return
-    await update(ref(db, `sessions/${pin}/stories/${session.currentStory}`), {
+    await update(ref(db, `${sessionPath(pin)}/stories/${session.currentStory}`), {
       finalEstimate,
     })
-    await update(ref(db, `sessions/${pin}`), { phase: 'lobby', currentStory: '' })
+    await update(ref(db, sessionPath(pin)), { phase: 'lobby', currentStory: '' })
   }
 
   const handleEndSession = async () => {
     if (!db || !pin || !session) return
     const updatedStories = { ...(session.stories ?? {}) }
     if (session.currentStory && finalEstimate) {
-      await update(ref(db, `sessions/${pin}/stories/${session.currentStory}`), { finalEstimate })
+      await update(ref(db, `${sessionPath(pin)}/stories/${session.currentStory}`), { finalEstimate })
       updatedStories[session.currentStory] = {
         ...updatedStories[session.currentStory],
         finalEstimate,
@@ -182,6 +189,10 @@ export default function TeamSession({ onBack, onSessionEnd, initialMode }: Props
     const results = Object.values(updatedStories)
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
       .map(s => ({ title: s.title, finalEstimate: s.finalEstimate ?? null }))
+    // The results are already in hand, so the session in Firebase is spent —
+    // drop it rather than leaving it to occupy a PIN and a connection slot
+    // until the TTL catches up. Nothing was ever deleted before this.
+    if (participantId === session.hostId) await releaseSession(db, pin)
     onSessionEnd(results, session.deck ?? 'fibonacci')
   }
 
@@ -277,7 +288,7 @@ export default function TeamSession({ onBack, onSessionEnd, initialMode }: Props
               className="input text-center text-2xl font-mono tracking-widest"
               placeholder="0000"
               value={joinPin}
-              maxLength={4}
+              maxLength={6}
               inputMode="numeric"
               pattern="[0-9]*"
               onChange={e => { setJoinPin(e.target.value); setJoinError('') }}
