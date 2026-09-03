@@ -9,6 +9,8 @@ None — idle. See `## Next epics` below.
 1. **E2: Estimation accuracy cross-reference with Sprint Metrics** — serves #3. Blocked on a data-model gap discovered this run: Sprint Metrics' `SprintData` has no date field to match Planning Poker sessions against (see [#40](https://github.com/agile-toolkit/planning-poker/issues/40) comment, 2026-09-02) — needs a human call on whether Sprint Metrics adds a date field first, or this drops the per-sprint framing for a coarser trend comparison.
 
 ## Recently shipped
+**Fix "Import from Team Identity" dropping every member name** (2026-09-03) — see `## Shipped`. Read the right key but mapped `m.name` over an array of plain strings — every member came out `undefined` and got filtered away, so the button always acted like there was no team, even with a real charter present.
+
 **Receive Kanban Designer's and Scrum Facilitator's session handoffs** (2026-09-03) — see `## Shipped`. A suite-wide cross-app link audit found `?kanban-board=` and `?participants=` both sent real data that nothing here read. Both now seed the setup screen.
 
 **Redesign home-screen entry cards to match Moving Motivators** (2026-09-02) — see `## Shipped`. The flat pill-button row from the split-screens change looked worse than the sibling app it was modeled on. Replaced with the same bordered, hoverable entry-card grid (icon + description).
@@ -27,6 +29,7 @@ None — idle. See `## Next epics` below.
 - No small polish items queued — the rest of BRIEF.md's backlog (issues #32–#38) was confirmed already implemented and closed this run (2026-09-02).
 
 ## Shipped
+- ~~Fix "Import from Team Identity" mapping `.name` over plain-string members, dropping every entry~~
 - ~~Receive Kanban Designer's `?kanban-board=` and Scrum Facilitator's `?participants=` handoffs into the setup screen~~
 - ~~Solo/practice session flow with configurable card decks (Fibonacci, T-shirt, powers-of-2) and per-round voting timer~~
 - ~~Firebase real-time team sessions — PIN-based host/join, hidden-until-reveal voting, QR code join, observer/spectator mode, blind/anonymous voting~~

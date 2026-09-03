@@ -4,6 +4,19 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.2.7 — Fix "Import from Team Identity" dropping every member name (2026-09-03)
+
+- **fix (broken integration, payload-shape mismatch)**: `importFromTeamIdentity`
+  read the correct key (`team-identity-charter`) but treated each member
+  as `{name: string}` and mapped `m.name` over it — Team Identity's
+  charter stores `members` as plain strings, so every entry produced
+  `undefined`, got filtered out, and the button always showed "no team
+  found," even with a real charter present. Found by a suite-wide
+  cross-app link audit (the same audit that found Salary Formula's
+  Team Identity import reading the wrong key entirely — a different
+  failure shape, same root symptom: an empty result no matter what).
+  Extracted into `src/teamIdentityImport.ts` (tested).
+
 ## 0.2.6 — Receive Kanban Designer's and Scrum Facilitator's session handoffs (2026-09-03)
 
 - **fix (broken integration)**: two "Open in Planning Poker" links sent

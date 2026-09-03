@@ -4,6 +4,7 @@ import type { CardValue, DeckType, GamePhase, PokerSession, SessionHistoryEntry 
 import { DECKS } from './types'
 import { isFirebaseConfigured } from './firebase'
 import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, parseJoinPinParam, parseKanbanBoardParam, parseParticipantsParam, cardKey, type DeeplinkStory } from './deeplink'
+import { parseTeamIdentityMembers } from './teamIdentityImport'
 import SessionView from './components/SessionView'
 import TeamSession from './components/TeamSession'
 import AppHeader from './components/AppHeader'
@@ -42,24 +43,10 @@ export default function App() {
   const [expandedSession, setExpandedSession] = useState<string | null>(null)
 
   const importFromTeamIdentity = () => {
-    try {
-      const raw = localStorage.getItem('team-identity-charter')
-      if (!raw) { setImportTooltip(t('setup.import_team_empty')); return }
-      const charter = JSON.parse(raw) as Record<string, unknown>
-      const members = charter.members
-      if (!Array.isArray(members) || members.length === 0) {
-        setImportTooltip(t('setup.import_team_empty'))
-        return
-      }
-      const names = (members as Array<Record<string, unknown>>)
-        .map(m => (typeof m.name === 'string' ? m.name.trim() : ''))
-        .filter(Boolean)
-      if (names.length === 0) { setImportTooltip(t('setup.import_team_empty')); return }
-      setParticipantsText(names.join('\n'))
-      setImportTooltip('')
-    } catch {
-      setImportTooltip(t('setup.import_team_empty'))
-    }
+    const names = parseTeamIdentityMembers(localStorage.getItem('team-identity-charter'))
+    if (names.length === 0) { setImportTooltip(t('setup.import_team_empty')); return }
+    setParticipantsText(names.join('\n'))
+    setImportTooltip('')
   }
 
   const removeDeeplinkStory = (index: number) => {
