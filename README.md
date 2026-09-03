@@ -7,7 +7,7 @@ Part of the [Agile Tools](https://github.com/bthos) suite built on ICAgile sourc
 See [`GOAL.md`](GOAL.md) for why this app exists and [`ROADMAP.md`](ROADMAP.md) for what's next. `.artefacts/BRIEF.md` retains the full run-by-run build history.
 
 ## Stack
-React 18 · TypeScript · Vite · Tailwind CSS · Firebase (optional, team sessions) · react-i18next (EN/ES/BE/RU)
+React 18 · TypeScript · Vite · Tailwind CSS · Firebase (team sessions) · react-i18next (EN/ES/BE/RU)
 
 ## Dev commands
 ```bash
@@ -19,7 +19,7 @@ npm test         # vitest run — src/deeplink.ts
 ```
 
 ## Deploy
-GitHub Pages via GitHub Actions on push to `main`.
+GitHub Pages via GitHub Actions on push to `main`. `deploy.yml` passes `VITE_FIREBASE_*` repo/org secrets into the production build so team sessions work on the live site — see `.env.example` for the required keys.
 
 ## localStorage keys
 
@@ -41,7 +41,7 @@ This app also *reads* (but does not own) `sprint-metrics-projects` / `sprint-met
 - **Test coverage:** `src/deeplink.ts` holds the URL-parsing and history-loading functions (`parseDeeplinkStories`, `parseChangePlannerParams`, `cardKey`, `loadHistory`), split out of `App.tsx` so they're testable without triggering `App.tsx`'s module-level `isFirebaseConfigured()` call. `src/deeplink.test.ts` covers all four, including the slice-before-filter ordering in `parseDeeplinkStories` (an invalid entry within the first 50 raw entries is dropped, not backfilled from later valid ones).
 - **i18n:** `react-i18next` + `i18next-browser-languagedetector`; four locale files under `src/i18n/` (`en`, `es`, `be`, `ru.json`), registered in `src/i18n/index.ts`.
 - **Theme:** `darkMode: 'class'` in `tailwind.config.js`; `ThemeToggle.tsx` sets `data-theme` on `<html>` and persists to the `theme` localStorage key; an anti-flash inline script in `index.html` applies the stored/system preference before first paint.
-- **Team sessions (optional):** `src/firebase.ts` exposes `isFirebaseConfigured()` / `getFirebaseDb()`; when no Firebase config is present, `home.start_team` is a disabled stub with a tooltip and solo mode is fully unaffected. When configured, `TeamSession.tsx` drives host/join/vote/reveal entirely through the Firebase Realtime Database (PIN-keyed session doc, `blindMode`/`isObserver` fields on participants/session).
+- **Team sessions:** `src/firebase.ts` exposes `isFirebaseConfigured()` / `getFirebaseDb()`; the live site's `VITE_FIREBASE_*` secrets are passed in by `deploy.yml`, so `TeamSession.tsx` drives host/join/vote/reveal through the Firebase Realtime Database (PIN-keyed session doc, `blindMode`/`isObserver` fields on participants/session). Locally, without a `.env.local` (see `.env.example`), `home.start_team` falls back to a disabled stub with a tooltip — solo mode is fully unaffected either way.
 - **Suite deep-link contract:** any app can open Planning Poker pre-populated with stories via `?stories=<URL-encoded JSON array of {title, description?}>` (up to 50 stories) — used today by Change Planner and Scrum Facilitator. `?source=change-planner&initiativeId=<id>` opts a session into writing `change-planner:pendingEstimates` back on session end. `?joinPin=<pin>` pre-fills the team-session join PIN (also encoded in the lobby's QR code).
 - **Story drag-to-reorder** is solo-mode only: `TeamSession.tsx` has no up-front multi-story queue (the host adds one story at a time and voting starts immediately), so there is nothing to reorder yet in team mode.
 - **Swipe-to-vote (solo mode only, first iteration):** `SessionView.tsx`'s per-participant card-deck row uses the Pointer Events API, gated to `pointerType === 'touch'` so desktop mouse/pen input is unaffected. Horizontal swipe (≥40px) moves a per-participant "browsed" highlight across `deckValues` without casting a vote; vertical swipe up (≥60px, with <40px horizontal drift) casts the currently highlighted card via the existing `castVote()`. Purely additive — tap and keyboard voting are unchanged. Team mode (`TeamSession.tsx`) is out of scope for this iteration; its Firebase-synced multi-device voting model needs separate design work before a touch layer is added there.

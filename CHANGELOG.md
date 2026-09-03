@@ -4,6 +4,20 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.2.3 — Wire up team-session Firebase secrets in deploy (2026-09-02)
+
+- **fix**: `.github/workflows/deploy.yml` never passed `VITE_FIREBASE_*`
+  into the production build, so `isFirebaseConfigured()` was always
+  `false` on the live site and "Start Team Session" was a permanently
+  disabled stub — despite `TeamSession.tsx` being fully built (PIN/QR
+  join, blind voting, observer mode, live reveal). Added the same
+  secrets passthrough Moving Motivators' deploy workflow already has, so
+  the live site can now use the org/repo's Firebase project instead of
+  silently building without it. Added `.env.example` for local dev,
+  matching Moving Motivators.
+- Found via user report; confirmed root cause matched a known-working
+  sibling app's setup.
+
 ## 0.2.2 — Fix accessibility gaps; remove dead code (2026-09-02)
 
 - **fix**: two icon-only "✕" buttons (remove deep-linked story, dismiss

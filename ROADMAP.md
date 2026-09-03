@@ -9,6 +9,8 @@ None — idle. See `## Next epics` below.
 1. **E2: Estimation accuracy cross-reference with Sprint Metrics** — serves #3. Blocked on a data-model gap discovered this run: Sprint Metrics' `SprintData` has no date field to match Planning Poker sessions against (see [#40](https://github.com/agile-toolkit/planning-poker/issues/40) comment, 2026-09-02) — needs a human call on whether Sprint Metrics adds a date field first, or this drops the per-sprint framing for a coarser trend comparison.
 
 ## Recently shipped
+**Wire up team-session Firebase secrets in deploy** (2026-09-02) — see `## Shipped`. The live site never actually enabled team sessions — `deploy.yml` didn't pass `VITE_FIREBASE_*` into the build, so `isFirebaseConfigured()` was always false and "Start Team Session" stayed a disabled stub, despite `TeamSession.tsx` being fully built. Added the same secrets passthrough Moving Motivators' workflow already has.
+
 **Fix accessibility gaps; remove dead code** (2026-09-02) — see `## Shipped`. A suite-wide UX audit flagged two unlabeled icon-only buttons, a PIN input missing `inputMode="numeric"`, and an unused duplicate `HomeScreen.tsx`. Fixed all three.
 
 **Remove Management 3.0 reference; fix invisible brand colors; first test coverage** (2026-09-02) — see `## Shipped`. Dropped a stray "Management 3.0" mention from `README.md`; completed the `brand` Tailwind scale (`200`/`300`/`800`/`900` were undefined but referenced 39 times across 6 files — the most of any repo in the suite); split `App.tsx`'s URL-parsing functions into `src/deeplink.ts` so they're testable without triggering the module-level Firebase config check, and added this repo's first automated tests.
@@ -39,3 +41,10 @@ None — idle. See `## Next epics` below.
 - ~~Added `aria-label` to two unlabeled icon-only "✕" buttons~~
 - ~~Added `inputMode="numeric"` to the 4-digit PIN input~~
 - ~~Removed the unused duplicate `HomeScreen.tsx`~~
+
+**v0.2.3 — Wire up team-session Firebase secrets in deploy** (2026-09-02):
+- ~~`deploy.yml` now passes `VITE_FIREBASE_*` secrets into the production
+  build, matching Moving Motivators, so the live site can actually reach
+  a configured Firebase project instead of always building with team
+  sessions disabled~~
+- ~~Added `.env.example` for local dev~~
