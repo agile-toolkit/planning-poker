@@ -28,3 +28,4 @@ npm-debug.log*
 commit_msg.txt
 .artefacts/*
 !.artefacts/BRIEF.md
+.artefacts/
