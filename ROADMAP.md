@@ -9,6 +9,8 @@ None — idle. See `## Next epics` below.
 1. **E2: Estimation accuracy cross-reference with Sprint Metrics** — serves #3. Blocked on a data-model gap discovered this run: Sprint Metrics' `SprintData` has no date field to match Planning Poker sessions against (see [#40](https://github.com/agile-toolkit/planning-poker/issues/40) comment, 2026-09-02) — needs a human call on whether Sprint Metrics adds a date field first, or this drops the per-sprint framing for a coarser trend comparison.
 
 ## Recently shipped
+**Add glass effect to the header** (2026-09-04) — see `## Shipped`. `AppHeader.tsx`'s background changed to a translucent blur, matching the Dashboard's own nav — user-reported inconsistency.
+
 **Replace remaining decorative emoji with SVG icons** (2026-09-04) — see `## Shipped`. Finished the sweep 0.2.9 left open (Home's 🎯/🤝, setup's 🔗, TeamSession's 3 👁 badges) and fixed the hardcoded `'✓ All voted'` text plus a baked-in checkmark in `voted_badge`'s translation string, both noted as known gaps at the time.
 
 **Facilitator Mode persists across suite apps** (2026-09-03) — see `## Shipped`. `useFacilitatorMode`'s storage key changed to the shared `agile-toolkit:facilitatorMode` so the mode survives switching to another suite app in the same tab, per direct user request.
@@ -39,6 +41,7 @@ None — idle. See `## Next epics` below.
 - No small polish items queued — the rest of BRIEF.md's backlog (issues #32–#38) was confirmed already implemented and closed this run (2026-09-02).
 
 ## Shipped
+- ~~Add glass/backdrop-blur effect to the header, matching the Dashboard's own nav~~
 - ~~Replace Home/setup/TeamSession decorative emoji (🎯🤝🔗👁) with shared SVG icons; fix hardcoded/baked-in checkmark text~~
 - ~~Unify Facilitator Mode's storage key to the shared `agile-toolkit:facilitatorMode` so it persists across suite apps~~
 - ~~Fix duplicated card values in the Card Values legend~~

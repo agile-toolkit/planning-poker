@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.3.2 — Add glass effect to the header (2026-09-04)
+
+- **fix**: `AppHeader.tsx`'s background changed from opaque
+  `bg-white`/`dark:bg-gray-900` to `bg-[var(--glass)] backdrop-blur-sm` —
+  the Dashboard's own nav has always had this translucent blur effect,
+  but the shared header every app copies did not. User-reported
+  inconsistency. Verified in both themes.
+
 ## 0.3.1 — Replace remaining decorative emoji with SVG icons (2026-09-04)
 
 - **feat**: finished the emoji→SVG sweep left open in 0.2.9 — replaced the
