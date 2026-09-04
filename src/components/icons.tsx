@@ -3,8 +3,8 @@
  *
  * A small shared set of SVG icons replacing the suite's most commonly
  * typed decorative emoji (✕ ✓ → ← 💡 ⚠️ 📊 🔄 🔗 📅 👤 ✏️ 🖨️ 📋 🤝 🎯 🏁 📁
- * 🔔 🔇 🔍, plus a few semantic-colored ones: warning, celebrate, trophy,
- * fire, star). Emoji that are FUNCTIONAL CONTENT rather than decoration —
+ * 🔔 🔇 🔍 👁 ☀️ ❓ 📤 ⬇️ 👍 ☑ ☐ 🔀, plus a few semantic-colored ones:
+ * warning, celebrate, trophy, fire, star. Emoji that are FUNCTIONAL CONTENT rather than decoration —
  * Team Identity's Identity Symbols picker, Planning Poker's ☕ card value,
  * the Dashboard's live pass-through of a team's chosen symbol — are not
  * covered here and should stay as real emoji; only decorative UI chrome
@@ -144,16 +144,6 @@ export function ClipboardIcon({ className = 'w-4 h-4' }: IconProps) {
   )
 }
 
-export function HandshakeIcon({ className = 'w-4 h-4' }: IconProps) {
-  return (
-    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M1.5 8l3-2.5 2 1.5 2-1.5 3 2.5" />
-      <path d="M4.5 6.5l3.5 3.5 1.5-1.5M11 6.5l-3 3" />
-      <path d="M1.5 8v3.5l2 1.5M14.5 8v3.5l-2 1.5" />
-    </svg>
-  )
-}
-
 export function TargetIcon({ className = 'w-4 h-4' }: IconProps) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
@@ -205,6 +195,97 @@ export function SearchIcon({ className = 'w-4 h-4' }: IconProps) {
     <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
       <circle cx="7" cy="7" r="4.5" />
       <path d="M13.5 13.5L10.5 10.5" />
+    </svg>
+  )
+}
+
+export function EyeIcon({ className = 'w-4 h-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
+      <path d="M1 8s2.5-4.5 7-4.5S15 8 15 8s-2.5 4.5-7 4.5S1 8 1 8z" />
+      <circle cx="8" cy="8" r="2" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+export function SunIcon({ className = 'w-4 h-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+    </svg>
+  )
+}
+
+export function QuestionIcon({ className = 'w-4 h-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+      <circle cx="8" cy="7" r="5.3" />
+      <path d="M6 6a2 2 0 013.8.9c0 1.1-1.3 1.4-1.7 2.4" />
+      <circle cx="8" cy="10.5" r="0.6" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+export function UploadIcon({ className = 'w-4 h-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M8 10V2M5 5l3-3 3 3" />
+      <path d="M2.5 11v2a1 1 0 001 1h9a1 1 0 001-1v-2" />
+    </svg>
+  )
+}
+
+export function DownloadIcon({ className = 'w-4 h-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M8 2v8M5 7l3 3 3-3" />
+      <path d="M2.5 11v2a1 1 0 001 1h9a1 1 0 001-1v-2" />
+    </svg>
+  )
+}
+
+export function ThumbsUpIcon({ className = 'w-4 h-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+      <path d="M2 7h2.2v7H2zM6 7.3l1-4.3a.9.9 0 011.7.4l-.5 3h4a1 1 0 01.98 1.2l-.9 4.5a1 1 0 01-1 .8H6z" />
+    </svg>
+  )
+}
+
+export function CheckboxEmptyIcon({ className = 'w-4 h-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
+      <rect x="2" y="2" width="12" height="12" rx="2" />
+    </svg>
+  )
+}
+
+export function CheckboxCheckedIcon({ className = 'w-4 h-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">
+      <rect x="2" y="2" width="12" height="12" rx="2" />
+      <path d="M5 8.2l2 2 4-4.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+export function ShuffleIcon({ className = 'w-4 h-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M2.5 8.5l3 3M2.5 8.5l3-3M2.5 8.5h6.5" />
+      <path d="M13.5 7.5l-3-3M13.5 7.5l-3 3M13.5 7.5H7" />
+    </svg>
+  )
+}
+
+/** Two overlapping people — team/group */
+export function TeamIcon({ className = 'w-4 h-4' }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <circle cx="7" cy="6" r="2.6" />
+      <path d="M2 16c0-3 2.2-5 5-5s5 2 5 5z" />
+      <circle cx="14.5" cy="7" r="2.1" opacity="0.55" />
+      <path d="M10.8 16c.3-2.6 2-4.3 4.2-4.3s3.6 1.5 4 3.6z" opacity="0.55" />
     </svg>
   )
 }

@@ -3,6 +3,23 @@
 All notable changes to this project are documented in this file.
 
 ## Unreleased
+
+## 0.3.1 — Replace remaining decorative emoji with SVG icons (2026-09-04)
+
+- **feat**: finished the emoji→SVG sweep left open in 0.2.9 — replaced the
+  Home screen's 🎯 (Practice Solo) and 🤝 (Team Session heading) with the
+  shared `TargetIcon`/`TeamIcon`, the setup screen's 🔗 deep-link banner
+  with `LinkIcon`, and all 3 observer 👁 badges in `TeamSession.tsx` with
+  `EyeIcon`. `TeamIcon` and `EyeIcon` were newly added to the shared
+  `icons.tsx` for this; synced the full file from `design-system/`, which
+  also removes the unused, broken `HandshakeIcon` fixed upstream.
+- **fix**: `TeamSession.tsx`'s hardcoded `'✓ All voted'` status text (noted
+  as a known gap in 0.2.9) is now `t('team.all_voted')` — a new i18n key
+  across all 4 locales — rendered with `CheckIcon` instead of a baked-in
+  glyph. `voted_badge` had the same problem the other direction (`"Voted
+  ✓"` baked the checkmark into the translated string); split the same way,
+  checkmark rendered separately so it doesn't depend on font glyph
+  coverage per locale.
 - **ci**: CI Node bumped 20 → 22 and `engines` declared. `jsdom@30` requires
   Node `^22.22.2 || ^24.15.0 || >=26`, so the test step could never have passed
   on the pinned Node 20 — invisible until this release started running the

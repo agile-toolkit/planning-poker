@@ -7,6 +7,7 @@ import { DECKS } from '../types'
 import { QRCodeSVG } from 'qrcode.react'
 import { parseJoinPinParam } from '../deeplink'
 import { claimSession, releaseSession, sessionPath, isReclaimable } from '../session'
+import { EyeIcon, CheckIcon } from './icons'
 
 function buildJoinUrl(pin: string): string {
   const url = new URL(window.location.href)
@@ -397,8 +398,8 @@ export default function TeamSession({ onBack, onSessionEnd, initialMode }: Props
                       <span className="text-xs text-gray-400 dark:text-gray-600">(host)</span>
                     )}
                     {p.isObserver && !p.isHost && (
-                      <span className="text-xs text-gray-400 dark:text-gray-600 flex items-center gap-0.5">
-                        👁 {t('team.observer_badge')}
+                      <span className="text-xs text-gray-400 dark:text-gray-600 flex items-center gap-1">
+                        <EyeIcon className="w-3.5 h-3.5" /> {t('team.observer_badge')}
                       </span>
                     )}
                   </li>
@@ -454,12 +455,14 @@ export default function TeamSession({ onBack, onSessionEnd, initialMode }: Props
                   <span className="ml-1 text-xs text-gray-400 dark:text-gray-600">({t('team.voters_only')})</span>
                 )}
               </p>
-              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+              <span className={`text-xs font-medium px-2 py-0.5 rounded-full flex items-center gap-1 ${
                 voteCount > 0 && voteCount >= (voterCount || participantEntries.length)
                   ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                   : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'
               }`}>
-                {voteCount > 0 && voteCount >= (voterCount || participantEntries.length) ? '✓ All voted' : t('team.waiting_for_votes')}
+                {voteCount > 0 && voteCount >= (voterCount || participantEntries.length)
+                  ? <><CheckIcon className="w-3 h-3" /> {t('team.all_voted')}</>
+                  : t('team.waiting_for_votes')}
               </span>
             </div>
             <ul className="space-y-1">
@@ -468,14 +471,14 @@ export default function TeamSession({ onBack, onSessionEnd, initialMode }: Props
                   <span className="flex items-center gap-1.5">
                     {p.name}
                     {p.isObserver && !p.isHost && (
-                      <span className="text-xs text-gray-400 dark:text-gray-600">👁</span>
+                      <span className="text-xs text-gray-400 dark:text-gray-600"><EyeIcon className="w-3.5 h-3.5" /></span>
                     )}
                   </span>
                   {p.isObserver ? (
                     <span className="text-xs text-gray-400 dark:text-gray-600">{t('team.observer_badge')}</span>
                   ) : (
-                    <span className={`text-xs ${votes[id] ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-600'}`}>
-                      {votes[id] ? t('team.voted_badge') : '…'}
+                    <span className={`text-xs flex items-center gap-1 ${votes[id] ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-600'}`}>
+                      {votes[id] ? <><CheckIcon className="w-3 h-3" /> {t('team.voted_badge')}</> : '…'}
                     </span>
                   )}
                 </li>
@@ -592,7 +595,7 @@ export default function TeamSession({ onBack, onSessionEnd, initialMode }: Props
               </p>
             </div>
             <div className="card text-center space-y-2 py-6">
-              <p className="text-3xl">👁</p>
+              <div className="flex justify-center text-gray-400 dark:text-gray-500"><EyeIcon className="w-9 h-9" /></div>
               <p className="text-sm font-medium text-gray-600 dark:text-gray-400">{t('team.observer_badge')}</p>
               <p className="text-xs text-gray-400 dark:text-gray-600">
                 {t('team.vote_progress', { done: voteCount, total: voterCount || participantEntries.length })}

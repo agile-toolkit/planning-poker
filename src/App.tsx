@@ -14,7 +14,7 @@ import AppHeader from './components/AppHeader'
 import ThemeToggle from './components/ThemeToggle'
 import FacilitatorToggle from './components/FacilitatorToggle'
 import { useFacilitatorMode } from './components/useFacilitatorMode'
-import { CloseIcon } from './components/icons'
+import { CloseIcon, TargetIcon, TeamIcon, LinkIcon } from './components/icons'
 
 const HISTORY_KEY = 'planning-poker:history'
 const HISTORY_MAX = 10
@@ -264,13 +264,16 @@ export default function App() {
                 onClick={() => setPhase('setup')}
                 className="group flex flex-col items-start gap-2 p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-sm border-2 border-transparent hover:border-brand-500 dark:border-gray-700 dark:hover:border-brand-500 transition-all text-left"
               >
-                <span className="text-3xl">🎯</span>
+                <span className="text-brand-600 dark:text-brand-400"><TargetIcon className="w-8 h-8" /></span>
                 <span className="font-semibold text-gray-900 dark:text-white text-lg">{t('home.start_practice')}</span>
                 <span className="text-sm text-gray-500 dark:text-gray-400">{t('home.solo_desc')}</span>
               </button>
 
               <div className="flex flex-col gap-2">
-                <span className="font-semibold text-gray-900 dark:text-white text-lg px-1">🤝 {t('home.team_label')}</span>
+                <span className="font-semibold text-gray-900 dark:text-white text-lg px-1 flex items-center gap-1.5">
+                  <TeamIcon className="w-5 h-5 text-brand-600 dark:text-brand-400" />
+                  {t('home.team_label')}
+                </span>
                 <button
                   type="button"
                   onClick={firebaseReady ? () => { setTeamEntryMode('host'); setPhase('team') } : undefined}
@@ -323,7 +326,7 @@ export default function App() {
               {deeplinkedStories.length > 0 ? (
                 <div>
                   <div className="mb-3 flex items-center gap-2 text-sm bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-700/50 rounded-lg px-3 py-2">
-                    <span className="text-brand-600 dark:text-brand-400">🔗</span>
+                    <span className="text-brand-600 dark:text-brand-400"><LinkIcon className="w-4 h-4" /></span>
                     <span className="text-brand-700 dark:text-brand-300">
                       {t('setup.deeplink_banner', { count: deeplinkedStories.length })}
                     </span>
