@@ -93,7 +93,14 @@
     "new_session": "Новая Сесія",
     "clear": "Ачысціць Гісторыю",
     "story_count": "{{count}} з {{total}} ацэнена",
-    "avg": "Сяр: {{avg}} пт"
+    "avg": "Сяр: {{avg}} пт",
+    "sessions_tab": "Сесіі",
+    "accuracy_tab": "Дакладнасць",
+    "accuracy_no_data": "Пакуль недастаткова дадзеных — завяршыце прынамсі 3 спрынты ў Sprint Metrics, каб убачыць дакладнасць пастаўкі.",
+    "delivery_accuracy": "Дакладнасць пастаўкі спрынту",
+    "delivery_summary": "У {{count}} спрынт(ах), зафіксаваных у Sprint Metrics: дастаўлена {{completed}} з {{planned}} запланаваных балаў.",
+    "estimation_summary": "Planning Poker: {{avg}} сярэдніх балаў на гісторыю ў {{count}} сесіі(ях).",
+    "accuracy_footnote": "Гэта параўноўвае вашыя агульныя тэндэнцыі ацэнкі і пастаўкі — без супастаўлення асобных сесій з асобнымі спрынтамі, паколькі Sprint Metrics не захоўвае даты спрынтаў."
   },
   "learn": {
     "title": "Пра Planning Poker",

@@ -5,6 +5,12 @@ import { DECKS } from './types'
 import { isFirebaseConfigured } from './firebaseConfig'
 import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, parseJoinPinParam, parseKanbanBoardParam, parseParticipantsParam, cardKey, type DeeplinkStory } from './deeplink'
 import { parseTeamIdentityMembers } from './teamIdentityImport'
+import {
+  readDeliveryAccuracy,
+  hasEnoughDeliveryData,
+  accuracyLevel,
+  summarizeEstimationHistory,
+} from './estimationAccuracy'
 import SessionView from './components/SessionView'
 // Lazy: TeamSession is the only thing that needs the Firebase SDK, and most
 // visitors never open a team session. Loading it on demand keeps ~450 kB out
@@ -52,6 +58,7 @@ export default function App() {
   const [importTooltip, setImportTooltip] = useState('')
   const [sessionHistory, setSessionHistory] = useState<SessionHistoryEntry[]>(loadHistory)
   const [expandedSession, setExpandedSession] = useState<string | null>(null)
+  const [historyTab, setHistoryTab] = useState<'sessions' | 'accuracy'>('sessions')
 
   const importFromTeamIdentity = () => {
     const names = parseTeamIdentityMembers(localStorage.getItem('team-identity-charter'))
@@ -508,7 +515,78 @@ export default function App() {
                 </button>
               </div>
             </div>
-            {sessionHistory.length === 0 ? (
+            {sessionHistory.length > 0 && (
+              <div className="flex gap-1 mb-4 border-b border-gray-200 dark:border-gray-700">
+                <button
+                  type="button"
+                  onClick={() => setHistoryTab('sessions')}
+                  className={`px-3 py-2 text-sm font-medium border-b-2 -mb-px ${
+                    historyTab === 'sessions'
+                      ? 'border-brand-600 text-brand-600 dark:text-brand-400'
+                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                  }`}
+                >
+                  {t('history.sessions_tab')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHistoryTab('accuracy')}
+                  className={`px-3 py-2 text-sm font-medium border-b-2 -mb-px ${
+                    historyTab === 'accuracy'
+                      ? 'border-brand-600 text-brand-600 dark:text-brand-400'
+                      : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
+                  }`}
+                >
+                  {t('history.accuracy_tab')}
+                </button>
+              </div>
+            )}
+            {historyTab === 'accuracy' && sessionHistory.length > 0 ? (
+              (() => {
+                const delivery = readDeliveryAccuracy()
+                const estimation = summarizeEstimationHistory(sessionHistory)
+                if (!hasEnoughDeliveryData(delivery)) {
+                  return (
+                    <div className="card text-center py-10 text-gray-500 dark:text-gray-400">
+                      {t('history.accuracy_no_data')}
+                    </div>
+                  )
+                }
+                const ratio = delivery!.accuracyRatio
+                const level = ratio !== null ? accuracyLevel(ratio) : null
+                const barColor = level === 'green' ? 'bg-green-500' : level === 'amber' ? 'bg-amber-500' : 'bg-red-500'
+                return (
+                  <div className="card space-y-4">
+                    <div>
+                      <div className="flex items-baseline justify-between">
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('history.delivery_accuracy')}</span>
+                        {ratio !== null && (
+                          <span className="text-lg font-bold text-gray-900 dark:text-white">{Math.round(ratio * 100)}%</span>
+                        )}
+                      </div>
+                      {ratio !== null && (
+                        <div className="mt-2 h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                          <div className={`h-2 ${barColor} rounded-full`} style={{ width: `${Math.min(ratio * 100, 100)}%` }} />
+                        </div>
+                      )}
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                        {t('history.delivery_summary', { planned: delivery!.totalPlanned, completed: delivery!.totalCompleted, count: delivery!.sprintCount })}
+                      </p>
+                    </div>
+                    {estimation.avgPointsPerStory !== null && (
+                      <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
+                        <p className="text-sm text-gray-700 dark:text-gray-200">
+                          {t('history.estimation_summary', { avg: Math.round(estimation.avgPointsPerStory * 10) / 10, count: estimation.sessionCount })}
+                        </p>
+                      </div>
+                    )}
+                    <p className="text-xs text-gray-400 dark:text-gray-500 border-t border-gray-100 dark:border-gray-700 pt-3">
+                      {t('history.accuracy_footnote')}
+                    </p>
+                  </div>
+                )
+              })()
+            ) : sessionHistory.length === 0 ? (
               <div className="card text-center py-10 text-gray-500 dark:text-gray-400">
                 {t('history.no_history')}
               </div>
