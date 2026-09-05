@@ -93,7 +93,14 @@
     "new_session": "Nueva Sesión",
     "clear": "Limpiar Historial",
     "story_count": "{{count}} de {{total}} estimadas",
-    "avg": "Prom: {{avg}} pts"
+    "avg": "Prom: {{avg}} pts",
+    "sessions_tab": "Sesiones",
+    "accuracy_tab": "Precisión",
+    "accuracy_no_data": "Aún no hay suficientes datos — completa al menos 3 sprints en Sprint Metrics para ver la precisión de entrega.",
+    "delivery_accuracy": "Precisión de entrega del sprint",
+    "delivery_summary": "En {{count}} sprint(s) registrados en Sprint Metrics: se entregaron {{completed}} de {{planned}} puntos planificados.",
+    "estimation_summary": "Planning Poker: {{avg}} puntos promedio por historia en {{count}} sesión(es).",
+    "accuracy_footnote": "Esto compara tus tendencias generales de estimación y entrega — no empareja sesiones individuales con sprints individuales, ya que Sprint Metrics no registra fechas de sprint."
   },
   "learn": {
     "title": "Acerca de Planning Poker",

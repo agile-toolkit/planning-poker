@@ -4,6 +4,40 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+## 0.3.3 — Estimation accuracy vs Sprint Metrics delivery (2026-09-05)
+
+- **feat** (issue #40): adds an "Accuracy" sub-tab next to "Sessions" on
+  the Session History screen. Reads Sprint Metrics' `sprint-metrics-projects`
+  key and aggregates `planned`/`completed` points across every tracked
+  sprint into an overall delivery-accuracy percentage (colour-coded:
+  green ≥90%, amber 70–90%, red <70%), shown alongside Planning Poker's
+  own average points-per-story across its session history. Requires at
+  least 3 sprints tracked in Sprint Metrics before showing the chart;
+  otherwise shows an explanatory empty state.
+  New `src/estimationAccuracy.ts` (`readDeliveryAccuracy`,
+  `hasEnoughDeliveryData`, `accuracyLevel`, `summarizeEstimationHistory`)
+  with 15 unit tests. New i18n keys (`history.sessions_tab`,
+  `accuracy_tab`, `accuracy_no_data`, `delivery_accuracy`,
+  `delivery_summary`, `estimation_summary`, `accuracy_footnote`) in all
+  four locales.
+
+  **Correction to the issue's premise:** the issue proposed matching
+  individual Planning Poker sessions to individual Sprint Metrics sprints
+  by date proximity, assuming a `sprint-metrics:sprints` key with
+  `{ startDate, endDate, committedPoints, completedPoints }`. Checked the
+  actual `sprint-metrics/src/types.ts`: `SprintData` has no date field at
+  all (`{ id, name, planned, completed, carriedOver, ... }`, where `name`
+  is a free-text label like "Sprint 1"), and the data lives under
+  `sprint-metrics-projects` (an array of `ProjectRecord`), not a
+  top-level `sprint-metrics:sprints` key. Per-sprint date matching isn't
+  buildable against this schema, and an index-based fallback would risk
+  presenting a misleading 1:1 correspondence that doesn't actually exist
+  (teams may run multiple estimation sessions per sprint, or estimate
+  stories spanning sprints). Built the coarser, still-useful signal
+  instead — overall estimation/delivery trends, no per-session pairing —
+  as suggested as an alternative in a prior comment on the issue, with
+  the footnote explicit about what is and isn't being compared.
+
 ## 0.3.2 — Add glass effect to the header (2026-09-04)
 
 - **fix**: `AppHeader.tsx`'s background changed from opaque
