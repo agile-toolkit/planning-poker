@@ -36,6 +36,12 @@ interface AppHeaderProps {
 
 const DASHBOARD_URL = 'https://agile-toolkit.github.io/'
 
+// Same build artifact is deployed to more than one host — only show the dashboard link where
+// it actually resolves to something (the toolkit's own site), not on other deploy targets.
+function isOnDashboardHost(): boolean {
+  return typeof window !== 'undefined' && window.location.origin === 'https://agile-toolkit.github.io'
+}
+
 const GridIcon = () => (
   <svg className="w-4 h-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
     <rect x="1" y="1" width="6" height="6" rx="1"/>
@@ -52,13 +58,15 @@ export default function AppHeader({ title, onTitleClick, navItems, hideLanguageP
 
         {/* Left: dashboard link + app title */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          <a
-            href={DASHBOARD_URL}
-            title="Agile Toolkit — back to dashboard"
-            className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 transition-colors flex-shrink-0"
-          >
-            <GridIcon />
-          </a>
+          {isOnDashboardHost() && (
+            <a
+              href={DASHBOARD_URL}
+              title="Agile Toolkit — back to dashboard"
+              className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400 transition-colors flex-shrink-0"
+            >
+              <GridIcon />
+            </a>
+          )}
           {onTitleClick ? (
             <button
               type="button"
