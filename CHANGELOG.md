@@ -4,6 +4,11 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+- **build**: sourcemaps are now opt-in. `npm run build` (the production
+  build that `deploy.yml` publishes) no longer emits `.map` files into
+  `dist/`; `npm run build:debug` (`vite build --mode debug`) produces the
+  same bundle with sourcemaps for local debugging.
+
 ## 0.3.3 — Estimation accuracy vs Sprint Metrics delivery (2026-09-05)
 
 - **feat** (issue #40): adds an "Accuracy" sub-tab next to "Sessions" on
