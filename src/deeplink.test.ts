@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, parseJoinPinParam, parseKanbanBoardParam, parseParticipantsParam, cardKey } from './deeplink'
+import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, parseJoinCodeParam, parseKanbanBoardParam, parseParticipantsParam, cardKey } from './deeplink'
 
 beforeEach(() => {
   localStorage.clear()
@@ -73,14 +73,24 @@ describe('parseChangePlannerParams', () => {
   })
 })
 
-describe('parseJoinPinParam', () => {
-  it('returns an empty string with no ?joinPin param', () => {
-    expect(parseJoinPinParam()).toBe('')
+describe('parseJoinCodeParam', () => {
+  it('returns an empty string with no #join fragment', () => {
+    expect(parseJoinCodeParam()).toBe('')
   })
 
-  it('extracts the PIN from the URL', () => {
-    window.history.replaceState({}, '', '/?joinPin=4821')
-    expect(parseJoinPinParam()).toBe('4821')
+  it('extracts and normalizes the code from the fragment', () => {
+    window.history.replaceState({}, '', '/#join=abcde-12345')
+    expect(parseJoinCodeParam()).toBe('ABCDE12345')
+  })
+
+  it('ignores a code in the query string — codes only travel in the fragment', () => {
+    window.history.replaceState({}, '', '/?join=ABCDE12345')
+    expect(parseJoinCodeParam()).toBe('')
+  })
+
+  it('drops malformed codes', () => {
+    window.history.replaceState({}, '', '/#join=4821')
+    expect(parseJoinCodeParam()).toBe('')
   })
 })
 

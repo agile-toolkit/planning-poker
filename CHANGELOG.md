@@ -4,6 +4,27 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+- **feat** (team sessions): Firebase is replaced by free public relays that
+  need no account and no secrets. Every client connects to two public MQTT
+  brokers (HiveMQ, EMQX) and two public Nostr relays (damus, nos.lol) at
+  once and de-duplicates messages, so a network that blocks the MQTT ports
+  (8884/8084) still works over Nostr on 443. New shared module `src/live/`
+  (room codes and AES-GCM encryption, relay channels, per-peer state sync
+  with heartbeat presence, `useLiveRoom` hook, animal aliases).
+- **feat** (privacy): only numbers leave the device, end-to-end encrypted.
+  Participants no longer type names — each gets a random animal alias —
+  and story titles stay on the host's screen (participants see "Story N").
+  A participant's card index is sent only after the host reveals the round.
+  Every incoming state is validated field-by-field (`src/liveSession.ts`).
+- **breaking**: sessions are joined with a 10-character code (`XXXXX-XXXXX`)
+  instead of a 6-digit PIN, and join links carry it in the fragment
+  (`#join=<code>`) instead of `?joinPin=<pin>`, so the key never reaches a
+  server. Old PIN links no longer work.
+- **chore**: removes the `firebase` dependency, `src/firebase.ts`,
+  `src/firebaseConfig.ts`, `src/session.ts` and `.env.example`; `deploy.yml`
+  no longer passes `VITE_FIREBASE_*` secrets. The team-session buttons are
+  now disabled only while offline.
+
 - **chore** (security): 0 `npm audit` vulnerabilities, down from 10. `vite` ^6.4.3 (patched dev-server path traversal / `fs.deny`
   bypass) and `vitest` ^4.1.11 (patched `@vitest/mocker` arbitrary file
   read); transitive fixes via `npm audit fix` (postcss, nanoid,
