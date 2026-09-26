@@ -1,9 +1,8 @@
-import { useState, lazy, Suspense } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CardValue, DeckType, GamePhase, PokerSession, SessionHistoryEntry } from './types'
 import { DECKS } from './types'
-import { isFirebaseConfigured } from './firebaseConfig'
-import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, parseJoinPinParam, parseKanbanBoardParam, parseParticipantsParam, cardKey, type DeeplinkStory } from './deeplink'
+import { loadHistory, parseDeeplinkStories, parseChangePlannerParams, parseJoinCodeParam, parseKanbanBoardParam, parseParticipantsParam, cardKey, type DeeplinkStory } from './deeplink'
 import { parseTeamIdentityMembers } from './teamIdentityImport'
 import {
   readDeliveryAccuracy,
@@ -12,9 +11,9 @@ import {
   summarizeEstimationHistory,
 } from './estimationAccuracy'
 import SessionView from './components/SessionView'
-// Lazy: TeamSession is the only thing that needs the Firebase SDK, and most
-// visitors never open a team session. Loading it on demand keeps ~450 kB out
-// of the entry chunk for everyone else.
+// Lazy: TeamSession is the only thing that needs the live-session relay
+// clients (MQTT, Nostr), and most visitors never open a team session.
+// Loading it on demand keeps them out of the entry chunk for everyone else.
 const TeamSession = lazy(() => import('./components/TeamSession'))
 import AppHeader from './components/AppHeader'
 import ThemeToggle from './components/ThemeToggle'
@@ -22,14 +21,26 @@ import FacilitatorToggle from './components/FacilitatorToggle'
 import { useFacilitatorMode } from './components/useFacilitatorMode'
 import { CloseIcon, TargetIcon, TeamIcon, LinkIcon } from './components/icons'
 
+function useOnlineStatus(): boolean {
+  const [isOnline, setIsOnline] = useState(() => navigator.onLine)
+  useEffect(() => {
+    const up = () => setIsOnline(true)
+    const down = () => setIsOnline(false)
+    window.addEventListener('online', up)
+    window.addEventListener('offline', down)
+    return () => { window.removeEventListener('online', up); window.removeEventListener('offline', down) }
+  }, [])
+  return isOnline
+}
+
 const HISTORY_KEY = 'planning-poker:history'
 const HISTORY_MAX = 10
-
-const firebaseReady = isFirebaseConfigured()
 
 export default function App() {
   const { t } = useTranslation()
   const [facilitatorMode, toggleFacilitatorMode] = useFacilitatorMode('agile-toolkit:facilitatorMode')
+  // Team sessions run over public relays, so all they need is a connection.
+  const teamReady = useOnlineStatus()
   // The card-value legend already shows the value in its own box, so strip
   // the "value — " prefix that cards.* translations carry for use as a
   // standalone accessible label elsewhere (see SessionView's cardTitle).
@@ -41,11 +52,11 @@ export default function App() {
   const [changePlannerSource] = useState(parseChangePlannerParams)
   const [phase, setPhase] = useState<GamePhase>(() => {
     if (parseDeeplinkStories().length > 0 || parseKanbanBoardParam().length > 0 || parseParticipantsParam().length > 0) return 'setup'
-    if (firebaseReady && parseJoinPinParam()) return 'team'
+    if (parseJoinCodeParam()) return 'team'
     return 'home'
   })
   const [teamEntryMode, setTeamEntryMode] = useState<'host' | 'join'>(() =>
-    firebaseReady && parseJoinPinParam() ? 'join' : 'host'
+    parseJoinCodeParam() ? 'join' : 'host'
   )
   const [currentStory, setCurrentStory] = useState('')
   const [participantsText, setParticipantsText] = useState(() => {
@@ -283,8 +294,8 @@ export default function App() {
                 </span>
                 <button
                   type="button"
-                  onClick={firebaseReady ? () => { setTeamEntryMode('host'); setPhase('team') } : undefined}
-                  disabled={!firebaseReady}
+                  onClick={teamReady ? () => { setTeamEntryMode('host'); setPhase('team') } : undefined}
+                  disabled={!teamReady}
                   className="flex flex-col items-start gap-1 p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-sm border-2 border-transparent enabled:hover:border-brand-500 dark:border-gray-700 dark:enabled:hover:border-brand-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed text-left"
                 >
                   <span className="font-semibold text-gray-900 dark:text-white">{t('home.host_team')}</span>
@@ -292,13 +303,13 @@ export default function App() {
                 </button>
                 <button
                   type="button"
-                  onClick={firebaseReady ? () => { setTeamEntryMode('join'); setPhase('team') } : undefined}
-                  disabled={!firebaseReady}
+                  onClick={teamReady ? () => { setTeamEntryMode('join'); setPhase('team') } : undefined}
+                  disabled={!teamReady}
                   className="flex flex-col items-start gap-1 p-4 bg-white dark:bg-gray-900 rounded-2xl shadow-sm border-2 border-transparent enabled:hover:border-brand-500 dark:border-gray-700 dark:enabled:hover:border-brand-500 transition-all disabled:opacity-40 disabled:cursor-not-allowed text-left"
                 >
                   <span className="font-semibold text-gray-900 dark:text-white">{t('home.join_team')}</span>
                 </button>
-                {!firebaseReady && (
+                {!teamReady && (
                   <p className="text-xs text-gray-400 dark:text-gray-600 px-1">{t('home.team_note')}</p>
                 )}
               </div>

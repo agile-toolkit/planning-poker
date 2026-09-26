@@ -1,4 +1,5 @@
 import type { CardValue, SessionHistoryEntry } from './types'
+import { normalizeRoomCode } from './live/crypto'
 
 const HISTORY_KEY = 'planning-poker:history'
 
@@ -44,17 +45,15 @@ export function parseChangePlannerParams(): { initiativeId: string } | null {
 }
 
 /**
- * The PIN from a join link, or '' if there isn't a usable one.
+ * The room code from a join link (`#join=ABCDE-12345`), normalized, or ''.
  *
- * This value is interpolated into a Realtime Database path, so it is
- * constrained here rather than trusted: anything that is not a bare run of
- * digits is dropped, and the length cap matches the six-digit PINs
- * `session.ts` mints. The security rules reject the rest, but a link should
- * not be able to steer a query at a path of its choosing in the first place.
+ * The code is the session's encryption secret, so it lives in the URL
+ * fragment — browsers never send that to a server — and anything that is
+ * not a well-formed code is dropped here.
  */
-export function parseJoinPinParam(): string {
-  const raw = new URLSearchParams(window.location.search).get('joinPin') ?? ''
-  return /^[0-9]{1,6}$/.test(raw) ? raw : ''
+export function parseJoinCodeParam(): string {
+  const raw = new URLSearchParams(window.location.hash.slice(1)).get('join') ?? ''
+  return normalizeRoomCode(raw)
 }
 
 /** Kanban Designer's "Send to Planning Poker" button: ?kanban-board=<base64 UTF-8 board name> */
