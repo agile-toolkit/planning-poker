@@ -1,1 +1,0 @@
-../../agentic-kit/agents/veles.md
