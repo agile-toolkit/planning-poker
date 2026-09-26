@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+- **chore** (security): 0 `npm audit` vulnerabilities, down from 10. `vite` ^6.4.3 (patched dev-server path traversal / `fs.deny`
+  bypass) and `vitest` ^4.1.11 (patched `@vitest/mocker` arbitrary file
+  read); transitive fixes via `npm audit fix` (postcss, nanoid,
+  browserslist, @babel/core, brace-expansion, fast-uri, …).
+- **chore** (security): Firebase's transitive `protobufjs`,
+  `@grpc/grpc-js` and `websocket-driver` advisories are cleared by the same
+  lockfile update.
+
 - **build**: sourcemaps are now opt-in. `npm run build` (the production
   build that `deploy.yml` publishes) no longer emits `.map` files into
   `dist/`; `npm run build:debug` (`vite build --mode debug`) produces the
