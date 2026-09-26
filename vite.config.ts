@@ -4,6 +4,6 @@ import react from '@vitejs/plugin-react'
 // `npm run build:debug` produces the same bundle with .map files.
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
-  base: '/planning-poker/',
+  base: './',
   build: { outDir: 'dist', sourcemap: mode === 'debug' },
 }))
