@@ -94,10 +94,13 @@ describe.each([
 
   it('brings a late joiner up to date', async () => {
     const relay = memoryRelay({ retain })
-    const a = await open([relay.factory], { heartbeatMs: 10_000 })
+    // No heartbeats here, so expiry must outlast the 100–500 ms re-announce
+    // delay or a peer can be swept before the late joiner hears back.
+    const quiet = { heartbeatMs: 10_000, expireMs: 60_000 }
+    const a = await open([relay.factory], quiet)
     a.setState({ n: 1 })
     await new Promise(r => setTimeout(r, 20))
-    const late = await open([relay.factory], { heartbeatMs: 10_000 })
+    const late = await open([relay.factory], quiet)
     late.setState({ n: 9 })
     await vi.waitFor(() => {
       expect(states(late)).toEqual([1])
